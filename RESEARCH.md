@@ -1,5 +1,14 @@
 # Deep-Dive Thermal and Perplexity Analysis
 
+## Abstract
+The rapid scaling of Large Language Model (LLM) parameter counts has fundamentally outpaced the memory bandwidth, VRAM capacity, and thermal dissipation envelopes of consumer-grade hardware. Deploying inference systems in edge or cost-constrained environments necessitates aggressive optimization heuristics, primarily low-bit integer quantization. However, a critical systems-level question remains: does the energy efficiency gained via aggressive quantization (such as the $Q4\_K\_M$ paradigm) empirically justify the corresponding degradation in logic retention and generative accuracy within sustained production workloads?
+
+This study presents a multi-dimensional analysis to map this "Efficiency-Logic Frontier." We evaluate a comprehensive matrix of modern architectures (Qwen, Mistral, Llama) and context windows across more than 12 discrete configurations. Utilizing an asynchronous orchestration framework bound to `pynvml`, we capture high-fidelity hardware telemetry—including granular VRAM allocation, power draw, and thermal states—during continuous inference cycles. Concurrent generative accuracy is objectively quantified using automated WikiText-2 Perplexity evaluations.
+
+Furthermore, this research investigates the physical constraints of the NVIDIA Ampere architecture (RTX 3080) under sustained load. By analyzing Dynamic Frequency Scaling (DFS) behavior, we cross-reference GPU temperature against Streaming Multiprocessor (SM) clock velocities to isolate thermal throttling artifacts from fundamental architectural limits during prolonged prefill and decoding phases.
+
+Our empirical data establishes a deterministic correlation between bit-depth, power consumption, and accuracy decay. We identify the Pareto optimal operating envelope for consumer-grade deployment, demonstrating a peak energy efficiency of [INSERT OPTIMAL T/J VALUE] Tokens per Joule (T/J) prior to the onset of catastrophic perplexity degradation.
+
 ## Objective
 To quantify the impact of aggressive quantization on both hardware efficiency and generative accuracy during Large Language Model (LLM) inference on an NVIDIA RTX 3080.
 
