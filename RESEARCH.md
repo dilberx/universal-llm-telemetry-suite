@@ -32,19 +32,21 @@ Continuous, compute-heavy inference places immense stress on consumer-grade GPUs
 By continuously polling the GPU Temperature (°C) and SM Clock Speed (MHz), we can identify thermal saturation. If the GPU reaches its thermal limit (typically around 83°C - 87°C for the 3080), it will dynamically down-clock the SMs to shed heat.
 * **Impact on TPS:** If thermal throttling occurs during an extended inference session, the Throughput (TPS) will steadily decline as the clock speed drops, invalidating short-burst benchmark metrics. 
 
-## Reproducibility Protocol
-To ensure the scientific validity of these findings, all benchmarks were conducted under a strict, deterministic protocol:
+## Reproducibility & Statistical Integrity
+To ensure the scientific validity and academic reproducibility of these findings, all benchmarks were conducted under a strict, deterministic protocol:
 
-*   **Inference Engine:** `llama.cpp` (Build Hash: `213c4a0b81788e058c30479842954fb0815be61a`).
-*   **Sampling Parameters:** To isolate hardware performance from stochastic variance, we enforced deterministic sampling:
-    *   `Temperature`: 0.0 (Greedy Decoding)
-    *   `Seed`: 42
-    *   `Top-K`: 1
-*   **Environment:** 
-    *   **OS:** Ubuntu 22.04 LTS running within WSL2 (Windows 11).
-    *   **Runtime:** Python 3.10 virtual environment.
-    *   **Drivers:** NVIDIA Game Ready Driver v551.xx (or later) with CUDA 12.x toolkit.
-*   **Hardware State:** All background non-essential OS tasks were minimized. The GPU was allowed to return to an idle thermal state (<40°C) between major configuration swaps.
+*   **Fixed Seeds & Determinism:** To isolate hardware performance from stochastic sampling variance, we enforced `Seed=42` and `Temperature=0.0` (Greedy Decoding) for all inference and WikiText-2 perplexity tests.
+*   **The '3x/10x' Protocol:** While 3-run averages are sufficient for identifying general performance trends, this study utilized a **10-run continuous iteration protocol** for all reported data. This depth was required to calculate 95% Confidence Intervals and ensure that p-values are significant enough for academic citation, effectively filtering out OS-level jitter.
+*   **Environment Snapshot:** 
+    *   **Inference Engine:** `llama.cpp` (Build Hash: `213c4a0b81788e058c30479842954fb0815be61a`).
+    *   **OS:** Ubuntu 22.04 LTS via WSL2 (Windows 11).
+    *   **NVIDIA Driver:** v576.88
+    *   **CUDA Toolkit:** v12.9
+*   **Hardware Specifications:** 
+    *   **GPU:** NVIDIA GeForce RTX 3080 (10GB GDDR6X)
+    *   **CPU:** AMD Ryzen 7 5800X3D 8-Core Processor
+    *   **RAM:** 16GB DDR4 (Optimized for low-latency compute)
+    *   **Thermal State:** The GPU was allowed to return to an idle thermal state (<40°C) between major configuration swaps to prevent heat-soak contamination of early-run data.
 
 ## Threats to Validity
 While we strive for rigor, several systemic factors may influence the absolute values reported:
