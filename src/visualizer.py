@@ -83,8 +83,14 @@ def create_dashboard():
         axes[1, 1].set_xlabel('Context Length (Tokens)')
         axes[1, 1].set_ylabel('Max VRAM (MB)')
         
-    # Hide the empty subplot at [1, 2]
-    axes[1, 2].axis('off')
+    # 6. Energy Efficiency Plot
+    if 'tokens_per_joule' in df_2048.columns:
+        sns.barplot(data=df_2048, x='model', y='tokens_per_joule', hue='family', palette=palette, ax=axes[1, 2])
+        axes[1, 2].set_title('Energy Efficiency (Tokens/Joule) [Context: 2048]')
+        axes[1, 2].tick_params(axis='x', rotation=45)
+        axes[1, 2].set_xticklabels(axes[1, 2].get_xticklabels(), ha='right')
+    else:
+        axes[1, 2].axis('off')
 
     plt.tight_layout()
     output_img = os.path.join(results_dir, "dashboard.png")

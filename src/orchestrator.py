@@ -9,7 +9,7 @@ import re
 import statistics
 import pynvml
 
-def monitor_vram(stop_event, vram_usage_list):
+def monitor_hardware(stop_event, vram_usage_list, power_usage_list):
     try:
         pynvml.nvmlInit()
         device_count = pynvml.nvmlDeviceGetCount()
@@ -20,6 +20,11 @@ def monitor_vram(stop_event, vram_usage_list):
         while not stop_event.is_set():
             info = pynvml.nvmlDeviceGetMemoryInfo(handle)
             vram_usage_list.append(info.used / (1024 ** 2)) # in MB
+            
+            # Read power usage in milliwatts and convert to Watts
+            power_mw = pynvml.nvmlDeviceGetPowerUsage(handle)
+            power_usage_list.append(power_mw / 1000.0)
+            
             time.sleep(0.1)
             
         pynvml.nvmlShutdown()
@@ -29,9 +34,10 @@ def monitor_vram(stop_event, vram_usage_list):
 def run_benchmark(model_path, llama_cli_path, context_length=2048, prompt="Explain transformers in simple terms."):
     stop_event = threading.Event()
     vram_usage = []
+    power_usage = []
     
-    # Start VRAM monitor in background
-    monitor_thread = threading.Thread(target=monitor_vram, args=(stop_event, vram_usage))
+    # Start hardware monitor in background
+    monitor_thread = threading.Thread(target=monitor_hardware, args=(stop_event, vram_usage, power_usage))
     monitor_thread.start()
     
     start_time = time.time()
@@ -75,11 +81,12 @@ def run_benchmark(model_path, llama_cli_path, context_length=2048, prompt="Expla
     
     end_time = time.time()
     
-    # Stop VRAM monitoring
+    # Stop hardware monitoring
     stop_event.set()
     monitor_thread.join()
     
     max_vram = max(vram_usage) if vram_usage else 0.0
+    avg_power = statistics.mean(power_usage) if power_usage else 0.0
     latency = end_time - start_time
     
     # Remove ANSI escape codes for cleaner regex matching
@@ -106,13 +113,17 @@ def run_benchmark(model_path, llama_cli_path, context_length=2048, prompt="Expla
                 
     model_name = os.path.basename(model_path)
     family = "Qwen" if "qwen" in model_name.lower() else "Mistral" if "mistral" in model_name.lower() else "Unknown"
+    
+    tokens_per_joule = (tokens_per_sec / avg_power) if avg_power > 0 else 0.0
         
     return {
         "model": model_name,
         "family": family,
         "latency_sec": round(latency, 2),
         "tokens_per_sec": round(tokens_per_sec, 2),
-        "max_vram_mb": round(max_vram, 2)
+        "max_vram_mb": round(max_vram, 2),
+        "avg_power_watts": round(avg_power, 2),
+        "tokens_per_joule": round(tokens_per_joule, 4)
     }
 
 
@@ -178,19 +189,23 @@ def main():
             # Calculate metrics average and std deviation
             tps_list = [m['tokens_per_sec'] for m in run_metrics]
             vram_list = [m['max_vram_mb'] for m in run_metrics]
+            power_list = [m['avg_power_watts'] for m in run_metrics]
             
             avg_tps = statistics.mean(tps_list)
             std_tps = statistics.stdev(tps_list) if len(tps_list) > 1 else 0.0
             avg_vram = statistics.mean(vram_list)
             std_vram = statistics.stdev(vram_list) if len(vram_list) > 1 else 0.0
+            avg_power = statistics.mean(power_list)
+            std_power = statistics.stdev(power_list) if len(power_list) > 1 else 0.0
             
             print(f"  --> Avg Throughput: {avg_tps:.2f} ± {std_tps:.2f} tokens/s")
-            print(f"  --> Avg Max VRAM: {avg_vram:.2f} ± {std_vram:.2f} MB\n")
+            print(f"  --> Avg Max VRAM: {avg_vram:.2f} ± {std_vram:.2f} MB")
+            print(f"  --> Avg Power: {avg_power:.2f} ± {std_power:.2f} W\n")
         
     print(f"Saving results to {output_csv}")
     with open(output_csv, mode="w", newline="") as f:
         # Added new columns for dataset expansion
-        writer = csv.DictWriter(f, fieldnames=["model", "family", "context_length", "run_number", "latency_sec", "tokens_per_sec", "max_vram_mb"])
+        writer = csv.DictWriter(f, fieldnames=["model", "family", "context_length", "run_number", "latency_sec", "tokens_per_sec", "max_vram_mb", "avg_power_watts", "tokens_per_joule"])
         writer.writeheader()
         for r in results:
             writer.writerow(r)
