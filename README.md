@@ -1,4 +1,4 @@
-# LLM-Inference-Performance-Matrix
+# LLM-Inference-Telemetry-Suite: Hardware-Aware Performance & Efficiency Benchmarking
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![CUDA](https://img.shields.io/badge/CUDA-Enabled-76B900.svg)](https://developer.nvidia.com/cuda-zone)
@@ -6,7 +6,7 @@
 [![PyNVML](https://img.shields.io/badge/PyNVML-Telemetry-blue.svg)](https://pypi.org/project/nvidia-ml-py/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A hardware-focused, telemetry-aware framework for evaluating and optimizing Large Language Model (LLM) inference on consumer-grade NVIDIA RTX-series GPUs. 
+A cross-platform (WSL2/Linux) framework for auditing LLM inference performance, energy efficiency, and thermal stability across any NVIDIA RTX/Data-Center GPU.
 
 ![Inference Dashboard](results/dashboard.png)
 
@@ -20,7 +20,7 @@ Follow these steps to deploy and run the benchmarking suite locally:
 1. **Clone the Repository:**
    ```bash
    git clone <your-repo-url>
-   cd LLM-Inference-Performance-Matrix
+   cd LLM-Inference-Telemetry-Suite
    ```
 
 2. **Environment Setup:**
@@ -45,6 +45,10 @@ Follow these steps to deploy and run the benchmarking suite locally:
    ```bash
    python src/visualizer.py
    ```
+
+## Global Benchmark Ledger
+
+Help us map the Efficiency Frontier. Run this suite on your hardware and submit a Pull Request with your CSV to be featured in the global hardware rankings. The orchestrator automatically extracts your GPU architecture and VRAM capacity to add to the master ledger.
 
 ## Directory Map
 

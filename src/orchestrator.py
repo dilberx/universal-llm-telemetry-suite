@@ -219,6 +219,22 @@ def main():
     print(f"Found {len(gguf_files)} GGUF models.")
     print("\nStarting Scientific Rigor Benchmarks...\n")
     
+    # Extract Hardware Metadata
+    gpu_name = "Unknown"
+    total_vram_gb = 0.0
+    try:
+        pynvml.nvmlInit()
+        if pynvml.nvmlDeviceGetCount() > 0:
+            handle = pynvml.nvmlDeviceGetHandleByIndex(0)
+            gpu_name = pynvml.nvmlDeviceGetName(handle)
+            info = pynvml.nvmlDeviceGetMemoryInfo(handle)
+            total_vram_gb = round(info.total / (1024 ** 3), 2)
+        pynvml.nvmlShutdown()
+    except pynvml.NVMLError:
+        pass
+    
+    print(f"Hardware Detected: {gpu_name} ({total_vram_gb} GB VRAM)")
+    
     if os.path.exists(thermal_log_csv):
         os.remove(thermal_log_csv)
     
@@ -239,6 +255,8 @@ def main():
             for run_num in range(1, num_runs + 1):
                 print(f"  Run {run_num}/{num_runs}...")
                 metrics = run_benchmark(model_path, llama_cli, thermal_log_csv, context_length=ctx_len)
+                metrics['gpu_name'] = gpu_name
+                metrics['total_vram_gb'] = total_vram_gb
                 metrics['run_number'] = run_num
                 metrics['context_length'] = ctx_len
                 metrics['perplexity'] = ppl
@@ -268,7 +286,7 @@ def main():
     print(f"Saving results to {output_csv}")
     with open(output_csv, mode="w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=[
-            "model", "family", "context_length", "run_number", 
+            "gpu_name", "total_vram_gb", "model", "family", "context_length", "run_number", 
             "latency_sec", "tokens_per_sec", "max_vram_mb", 
             "avg_power_watts", "tokens_per_joule",
             "avg_temp_c", "avg_clock_mhz", "perplexity"
