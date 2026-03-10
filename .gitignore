@@ -1,0 +1,12 @@
+# Large Models
+llm_models/
+*.gguf
+
+# Virtual Environment
+venv/
+__pycache__/
+
+# System/Temp Files
+.DS_Store
+.env
+*.log
