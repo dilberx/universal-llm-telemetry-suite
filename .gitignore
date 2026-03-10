@@ -1,5 +1,7 @@
 # Large Models
-llm_models/
+llm_models/*
+!llm_models/*/
+!llm_models/*/.gitkeep
 *.gguf
 
 # Virtual Environment
