@@ -40,6 +40,14 @@ Scaling local inference isn't just about raw FLOPS; it's an exercise in balancin
     
     **Recommendation for Startups:** If you are an engineering team (like Nodal AI) optimizing AWS or OCI cloud expenditures, deploying an ensemble of highly-optimized, task-specific 3B models (using Q4 quantization) will literally halve your energy OpEx compared to a monolithic 7B deployment, while offering superior latency for real-time applications.
 
+## 5. Scientific Methodology: Rigor & Reproducibility
+
+To elevate this suite to the standards of academic publication, we have hardened our telemetry and evaluation frameworks to ensure statistically significant and verifiable outcomes.
+
+*   **Statistical Significance:** A single benchmark run is highly susceptible to OS-level jitter and background process interruptions. To mitigate variance, our orchestrator performs $n \geq 10$ continuous iterations for each model/context configuration. We calculate the **95% Confidence Interval** for both Throughput (TPS) and VRAM allocation, ensuring our reported means are robust and statistically sound.
+*   **Accuracy vs. Speed Correlative Framework:** Speed is irrelevant if the model outputs noise. To quantify the "Accuracy Cliff" induced by aggressive quantization (e.g., dropping from Q8_0 to Q4_K_M), we integrated an automated **WikiText-2 Perplexity** test. By measuring Perplexity alongside TPS, we plot a deterministic frontier connecting logic retention (Accuracy) directly to execution latency and power draw.
+*   **Thermal Tracking & Throttling Analysis:** GPUs like the RTX 3080 feature aggressive dynamic clocking based on thermal headroom. We continuously poll both the GPU Temperature (°C) and SM Clock Speed (MHz). By logging this data into a unified time-series CSV (`thermal_log.csv`), we can mathematically verify if the GPU enters a thermal throttling state during sustained 30+ minute inference sessions, isolating whether performance degradation is an artifact of the model or thermal saturation.
+
 ## 6. DevOps & Systems Engineering Challenges
 
 Executing these benchmarks reliably required mitigating several complex systems engineering challenges, particularly within the WSL2 environment.
