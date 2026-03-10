@@ -194,32 +194,7 @@ def main():
     llama_cli = os.path.normpath(os.path.join(base_dir, "../../llama.cpp/build/bin/llama-cli"))
     llama_perplexity = os.path.normpath(os.path.join(base_dir, "../../llama.cpp/build/bin/llama-perplexity"))
     
-    results_dir = os.path.join(base_dir, "../results")
-    output_csv = os.path.join(results_dir, "production_benchmarks.csv")
-    thermal_log_csv = os.path.join(results_dir, "thermal_log.csv")
-    dataset_path = os.path.join(base_dir, "wikitext-2.txt")
-    
-    if not os.path.exists(results_dir):
-        os.makedirs(results_dir)
-    
-    if not os.path.exists(llama_cli):
-        print(f"Error: llama-cli not found at {llama_cli}")
-        sys.exit(1)
-        
-    ensure_wikitext(dataset_path)
-        
-    gguf_files = glob.glob(os.path.join(base_models_dir, "**", "*.gguf"), recursive=True)
-            
-    gguf_files = sorted(gguf_files)
-    
-    if not gguf_files:
-        print("No GGUF models found in any directory.")
-        sys.exit(0)
-        
-    print(f"Found {len(gguf_files)} GGUF models.")
-    print("\nStarting Scientific Rigor Benchmarks...\n")
-    
-    # Extract Hardware Metadata
+    # Extract Hardware Metadata early to define results path
     gpu_name = "Unknown"
     total_vram_gb = 0.0
     try:
@@ -232,6 +207,24 @@ def main():
         pynvml.nvmlShutdown()
     except pynvml.NVMLError:
         pass
+    
+    # Create GPU-specific results directory
+    gpu_slug = gpu_name.lower().replace(" ", "_").replace("nvidia_", "").replace("geforce_", "")
+    results_root = os.path.join(base_dir, "../results")
+    results_dir = os.path.join(results_root, gpu_slug)
+    
+    output_csv = os.path.join(results_dir, "production_benchmarks.csv")
+    thermal_log_csv = os.path.join(results_dir, "thermal_log.csv")
+    dataset_path = os.path.join(base_dir, "wikitext-2.txt")
+    
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
+    
+    if not os.path.exists(llama_cli):
+        print(f"Error: llama-cli not found at {llama_cli}")
+        sys.exit(1)
+        
+    ensure_wikitext(dataset_path)
     
     print(f"Hardware Detected: {gpu_name} ({total_vram_gb} GB VRAM)")
     
