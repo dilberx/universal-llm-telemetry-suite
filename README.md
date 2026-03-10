@@ -10,6 +10,41 @@ A cross-platform (WSL2/Linux) framework for auditing LLM inference performance, 
 
 ![Inference Dashboard](results/dashboard.png)
 
+## Key Findings (RTX 3080 Baseline)
+* **Qwen-3B Efficiency Win:** The Qwen-3B model quantized at Q4_K_M dominates the efficiency frontier, achieving a peak of **0.9037 Tokens per Joule (T/J)**.
+* **Thermal Stability:** Continuous inference over 10+ minute sustained loads showed no thermal throttling, with the SM clock reliably maintaining base speeds (1440+ MHz).
+* **Pareto Optimal Quantization:** Q4_K_M proves to be the ideal balance, heavily reducing VRAM footprint and memory bandwidth while maintaining acceptable perplexity.
+
+[**👉 Submit Your Benchmarks**](#-global-hardware-performance-ledger) | [**📄 Read the Technical Paper (RESEARCH.md)**](RESEARCH.md)
+
+## 🏆 Global Hardware Performance Ledger
+
+Help us map the Efficiency Frontier. Run this suite on your hardware and submit a Pull Request with your CSV to be featured in the global hardware rankings. The orchestrator automatically extracts your GPU architecture and VRAM capacity to add to the master ledger.
+
+| GPU | VRAM | Architecture | Quant | Peak T/J | Contributor |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| NVIDIA RTX 3080 | 10GB | Qwen-3B | Q4_K_M | 0.9037 | @dilbersha |
+| Your GPU? | -- | -- | -- | -- | Submit PR! |
+
+## Asynchronous Telemetry Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Orchestrator
+    participant Telemetry as Telemetry (pynvml)
+    participant Llama as llama.cpp
+    
+    User->>Orchestrator: Start
+    Orchestrator->>Telemetry: Spawn Monitor Thread
+    Orchestrator->>Llama: Execute Inference Matrix
+    loop Continuous
+        Telemetry->>CSV: Log Power/Temp
+    end
+    Llama->>Orchestrator: Complete
+    Orchestrator->>Telemetry: Join Thread & Finalize Results
+```
+
 ## Project Goal
 To provide a statistically robust, telemetry-aware framework for evaluating LLM efficiency on consumer hardware. This suite quantifies the performance trade-offs inherent in different model architectures (e.g., Qwen 3B vs. Mistral 7B) and quantization paradigms (Q4, Q5, Q8) using the GGUF format and `llama.cpp`.
 
@@ -45,10 +80,6 @@ Follow these steps to deploy and run the benchmarking suite locally:
    ```bash
    python src/visualizer.py
    ```
-
-## Global Benchmark Ledger
-
-Help us map the Efficiency Frontier. Run this suite on your hardware and submit a Pull Request with your CSV to be featured in the global hardware rankings. The orchestrator automatically extracts your GPU architecture and VRAM capacity to add to the master ledger.
 
 ## Directory Map
 
