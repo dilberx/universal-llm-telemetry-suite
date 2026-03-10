@@ -30,7 +30,16 @@ Empirical data from this benchmark demonstrates a distinct "throughput ceiling."
 
 Conversely, the Mistral 7B (Q5) model exhibits a classic memory-bandwidth bottleneck. The sheer volume of weights that must be transferred from VRAM to the streaming multiprocessors (SMs) for each token generated significantly limits the maximum tokens per second, regardless of available compute power. Furthermore, aggressive quantization (Q4/Q5) is absolutely critical for the 7B class on a 10GB GPU; without it, the KV cache footprint required for meaningful context windows would immediately trigger Out-Of-Memory (OOM) faults.
 
-## 5. DevOps & Systems Engineering Challenges
+## 5. Sustainability & Cost-Efficiency Analysis
+
+As language models scale, operational expenditure (OpEx) driven by power consumption becomes a critical constraint. This benchmark suite integrates real-time energy telemetry to evaluate the sustainability of local and cloud-based deployments.
+
+*   **The Energy Metric:** We introduce **Tokens per Joule (T/J)** as the primary metric for measuring inference sustainability. This metric is calculated by dividing the generation throughput (tokens/second) by the average power draw (Watts) during the inference cycle.
+*   **The Efficiency Gap:** Our latest empirical data highlights a significant efficiency gap between model architectures. The Qwen 2.5 3B (Q4) model provides the highest energy efficiency, generating nearly 1.0 tokens per joule. In contrast, the heavier Mistral 7B yields roughly 0.5 tokens per joule. This demonstrates that highly optimized, smaller models can offer double the energy efficiency of larger counterparts.
+*   **The '3080' Thermal Profile:** The telemetry module accurately captures the power footprint across the inference lifecycle. We observe distinct thermal profiles on the RTX 3080: power consumption spikes dramatically during the compute-intensive 'Prefill' (Prompt Evaluation) phase as the ALUs are saturated, before settling into a lower, steady-state power draw during the memory-bound 'Decoding' (Token Generation) phase.
+*   **Strategic Value:** For businesses like Nodal AI deploying AI infrastructure at scale, this framework provides immediate strategic value. By quantifying Tokens per Joule alongside throughput, organizations can make data-driven decisions to choose model architectures and quantization levels that minimize cloud infrastructure and electricity costs without sacrificing critical throughput.
+
+## 6. DevOps & Systems Engineering Challenges
 
 Executing these benchmarks reliably required mitigating several complex systems engineering challenges, particularly within the WSL2 environment.
 
@@ -38,7 +47,7 @@ Executing these benchmarks reliably required mitigating several complex systems 
 *   **Optimized Model Acquisition:** To handle multi-gigabyte GGUF artifacts efficiently, the environment leverages `hf_transfer` for accelerated downloads from the Hugging Face Hub, maximizing network throughput and reducing CI/CD pipeline latency.
 *   **Environment-Driven Automation:** The orchestration suite is fully parameterized via environment variables, allowing for headless, automated execution across different hardware profiles without code modifications.
 
-## 6. Reproducibility Guide: Local Inference Lab Setup
+## 7. Reproducibility Guide: Local Inference Lab Setup
 
 To independently verify these findings or extend the benchmark matrix, follow this setup procedure:
 
