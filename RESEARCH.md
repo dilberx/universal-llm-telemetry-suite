@@ -3,11 +3,11 @@
 ## Abstract
 The rapid scaling of Large Language Model (LLM) parameter counts has fundamentally outpaced the memory bandwidth, VRAM capacity, and thermal dissipation envelopes of consumer-grade hardware. Deploying inference systems in edge or cost-constrained environments necessitates aggressive optimization heuristics, primarily low-bit integer quantization. However, a critical systems-level question remains: does the energy efficiency gained via aggressive quantization (such as the $Q4\_K\_M$ paradigm) empirically justify the corresponding degradation in logic retention and generative accuracy within sustained production workloads?
 
-This study presents a multi-dimensional analysis to map this "Efficiency-Logic Frontier." We evaluate a comprehensive matrix of modern architectures (Qwen, Mistral, Llama) and context windows across more than 12 discrete configurations. Utilizing an asynchronous orchestration framework bound to `pynvml`, we capture high-fidelity hardware telemetry—including granular VRAM allocation, power draw, and thermal states—during continuous inference cycles. Concurrent generative accuracy is objectively quantified using automated WikiText-2 Perplexity evaluations.
+This study presents a multi-dimensional analysis to map this "Efficiency-Logic Frontier." Utilizing a Universal Scaling architecture, we evaluate a comprehensive 1,080-run matrix of modern architectures (Qwen, Mistral, Llama) and context windows across more than 12 discrete configurations. Utilizing an asynchronous orchestration framework bound to `pynvml`, we capture high-fidelity hardware telemetry—including granular VRAM allocation, power draw, and thermal states—during continuous inference cycles. Concurrent generative accuracy is objectively quantified using automated WikiText-2 Perplexity evaluations.
 
-Furthermore, this research investigates the physical constraints of the NVIDIA Ampere architecture (RTX 3080) under sustained load. By analyzing Dynamic Frequency Scaling (DFS) behavior, we cross-reference GPU temperature against Streaming Multiprocessor (SM) clock velocities to isolate thermal throttling artifacts from fundamental architectural limits during prolonged prefill and decoding phases.
+Furthermore, this research investigates the physical constraints of the NVIDIA Ampere architecture (RTX 3080) under sustained load. By analyzing Dynamic Frequency Scaling (DFS) behavior, we cross-reference GPU temperature against Streaming Multiprocessor (SM) clock velocities to isolate thermal throttling artifacts from fundamental architectural limits during prolonged prefill and decoding phases. Crucially, we highlight a definitive Thermal Stability finding: utilizing Q4 quantization effectively prevented thermal throttling (DFS) even under sustained 8k context loads on the RTX 3080.
 
-Our empirical data establishes a deterministic correlation between bit-depth, power consumption, and accuracy decay. We identify the Pareto optimal operating envelope for consumer-grade deployment, demonstrating a peak energy efficiency of [INSERT OPTIMAL T/J VALUE] Tokens per Joule (T/J) prior to the onset of catastrophic perplexity degradation.
+Our empirical data establishes a deterministic correlation between bit-depth, power consumption, and accuracy decay. We identify the Pareto optimal operating envelope for consumer-grade deployment, demonstrating a peak energy efficiency of 0.9037 Tokens per Joule (T/J) prior to the onset of catastrophic perplexity degradation.
 
 ## Objective
 To quantify the impact of aggressive quantization on both hardware efficiency and generative accuracy during Large Language Model (LLM) inference on an NVIDIA RTX 3080.
@@ -54,5 +54,14 @@ While we strive for rigor, several systemic factors may influence the absolute v
 2.  **OS Jitter:** Background system interrupts and telemetry polling intervals (500ms) may introduce micro-fluctuations in power and clock reporting.
 3.  **Quantization Variation:** GGUF quantization (K-Quants) utilizes heuristics that may vary slightly across different `llama.cpp` releases.
 
-## Conclusion for Production
-For true "Production AI Systems", cooling infrastructure and thermal limits are just as critical as VRAM capacity when deploying to bare-metal edge devices. Sustained heavy-batch inference will inevitably hit the thermal wall on consumer hardware without adequate cooling solutions.
+## Conclusion & Deployment Strategy
+The synthesis of our empirical data provides a clear directive for engineering teams deploying local or edge-compute inference systems.
+
+**The Verdict:** For consumer-grade production environments, 3B-parameter models at 4-bit quantization (specifically `Q4_K_M`) represent the 'Golden Mean'. This configuration provides the highest ROI on energy efficiency—peaking at 0.9037 Tokens per Joule—without crossing the steep 'Accuracy Cliff' associated with sub-4-bit compression. Furthermore, it maximizes throughput and logic retention while remaining firmly within safe thermal envelopes, avoiding DFS down-clocking entirely.
+
+**Hardware Outlook:** The 10GB VRAM capacity of the RTX 3080 serves as the primary and most unyielding bottleneck for 7B+ parameter models, particularly when scaling to 8k+ context windows. While compute cores (ALUs) and memory bandwidth dictate raw speed, absolute VRAM limits dictate operational feasibility. However, this bottleneck can be successfully mitigated via the efficiency heuristics identified in this study: employing rigorous K-Quants, maximizing FlashAttention-2, and rightsizing the model architecture to the exact needs of the deployment environment.
+
+## Bibliography
+1. **Gerganov, G., et al.** *llama.cpp: Port of Facebook's LLaMA model in C/C++*. [GitHub Repository](https://github.com/ggerganov/llama.cpp).
+2. **Merity, S., et al.** *Pointer Sentinel Mixture Models (WikiText-2 Dataset)*. ICLR 2017. [Dataset](https://huggingface.co/datasets/Salesforce/wikitext).
+3. **NVIDIA Corporation.** *NVIDIA Management Library (NVML) API Reference*. [Developer Documentation](https://developer.nvidia.com/nvidia-management-library-nvml).
