@@ -1,0 +1,32 @@
+# requirements-apple-silicon.txt
+# ─────────────────────────────────────────────────────────────────────────────
+# Minimal dependency set for the LLM-Inference-Telemetry-Suite on macOS ARM64.
+# Tested on M1 Pro / M4 with Python 3.11–3.13 (native arm64 interpreter).
+#
+# Usage (from repo root, with venv active):
+#   pip install -r requirements-apple-silicon.txt
+#
+# NOTE: The full requirements.txt in this repo is a vLLM/CUDA server snapshot
+# for Linux x86_64. It CANNOT install on macOS ARM64 (cuda-bindings, triton,
+# nvidia-* packages all lack arm64 wheels). Use THIS file instead.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Core telemetry & benchmarking ─────────────────────────────────────────
+psutil>=5.9.8              # Memory / CPU stats; Unified Memory proxy on Apple Silicon
+pynvml>=11.5.0             # NVIDIA NVML — imported only by NvidiaProvider, guarded gracefully
+
+# ── Data pipeline ─────────────────────────────────────────────────────────
+pandas>=2.1.0
+numpy>=1.26.0
+
+# ── Visualisation ─────────────────────────────────────────────────────────
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# ── Model downloads (optional, used by download_models.py) ────────────────
+huggingface_hub>=0.23.0
+hf_transfer>=0.1.6         # Accelerated multi-part downloads (set HF_HUB_ENABLE_HF_TRANSFER=1)
+tqdm>=4.66.0
+
+# ── Utilities ─────────────────────────────────────────────────────────────
+requests>=2.31.0
