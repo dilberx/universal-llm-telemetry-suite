@@ -1,0 +1,21 @@
+# requirements-core.txt
+# ─────────────────────────────────────────────────────────────────────────────
+# Platform-agnostic core dependencies.
+# Works on: macOS ARM64 (M-series), Linux x86_64 (NVIDIA), Linux ARM64.
+#
+# Usage:
+#   pip install -r requirements-core.txt
+#
+# For NVIDIA hosts, also install: pip install pynvml
+# For Apple Silicon, use:         requirements-apple-silicon.txt (which includes this set)
+# ─────────────────────────────────────────────────────────────────────────────
+
+psutil>=5.9.8
+pandas>=2.1.0
+numpy>=1.26.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+huggingface_hub>=0.23.0
+hf_transfer>=0.1.6
+tqdm>=4.66.0
+requests>=2.31.0

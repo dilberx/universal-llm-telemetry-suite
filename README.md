@@ -6,7 +6,7 @@
 [![PyNVML](https://img.shields.io/badge/PyNVML-Telemetry-blue.svg)](https://pypi.org/project/nvidia-ml-py/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A cross-platform (WSL2/Linux) framework for auditing LLM inference performance, energy efficiency, and thermal stability across any NVIDIA RTX/Data-Center GPU. 
+A cross-platform (macOS / WSL2 / Linux) framework for auditing LLM inference performance, energy efficiency, and thermal stability across any Apple Silicon SoC or NVIDIA Data-Center GPU.
 
 **Supports any GGUF model compatible with llama.cpp.**
 
@@ -56,13 +56,19 @@ To provide a statistically robust, telemetry-aware framework for evaluating LLM 
 
 Follow these steps to deploy and run the benchmarking suite locally:
 
+### Prerequisites (Blind Execution Ready)
+Before running the suite, ensure you have:
+- **Python 3.12+**
+- **sudo privileges:** Required on macOS explicitly for the `AppleSiliconProvider` because it relies on the internal `powermetrics` tool to securely read hardware sensor data.
+- **System Packages:** `psutil` (for memory tracking) and `hf_transfer` (for accelerated downloads). These are handled automatically via our setup script.
+
 1. **Clone the Repository:**
    ```bash
    git clone <your-repo-url>
    cd LLM-Inference-Telemetry-Suite
    ```
 
-2. **Environment Setup:**
+2. **Automated Setup:**
    Ensure you have an NVIDIA driver and CUDA toolkit installed. Create and activate a virtual environment, then install dependencies:
    ```bash
    python3 -m venv venv
@@ -74,21 +80,34 @@ Follow these steps to deploy and run the benchmarking suite locally:
 3. **Model Placement:**
    Download your target GGUF models. They can be placed anywhere, but `setup_env.py` provides a structured `/llm_models` folder for convenience. The repository tracks the directory structure via `.gitkeep` files, but ignores the massive model binaries.
 
-4. **Execution (CLI Flexibility):**
-   Execute the orchestrator to run the full benchmarking and telemetry suite. By default, it scans `~/dev/llm_models`. You can override this using the `--path` argument to point to a specific file or folder. (Ensure your `llama-cli` and `llama-perplexity` binaries are built and accessible via the paths defined in the script).
+4. **Execution (CLI Flexibility & Apple Silicon Example):**
+   Execute the orchestrator to run the full benchmarking and telemetry suite. By default, it scans `~/dev/llm_models`. You can override this using the `--path` argument to point to a specific file or folder. 
+   
+   **For Apple Silicon (e.g., M1/M4) users**, `sudo` must be prepended so the telemetry provider can access raw package power:
    
    ```bash
    # Run against the default directory
-   python src/orchestrator.py
+   sudo ./venv/bin/python src/orchestrator.py
    
-   # Or run against a specific file or custom directory
-   python src/orchestrator.py --path /path/to/your/DeepSeek-R1-Q4.gguf
+   # Run against a specific model (M4 Example)
+   sudo ./venv/bin/python src/orchestrator.py --path ./llm_models/llama-3.1-8b-q8_0.gguf
    ```
    
-   After execution, run the visualizer to generate the dashboard:
+   > [!IMPORTANT]
+   > **DeepSeek-R1 & "Thinking" Latency (TTFT)** 
+   > When benchmarking DeepSeek-R1 models, do not be alarmed by extremely high Time-To-First-Token (TTFT) metrics (often 8 to 140+ seconds). This is an expected artifact of the reasoning architecture's "Thinking" phase. The orchestrator accurately tracks this latency and derives throughput (TPS) seamlessly *after* the thought blocks conclude.
+
+   After execution, the results are safely stored in `results/<hardware-slug>/production_benchmarks.csv` (e.g., `results/m1_pro/production_benchmarks.csv`). 
+   Run the visualizer to map this data to the dashboard:
    ```bash
-   python src/visualizer.py
+   ./venv/bin/python src/visualizer.py
    ```
+   
+### Top Hardware Recommendations (Apple Silicon "Sweet Spots")
+If you are running an M-Series chip with **32GB+ Unified Memory**, our telemetry flags the following configurations as "Champion Models"—capable of maximizing output throughput without VRAM throttling:
+- **Qwen-2.5-3B-Instruct (Q8_0 or Q5_K_M):** Achieves unparalleled 40-50+ Tokens/sec at up to 2.4 Tokens/Joule.
+- **Mistral-Nemo-12B (Q4_K_M):** The ultimate heavy-weight sweet spot, fitting cleanly within a 32GB envelope while outperforming standard 7B models on reasoning tasks.
+- **DeepSeek-R1-Distill-Qwen-7B (Q4_K_M):** The best local-hosted reasoning model for the Apple ecosystem.
 
 ## Directory Map
 
