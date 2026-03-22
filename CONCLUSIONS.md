@@ -21,4 +21,13 @@ When pushing the `Qwen-2.5-3B-Instruct-Q8_0` to the **8192 token context window*
 *   **On the M1 Pro 32GB:** The system seamlessly dynamically allocates up to ~22GB (macOS wire limit) directly to the GPU cores. The M1 Pro ran the Q8_0 model to completion without a single dropped iteration or swap slowdown, maintaining ~34 Tokens/sec.
 
 ### Conclusion 
-While a high-end discrete NVIDIA core (RTX 3080) can often brute-force higher raw throughput (Tokens/sec) on small contexts, **the Apple Silicon M1 Pro provides infinitely superior versatility.** Large context windows, heavily quantized "reasoning" models like DeepSeek-R1-7B, and Q8 precisions can all be loaded dynamically into the massive unified pool, completely negating the VRAM anxiety that plagues traditional 8GB and 10GB graphics cards.
+While a discrete NVIDIA GPU (RTX 3080) can brute-force higher raw throughput (Tokens/sec) on small contexts, **Apple Silicon with 32GB Unified Memory provides superior versatility and efficiency for real-world workloads.** Large context windows (8k+), high-precision Q8 models, and reasoning architectures like DeepSeek-R1-7B can all be loaded dynamically into the unified pool—workloads that immediately crash with OOM errors on the 10GB 3080.
+
+### By the Numbers
+
+| Metric | RTX 3080 (10GB) | M1 Pro (32GB UMA) |
+|---|---|---|
+| **Llama-3.1-8B Q8_0 @ 8k ctx** | ❌ OOM (requires ~13.7 GB) | ✅ ~22 T/s @ ~35W |
+| **Qwen-2.5-3B Q8_0 @ 8k ctx** | ❌ OOM (requires ~13.7 GB) | ✅ ~34 T/s |
+| **Qwen-3B Q4_K_M Peak T/J** | 0.9037 T/J | 2.40 T/J |
+| **Thermal Throttling** | None (SM ≥ 1440 MHz) | None (< 65°C) |

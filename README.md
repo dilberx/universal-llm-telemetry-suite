@@ -12,12 +12,13 @@ A cross-platform (macOS / WSL2 / Linux) framework for auditing LLM inference per
 
 ![Inference Dashboard](results/dashboard.png)
 
-## Key Findings (RTX 3080 Baseline)
-* **Qwen-3B Efficiency Win:** The Qwen-3B model quantized at Q4_K_M dominates the efficiency frontier, achieving a peak of **0.9037 Tokens per Joule (T/J)**.
-* **Thermal Stability:** Continuous inference over 10+ minute sustained loads showed no thermal throttling, with the SM clock reliably maintaining base speeds (1440+ MHz).
-* **Pareto Optimal Quantization:** Q4_K_M proves to be the ideal balance, heavily reducing VRAM footprint and memory bandwidth while maintaining acceptable perplexity.
+## Key Findings
+* **🏆 Unified Memory Champion (Apple Silicon):** The `Llama-3.1-8B-Instruct-Q8_0` leverages Apple's 32GB Unified Memory to deliver nearly lossless Q8 intelligence at ~22 T/s and only ~35W SoC power — a workload that instantly OOMs on the 10GB RTX 3080.
+* **⚡ Qwen-3B Efficiency Win (RTX 3080):** The Qwen-3B model quantized at Q4_K_M dominates the efficiency frontier, achieving a peak of **0.9037 Tokens per Joule (T/J)**.
+* **🌡️ Thermal Stability:** Continuous inference over 10+ minute sustained loads showed no thermal throttling on either platform. RTX 3080 SM clocks maintained 1440+ MHz; M1 Pro stayed below 65°C.
+* **📊 Pareto Optimal Quantization:** Q4_K_M proves to be the ideal balance, heavily reducing VRAM footprint and memory bandwidth while maintaining acceptable perplexity.
 
-[**👉 Submit Your Benchmarks**](#-global-hardware-performance-ledger) | [**📄 Read the Technical Paper (RESEARCH.md)**](RESEARCH.md)
+[**👉 Submit Your Benchmarks**](#-global-hardware-performance-ledger)
 
 ## 🏆 Global Hardware Performance Ledger
 
@@ -25,9 +26,11 @@ Help us map the Efficiency Frontier. Run this suite on your hardware and submit 
 
 **Reference Baseline:** High-fidelity baseline data for the **NVIDIA RTX 3080 (10GB)** is provided in the `results/reference_benchmarks/rtx_3080_baseline/` folder for comparative analysis.
 
-| GPU | VRAM | Architecture | Quant | Peak T/J | Contributor |
+| GPU | Memory | Architecture | Quant | Peak T/J | Contributor |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| NVIDIA RTX 3080 | 10GB | Qwen-3B | Q4_K_M | 0.9037 | @dilbersha |
+| Apple M1 Pro | 32GB UMA | Qwen-2.5-3B | Q5_K_M | 2.40 | @dilbersha |
+| Apple M1 Pro | 32GB UMA | Llama-3.1-8B | Q8_0 | 0.63 | @dilbersha |
+| NVIDIA RTX 3080 | 10GB VRAM | Qwen-3B | Q4_K_M | 0.9037 | @dilbersha |
 | Your GPU? | -- | -- | -- | -- | Submit PR! |
 
 ## Asynchronous Telemetry Flow
@@ -120,10 +123,6 @@ If you are running an M-Series chip with **32GB+ Unified Memory**, our telemetry
 
 ## Strategic Analysis
 
-For a deep dive into our findings on thermal throttling, the "Accuracy Cliff" of quantization, and the correlative framework between Perplexity and Execution Latency, please refer to our dedicated research document:
-
-**👉 [Read the Deep-Dive Thermal and Perplexity Analysis in RESEARCH.md](RESEARCH.md)**
-
 ### Architecture & Strategy Deep-Dive: A Senior Perspective
 
 Scaling local inference isn't just about raw FLOPS; it's an exercise in balancing memory bandwidth, thermal envelopes, and quantization heuristics. Evaluating the RTX 3080 (10GB GDDR6X, 8704 CUDA cores) gives us a perfect microcosm of the constraints engineering teams face when deploying models to edge devices or cost-optimized cloud instances. 
@@ -142,10 +141,10 @@ Scaling local inference isn't just about raw FLOPS; it's an exercise in balancin
     
     **Recommendation for High-Performance Inference Systems:** If you are an engineering team optimizing cloud expenditures, deploying an ensemble of highly-optimized, task-specific 3B models (using Q4 quantization) will literally halve your energy OpEx compared to a monolithic 7B deployment, while offering superior latency for real-time applications.
 
-## Scientific Methodology: Rigor & Reproducibility
+## Methodology: Rigor & Reproducibility
 
-To elevate this suite to the standards of rigorous analysis, we have hardened our telemetry and evaluation frameworks to ensure statistically significant and verifiable outcomes.
+Every number in this suite is reproducible. Here's how we ensure trustworthy results:
 
-*   **Statistical Significance:** A single benchmark run is highly susceptible to OS-level jitter and background process interruptions. To mitigate variance, our orchestrator performs $n \geq 10$ continuous iterations for each model/context configuration. We calculate the **95% Confidence Interval** for both Throughput (TPS) and VRAM allocation, ensuring our reported means are robust and statistically sound.
-*   **Accuracy vs. Speed Correlative Framework:** Speed is irrelevant if the model outputs noise. To quantify the "Accuracy Cliff" induced by aggressive quantization (e.g., dropping from Q8_0 to Q4_K_M), we integrated an automated **WikiText-2 Perplexity** test. By measuring Perplexity alongside TPS, we plot a deterministic frontier connecting logic retention (Accuracy) directly to execution latency and power draw.
-*   **Thermal Tracking & Throttling Analysis:** GPUs like the RTX 3080 feature aggressive dynamic clocking based on thermal headroom. We continuously poll both the GPU Temperature (°C) and SM Clock Speed (MHz). By logging this data into a unified time-series CSV (`thermal_log.csv`), we can mathematically verify if the GPU enters a thermal throttling state during sustained 30+ minute inference sessions, isolating whether performance degradation is an artifact of the model or thermal saturation.
+*   **10-Run Averaging with Confidence Intervals:** Each model/context configuration is benchmarked over 10 continuous iterations. We report the mean with **95% Confidence Intervals** for both Throughput (TPS) and memory allocation, filtering out OS-level jitter.
+*   **Accuracy vs. Speed Trade-off:** Speed is irrelevant if the model outputs noise. We integrate an automated **WikiText-2 Perplexity** test alongside TPS to quantify the accuracy degradation from aggressive quantization (e.g., Q8_0 → Q4_K_M).
+*   **Thermal Tracking:** We continuously poll GPU Temperature (°C) and clock speeds (MHz/SM Clock), logging into `thermal_log.csv`. This lets us verify whether performance degradation during sustained 30+ minute sessions is caused by the model or by thermal throttling.
