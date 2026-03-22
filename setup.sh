@@ -5,8 +5,8 @@ echo "🚀 Automating LLM-Inference-Telemetry-Suite Setup..."
 
 # 1. Create and Activate Virtual Environment
 if [ ! -d "venv" ]; then
-    echo "Creating Python 3.12 virtual environment..."
-    python3.12 -m venv venv
+    echo "Creating Python virtual environment..."
+    python3 -m venv venv
 else
     echo "Virtual environment already exists. Skipping creation."
 fi

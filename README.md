@@ -10,20 +10,23 @@ A cross-platform (macOS / WSL2 / Linux) framework for auditing LLM inference per
 
 **Supports any GGUF model compatible with llama.cpp.**
 
-![Inference Dashboard](results/dashboard.png)
-
 ### M1 Pro vs RTX 3080 — Cross-Platform Comparison
 ![M1 Pro vs RTX 3080 Comparison](docs/assets/m1_pro_vs_3080_comparison.png)
-> *Llama-3.1-8B-Q8_0 running at 8192 context (13.7GB usage). M1 Pro Unified Memory handles it; RTX 3080 (10GB) OOMs instantly.*
+> *Llama-3.1-8B Q8_0 at 8192 context (13.7GB). M1 Pro Unified Memory handles it; RTX 3080 (10GB) OOMs instantly. M1 Pro peaks at **2.42 Tokens/Joule** vs RTX 3080's 0.90 T/J — a 2.7× efficiency gap.*
 
+### Energy Efficiency Frontier
 ![Efficiency Frontier](docs/assets/efficiency_frontier.png)
-> *Tokens/Joule: The M1 Pro's ~35W SoC power delivers up to 6× higher energy efficiency than the RTX 3080's ~220W GPU.*
+> *Tokens/Joule × Throughput scatter. M1 Pro (~35W SoC) clusters 2–3× higher on efficiency; RTX 3080 (~220W GPU) wins raw throughput but burns 10–11× more power per inference.*
 
 ## Key Findings
 * **🏆 Unified Memory Champion (Apple Silicon):** The `Llama-3.1-8B-Instruct-Q8_0` leverages Apple's 32GB Unified Memory to deliver nearly lossless Q8 intelligence at ~22 T/s and only ~35W SoC power — a workload that instantly OOMs on the 10GB RTX 3080.
-* **⚡ Qwen-3B Efficiency Win (RTX 3080):** The Qwen-3B model quantized at Q4_K_M dominates the efficiency frontier, achieving a peak of **0.9037 Tokens per Joule (T/J)**.
+* **⚡ Qwen-3B Efficiency Win:** Qwen-2.5-3B Q4_K_M achieves **2.42 T/J on M1 Pro** and **0.90 T/J on RTX 3080** — dominating the efficiency frontier on both platforms.
 * **🌡️ Thermal Stability:** Continuous inference over 10+ minute sustained loads showed no thermal throttling on either platform. RTX 3080 SM clocks maintained 1440+ MHz; M1 Pro stayed below 65°C.
 * **📊 Pareto Optimal Quantization:** Q4_K_M proves to be the ideal balance, heavily reducing VRAM footprint and memory bandwidth while maintaining acceptable perplexity.
+
+### Single-GPU Reference Baseline
+![Inference Dashboard](results/dashboard.png)
+> *RTX 3080 standalone dashboard — all models tested at 512/2048/8192 context windows.*
 
 [**👉 Submit Your Benchmarks**](#-global-hardware-performance-ledger)
 
@@ -68,22 +71,34 @@ Follow these steps to deploy and run the benchmarking suite locally:
 
 ### Prerequisites (Blind Execution Ready)
 Before running the suite, ensure you have:
-- **Python 3.12+**
-- **sudo privileges:** Required on macOS explicitly for the `AppleSiliconProvider` because it relies on the internal `powermetrics` tool to securely read hardware sensor data.
-- **System Packages:** `psutil` (for memory tracking) and `hf_transfer` (for accelerated downloads). These are handled automatically via our setup script.
+- **Python 3.10+** (tested on 3.11–3.13)
+- **sudo privileges:** Required on macOS for the `AppleSiliconProvider` — it uses `powermetrics` to read SoC power data.
+- **llama.cpp:** Build from source with Metal (macOS) or CUDA (Linux) — see `setup_env.py` for step-by-step instructions.
 
 1. **Clone the Repository:**
    ```bash
-   git clone <your-repo-url>
-   cd LLM-Inference-Telemetry-Suite
+   git clone https://github.com/dilbersha/llm-inference-benchmarking-3080.git
+   cd llm-inference-benchmarking-3080
    ```
 
 2. **Automated Setup:**
-   Ensure you have an NVIDIA driver and CUDA toolkit installed. Create and activate a virtual environment, then install dependencies:
    ```bash
    python3 -m venv venv
    source venv/bin/activate
-   pip install -r requirements.txt
+   ```
+
+   > [!IMPORTANT]
+   > **macOS / Apple Silicon users:** The main `requirements.txt` is a Linux/CUDA freeze and will **not install** on ARM64. Use the Apple Silicon requirements instead:
+   > ```bash
+   > pip install -r requirements-apple-silicon.txt
+   > ```
+   > **Linux / NVIDIA users:** Use the full requirements:
+   > ```bash
+   > pip install -r requirements.txt
+   > ```
+
+   Then run the environment pre-flight check:
+   ```bash
    python src/setup_env.py
    ```
 

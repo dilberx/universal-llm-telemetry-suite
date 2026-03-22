@@ -88,47 +88,31 @@ class NvidiaProvider(TelemetryProvider):
 
     
     def _poll(self, model_name: str, thermal_log_csv: str) -> None:
-        # We add 'tasks' to the samplers to get better CPU/GPU breakdown
-        cmd = ["sudo", "powermetrics", "--samplers", "cpu_power,gpu_power,thermal", "-i", "500", "-f", "text"]
-        self._pm_proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-        
-        buffer = ""
+        pynvml = self._pynvml
+        handle = pynvml.nvmlDeviceGetHandleByIndex(self._gpu_index)
+
         with open(thermal_log_csv, mode="a", newline="") as f:
             writer = csv.writer(f)
-            for line in self._pm_proc.stdout:
-                if self._stop_event.is_set(): break
-                buffer += line
-                
-                if "*****" in line:
-                    p_watt = self._parse_power(buffer)
-                    t_c = self._parse_temp(buffer)
-                    m_mb = _available_memory_mb()
-                    
-                    if p_watt > 0: self._power_list.append(p_watt)
-                    if t_c > 0: self._temp_list.append(t_c)
-                    self._mem_peak_mb = max(self._mem_peak_mb, m_mb)
-                    
-                    writer.writerow([time.time(), model_name, m_mb, p_watt, t_c, 0.0])
-                    f.flush()
-                    buffer = "" # Reset buffer for next sample
+            while not self._stop_event.is_set():
+                try:
+                    mem   = pynvml.nvmlDeviceGetMemoryInfo(handle)
+                    power = pynvml.nvmlDeviceGetPowerUsage(handle) / 1000.0   # mW → W
+                    temp  = pynvml.nvmlDeviceGetTemperature(handle, pynvml.NVML_TEMPERATURE_GPU)
+                    clock = pynvml.nvmlDeviceGetClockInfo(handle, pynvml.NVML_CLOCK_SM)
 
-    def _parse_power(self, sample: str) -> float:
-        """Sum all power components if 'Package Power' isn't explicitly found."""
-        # 1. Primary: Package Power (Total SoC)
-        pkg = re.search(r"Package Power:\s*([\d.]+)\s*mW", sample)
-        if pkg: return float(pkg.group(1)) / 1000.0
-        
-        # 2. Fallback: Sum components
-        cpu = re.search(r"CPU Power:\s*([\d.]+)\s*mW", sample)
-        gpu = re.search(r"GPU Power:\s*([\d.]+)\s*mW", sample)
-        ane = re.search(r"ANE Power:\s*([\d.]+)\s*mW", sample)
-        
-        total_mw = 0.0
-        if cpu: total_mw += float(cpu.group(1))
-        if gpu: total_mw += float(gpu.group(1))
-        if ane: total_mw += float(ane.group(1))
-        
-        return total_mw / 1000.0
+                    vram_mb = mem.used / (1024 ** 2)
+                    self._vram_list.append(vram_mb)
+                    self._power_list.append(power)
+                    self._temp_list.append(float(temp))
+                    self._clock_list.append(float(clock))
+
+                    writer.writerow([time.time(), model_name, round(vram_mb, 2),
+                                     round(power, 2), temp, clock])
+                    f.flush()
+                except Exception:
+                    pass
+                self._stop_event.wait(0.5)
+
 
 # ---------------------------------------------------------------------------
 # AppleSiliconProvider (Metal/macOS)
