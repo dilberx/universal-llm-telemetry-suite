@@ -15,4 +15,10 @@ __pycache__/
 
 # Backup & Scratch
 *.bak.csv
+*.bak
+*.zip
+*.plist
 .pyre_configuration
+test_*.py
+scratch_*
+/tmp/
