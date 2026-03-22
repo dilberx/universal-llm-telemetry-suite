@@ -12,6 +12,13 @@ A cross-platform (macOS / WSL2 / Linux) framework for auditing LLM inference per
 
 ![Inference Dashboard](results/dashboard.png)
 
+### M1 Pro vs RTX 3080 — Cross-Platform Comparison
+![M1 Pro vs RTX 3080 Comparison](docs/assets/m1_pro_vs_3080_comparison.png)
+> *Llama-3.1-8B-Q8_0 running at 8192 context (13.7GB usage). M1 Pro Unified Memory handles it; RTX 3080 (10GB) OOMs instantly.*
+
+![Efficiency Frontier](docs/assets/efficiency_frontier.png)
+> *Tokens/Joule: The M1 Pro's ~35W SoC power delivers up to 6× higher energy efficiency than the RTX 3080's ~220W GPU.*
+
 ## Key Findings
 * **🏆 Unified Memory Champion (Apple Silicon):** The `Llama-3.1-8B-Instruct-Q8_0` leverages Apple's 32GB Unified Memory to deliver nearly lossless Q8 intelligence at ~22 T/s and only ~35W SoC power — a workload that instantly OOMs on the 10GB RTX 3080.
 * **⚡ Qwen-3B Efficiency Win (RTX 3080):** The Qwen-3B model quantized at Q4_K_M dominates the efficiency frontier, achieving a peak of **0.9037 Tokens per Joule (T/J)**.
