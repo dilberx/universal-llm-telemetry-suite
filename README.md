@@ -170,3 +170,50 @@ Every number in this suite is reproducible. Here's how we ensure trustworthy res
 *   **10-Run Averaging with Confidence Intervals:** Each model/context configuration is benchmarked over 10 continuous iterations. We report the mean with **95% Confidence Intervals** for both Throughput (TPS) and memory allocation, filtering out OS-level jitter.
 *   **Accuracy vs. Speed Trade-off:** Speed is irrelevant if the model outputs noise. We integrate an automated **WikiText-2 Perplexity** test alongside TPS to quantify the accuracy degradation from aggressive quantization (e.g., Q8_0 → Q4_K_M).
 *   **Thermal Tracking:** We continuously poll GPU Temperature (°C) and clock speeds (MHz/SM Clock), logging into `thermal_log.csv`. This lets us verify whether performance degradation during sustained 30+ minute sessions is caused by the model or by thermal throttling.
+
+---
+
+## 🤝 Contributing: Add Your Hardware to the Frontier
+
+This is a **living benchmark**. The M1 Pro vs RTX 3080 data is the baseline — we need the community to map the full efficiency frontier across hardware generations.
+
+### How to Submit Your Results
+
+1. **Run the suite on your hardware:**
+   ```bash
+   sudo ./venv/bin/python src/orchestrator.py --path ./llm_models/
+   ```
+
+2. **Sanitize local paths** (strips your username from CSV output):
+   ```bash
+   python src/sanitize_paths.py
+   ```
+
+3. **Submit a Pull Request** with:
+   - Your `results/<hardware-slug>/production_benchmarks.csv`
+   - Your `results/<hardware-slug>/thermal_log.csv`
+   - A one-line addition to the **Hardware Performance Ledger** table in this README
+
+### Hardware We're Looking For
+
+| Priority | Hardware | Why |
+|---|---|---|
+| 🔥 High | **M4 Max / M4 Ultra** | Unified Memory scaling beyond 32GB — does 64/128GB UMA shift the frontier? |
+| 🔥 High | **RTX 4090 / 5090** | 24GB VRAM baseline — can discrete GPU close the T/J gap? |
+| 🟡 Medium | **RTX 3060 12GB / 3090 24GB** | VRAM-to-efficiency trade-off within the same GPU generation |
+| 🟡 Medium | **AMD RX 7900 XTX** | ROCm/Vulkan efficiency comparison |
+| 🟢 Welcome | **Any M-series chip** | M1/M2/M3/M4 variants build the Apple Silicon scaling curve |
+
+### Naming Convention
+
+The orchestrator auto-generates your hardware slug from `gpu_name`. Examples:
+- `results/m1_pro/` → Apple M1 Pro
+- `results/rtx_3080/` → NVIDIA RTX 3080
+- `results/m4_max/` → Apple M4 Max
+
+> [!TIP]
+> Set `HF_HUB_ENABLE_HF_TRANSFER=1` before running `download_models.py` for 5–10× faster model downloads.
+
+## License
+
+[MIT](LICENSE)
