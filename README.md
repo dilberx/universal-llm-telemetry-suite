@@ -10,25 +10,25 @@ A cross-platform (macOS / WSL2 / Linux) framework for auditing LLM inference per
 
 **Supports any GGUF model compatible with llama.cpp.**
 
-### M1 Pro vs RTX 3080 — Cross-Platform Comparison
-![M1 Pro vs RTX 3080 Comparison](docs/assets/m1_pro_vs_3080_comparison.png)
-> *Llama-3.1-8B Q8_0 at 8192 context (13.7GB). M1 Pro Unified Memory handles it; RTX 3080 (10GB) OOMs instantly. M1 Pro peaks at **2.42 Tokens/Joule** vs RTX 3080's 0.90 T/J — a 2.7× efficiency gap.*
+## Results at a Glance
 
-### Energy Efficiency Frontier
+![M1 Pro vs RTX 3080 Comparison](docs/assets/m1_pro_vs_3080_comparison.png)
+> **13.7GB workload: RTX 3080 OOMs, M1 Pro cruises.** Llama-3.1-8B Q8_0 at 8192 context needs 13.7GB. The 3080's 10GB VRAM can't start it. The M1 Pro's 32GB Unified Memory runs it at 22 t/s while sipping 35W.
+
 ![Efficiency Frontier](docs/assets/efficiency_frontier.png)
-> *Tokens/Joule × Throughput scatter. M1 Pro (~35W SoC) clusters 2–3× higher on efficiency; RTX 3080 (~220W GPU) wins raw throughput but burns 10–11× more power per inference.*
+> **2.42 Tokens/Joule vs 0.90 T/J.** M1 Pro (~35W) clusters 2–3× higher on energy efficiency. The 3080 (~220W) wins raw speed but burns 10–11× more power per token.
+
+![Inference Dashboard](results/dashboard.png)
+> **Full 10-run telemetry with 95% CI.** RTX 3080 standalone dashboard across 512/2048/8192 context windows. Audit the raw CSVs in [`results/`](results/).
 
 ## Key Findings
-* **🏆 Unified Memory Champion (Apple Silicon):** The `Llama-3.1-8B-Instruct-Q8_0` leverages Apple's 32GB Unified Memory to deliver nearly lossless Q8 intelligence at ~22 T/s and only ~35W SoC power — a workload that instantly OOMs on the 10GB RTX 3080.
-* **⚡ Qwen-3B Efficiency Win:** Qwen-2.5-3B Q4_K_M achieves **2.42 T/J on M1 Pro** and **0.90 T/J on RTX 3080** — dominating the efficiency frontier on both platforms.
-* **🌡️ Thermal Stability:** Continuous inference over 10+ minute sustained loads showed no thermal throttling on either platform. RTX 3080 SM clocks maintained 1440+ MHz; M1 Pro stayed below 65°C.
-* **📊 Pareto Optimal Quantization:** Q4_K_M proves to be the ideal balance, heavily reducing VRAM footprint and memory bandwidth while maintaining acceptable perplexity.
+* **🏆 Unified Memory Champion:** `Llama-3.1-8B-Q8_0` at 8192 ctx — 13.7GB on M1 Pro at 22 t/s and 35W. The same workload OOMs on the RTX 3080.
+* **⚡ Efficiency:** Qwen-2.5-3B Q4_K_M hits **2.42 T/J** on M1 Pro vs **0.90 T/J** on RTX 3080.
+* **🌡️ Thermal:** 10+ minute sustained loads, no throttling. 3080 held 1440+ MHz SM clocks; M1 Pro stayed under 65°C.
+* **📊 Quantization:** Q4_K_M is the Pareto sweet spot — lowest VRAM footprint with acceptable perplexity.
 
-### Single-GPU Reference Baseline
-![Inference Dashboard](results/dashboard.png)
-> *RTX 3080 standalone dashboard — all models tested at 512/2048/8192 context windows.*
+[**→ Submit Your Benchmarks**](#-global-hardware-performance-ledger)
 
-[**👉 Submit Your Benchmarks**](#-global-hardware-performance-ledger)
 
 ## 🏆 Global Hardware Performance Ledger
 
