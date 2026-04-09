@@ -333,7 +333,7 @@ def main() -> None:
     parser.add_argument(
         "--path",
         type=str,
-        default=os.path.expanduser("~/dev/llm_models"),
+        default="./llm_models",
         help="Path to a .gguf file or directory of models.",
     )
     parser.add_argument(
