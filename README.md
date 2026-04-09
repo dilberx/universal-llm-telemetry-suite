@@ -1,9 +1,8 @@
 # LLM-Inference-Telemetry-Suite: Hardware-Aware Performance & Efficiency Benchmarking
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![CUDA](https://img.shields.io/badge/CUDA-Enabled-76B900.svg)](https://developer.nvidia.com/cuda-zone)
-[![NVIDIA](https://img.shields.io/badge/NVIDIA-RTX-76B900.svg)](https://www.nvidia.com/)
-[![PyNVML](https://img.shields.io/badge/PyNVML-Telemetry-blue.svg)](https://pypi.org/project/nvidia-ml-py/)
+[![Apple Silicon](https://img.shields.io/badge/Apple_Silicon-M1–M4-black.svg)](https://support.apple.com/en-us/116943)
+[![NVIDIA CUDA](https://img.shields.io/badge/NVIDIA-CUDA-76B900.svg)](https://developer.nvidia.com/cuda-zone)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A cross-platform (macOS / WSL2 / Linux) framework for auditing LLM inference performance, energy efficiency, and thermal stability across any Apple Silicon SoC or NVIDIA Data-Center GPU.
@@ -17,6 +16,8 @@ A cross-platform (macOS / WSL2 / Linux) framework for auditing LLM inference per
 
 ![Efficiency Frontier](docs/assets/efficiency_frontier.png)
 > **2.42 Tokens/Joule vs 0.90 T/J.** M1 Pro (~35W) clusters 2–3× higher on energy efficiency. The 3080 (~220W) wins raw speed but burns 10–11× more power per token.
+
+> **⚠️ Power methodology note:** Apple Silicon wattage is whole-SoC power (CPU + GPU + memory controller) reported by `powermetrics`. NVIDIA wattage is GPU board power (TBP) reported by `pynvml`. These are the industry-standard measurements for each platform — we report exactly what each vendor's API provides, but the numbers are not directly comparable.
 
 ![Inference Dashboard](results/dashboard.png)
 > **Full 10-run telemetry with 95% CI.** RTX 3080 standalone dashboard across 512/2048/8192 context windows. Audit the raw CSVs in [`results/`](results/).
@@ -102,11 +103,19 @@ Before running the suite, ensure you have:
    python src/setup_env.py
    ```
 
-3. **Model Placement:**
-   Download your target GGUF models. They can be placed anywhere, but `setup_env.py` provides a structured `/llm_models` folder for convenience. The repository tracks the directory structure via `.gitkeep` files, but ignores the massive model binaries.
+3. **Model Preparation:**
+   Download the benchmark model set (Qwen-3B, Mistral-7B, Llama-3.1-8B, etc.):
+   ```bash
+   # Preview what will be downloaded and disk space needed:
+   python src/download_models.py --dry-run
+
+   # Download all models (~25GB total):
+   HF_HUB_ENABLE_HF_TRANSFER=1 python src/download_models.py
+   ```
+   Models land in `llm_models/<family>/`. You can also point the orchestrator at any `.gguf` file or directory with `--path`.
 
 4. **Execution (CLI Flexibility & Apple Silicon Example):**
-   Execute the orchestrator to run the full benchmarking and telemetry suite. By default, it scans `~/dev/llm_models`. You can override this using the `--path` argument to point to a specific file or folder. 
+   The orchestrator scans `./llm_models` by default. Override with `--path` to point at any `.gguf` file or directory. Use `--dry-run` to validate your setup without running inference.
    
    **For Apple Silicon (e.g., M1/M4) users**, `sudo` must be prepended so the telemetry provider can access raw package power:
    
@@ -145,7 +154,7 @@ If you are running an M-Series chip with **32GB+ Unified Memory**, our telemetry
 
 ## Strategic Analysis
 
-### Architecture & Strategy Deep-Dive: A Senior Perspective
+### Implementation Strategy & Design Rationale
 
 Scaling local inference isn't just about raw FLOPS; it's an exercise in balancing memory bandwidth, thermal envelopes, and quantization heuristics. Evaluating the RTX 3080 (10GB GDDR6X, 8704 CUDA cores) gives us a perfect microcosm of the constraints engineering teams face when deploying models to edge devices or cost-optimized cloud instances. 
 
