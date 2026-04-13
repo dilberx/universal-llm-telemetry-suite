@@ -215,19 +215,97 @@ class AppleSiliconProvider(TelemetryProvider):
                     except Exception:
                         pass
 
+# ---------------------------------------------------------------------------
+# ROCmProvider (AMD — Planned)
+# ---------------------------------------------------------------------------
+class ROCmProvider(TelemetryProvider):
+    """
+    Placeholder for AMD ROCm telemetry (RDNA3+, MI-series).
+
+    Implementation will use `rocm-smi` or `pyrsmi` for:
+      - GPU power (average board power via rsmi_dev_power_ave_get)
+      - VRAM usage (rsmi_dev_memory_usage_get)
+      - Temperature (rsmi_dev_temp_metric_get, junction/edge)
+      - Clock speeds (rsmi_dev_gpu_clk_freq_get, SCLK)
+
+    To contribute: implement _poll() following NvidiaProvider's pattern.
+    """
+    def get_hardware_info(self) -> dict:
+        raise NotImplementedError("ROCmProvider: AMD ROCm telemetry not yet implemented. PRs welcome — see README Roadmap.")
+    def get_cli_flags(self) -> list[str]:
+        return ["--no-conversation", "--single-turn", "--log-disable"]
+    def start(self, model_name: str, thermal_log_csv: str) -> None:
+        raise NotImplementedError("ROCmProvider: AMD ROCm telemetry not yet implemented.")
+    def stop(self) -> dict:
+        raise NotImplementedError("ROCmProvider: AMD ROCm telemetry not yet implemented.")
+
+
+# ---------------------------------------------------------------------------
+# IntelProvider (Arc / Gaudi — Planned)
+# ---------------------------------------------------------------------------
+class IntelProvider(TelemetryProvider):
+    """
+    Placeholder for Intel Arc (SYCL/oneAPI) and Gaudi accelerator telemetry.
+
+    Implementation will use `xpu-smi` or Intel's Level Zero API for:
+      - GPU power (xpu-smi dump -m 0,1)
+      - VRAM / shared memory usage
+      - Temperature (package/GPU tile)
+      - Clock speeds (GPU frequency)
+
+    Intel's shared memory architecture on Arc GPUs offers a different
+    take on unified memory — cross-platform analysis with Apple UMA
+    is a key research goal.
+
+    To contribute: implement _poll() following NvidiaProvider's pattern.
+    """
+    def get_hardware_info(self) -> dict:
+        raise NotImplementedError("IntelProvider: Intel Arc/Gaudi telemetry not yet implemented. PRs welcome — see README Roadmap.")
+    def get_cli_flags(self) -> list[str]:
+        return ["--no-conversation", "--single-turn", "--log-disable"]
+    def start(self, model_name: str, thermal_log_csv: str) -> None:
+        raise NotImplementedError("IntelProvider: Intel Arc/Gaudi telemetry not yet implemented.")
+    def stop(self) -> dict:
+        raise NotImplementedError("IntelProvider: Intel Arc/Gaudi telemetry not yet implemented.")
+
+
+# ---------------------------------------------------------------------------
+# NullProvider (CPU-only fallback)
+# ---------------------------------------------------------------------------
 class NullProvider(TelemetryProvider):
     def get_hardware_info(self) -> dict: return {"gpu_name": "CPU", "total_vram_gb": 0.0, "memory_type": "none", "isolation_level": "none", "base_clock_mhz": 0.0}
     def get_cli_flags(self) -> list[str]: return ["--no-conversation", "--single-turn"]
     def start(self, model_name: str, thermal_log_csv: str) -> None: pass
     def stop(self) -> dict: return {"max_vram_mb": 0.0, "avg_power_watts": 0.0, "avg_temp_c": 0.0, "avg_clock_mhz": 0.0}
 
+
 def detect_provider(gpu_index: int = 0) -> TelemetryProvider:
-    if sys.platform == "darwin" and platform.machine() == "arm64": return AppleSiliconProvider()
+    """Auto-detect hardware and return the appropriate TelemetryProvider."""
+    # 1. Apple Silicon (macOS ARM64)
+    if sys.platform == "darwin" and platform.machine() == "arm64":
+        return AppleSiliconProvider()
+    # 2. NVIDIA (CUDA via pynvml)
     try:
         import pynvml
         pynvml.nvmlInit()
         return NvidiaProvider(gpu_index)
-    except: return NullProvider()
+    except Exception:
+        pass
+    # 3. AMD ROCm (future — uncomment when ROCmProvider is implemented)
+    # try:
+    #     from pyrsmi import rocml
+    #     rocml.smi_initialize()
+    #     return ROCmProvider(gpu_index)
+    # except Exception:
+    #     pass
+    # 4. Intel Arc/Gaudi (future — uncomment when IntelProvider is implemented)
+    # try:
+    #     # Detection via xpu-smi or level_zero
+    #     return IntelProvider()
+    # except Exception:
+    #     pass
+    # 5. CPU-only fallback
+    return NullProvider()
 
 def _safe_mean(v): return sum(v)/len(v) if v else 0.0
 def _apple_chip_name():

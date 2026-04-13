@@ -9,7 +9,7 @@ A cross-platform (macOS / WSL2 / Linux) framework for auditing LLM inference per
 
 **Supports any GGUF model compatible with llama.cpp.**
 
-## Results at a Glance
+## Reference Baselines: The Efficiency Gap
 
 ![M1 Pro vs RTX 3080 Comparison](docs/assets/m1_pro_vs_3080_comparison.png)
 > **13.7GB workload: RTX 3080 OOMs, M1 Pro cruises.** Llama-3.1-8B Q8_0 at 8192 context needs 13.7GB. The 3080's 10GB VRAM can't start it. The M1 Pro's 32GB Unified Memory runs it at 22 t/s while sipping 35W.
@@ -33,7 +33,7 @@ A cross-platform (macOS / WSL2 / Linux) framework for auditing LLM inference per
 
 ## 🏆 Global Hardware Performance Ledger
 
-Help us map the Efficiency Frontier. Run this suite on your hardware and submit a Pull Request with your CSV to be featured in the global hardware rankings. The orchestrator automatically extracts your GPU architecture and VRAM capacity to add to the master ledger.
+Help us map the Universal Efficiency Frontier — across Apple Silicon, NVIDIA, AMD, and Intel. Run this suite on your hardware and submit a Pull Request with your CSV to be featured in the global hardware rankings. The orchestrator automatically extracts your GPU architecture and VRAM capacity to add to the master ledger.
 
 **Reference Baseline:** High-fidelity baseline data for the **NVIDIA RTX 3080 (10GB)** is provided in the `results/reference_benchmarks/rtx_3080_baseline/` folder for comparative analysis.
 
@@ -182,9 +182,9 @@ Every number in this suite is reproducible. Here's how we ensure trustworthy res
 
 ---
 
-## 🤝 Contributing: Add Your Hardware to the Frontier
+## 🤝 Contributing: Map the Universal Efficiency Frontier
 
-This is a **living benchmark**. The M1 Pro vs RTX 3080 data is the baseline — we need the community to map the full efficiency frontier across hardware generations.
+This is a **living benchmark**. The M1 Pro vs RTX 3080 data is the reference baseline — we need the community to map the efficiency of **all silicon**: M5, Blackwell, ROCm, and Arc. Every new hardware submission pushes the frontier forward.
 
 ### How to Submit Your Results
 
@@ -207,21 +207,38 @@ This is a **living benchmark**. The M1 Pro vs RTX 3080 data is the baseline — 
 
 | Priority | Hardware | Why |
 |---|---|---|
-| 🔥 High | **M4 Max / M4 Ultra** | Unified Memory scaling beyond 32GB — does 64/128GB UMA shift the frontier? |
-| 🔥 High | **RTX 4090 / 5090** | 24GB VRAM baseline — can discrete GPU close the T/J gap? |
-| 🟡 Medium | **RTX 3060 12GB / 3090 24GB** | VRAM-to-efficiency trade-off within the same GPU generation |
-| 🟡 Medium | **AMD RX 7900 XTX** | ROCm/Vulkan efficiency comparison |
-| 🟢 Welcome | **Any M-series chip** | M1/M2/M3/M4 variants build the Apple Silicon scaling curve |
+| 🔴 Critical | **Apple M5 Max / M5 Ultra** | Next-gen Unified Memory — does the M5 set a new efficiency ceiling? |
+| 🔴 Critical | **NVIDIA RTX 5090 / B200 (Blackwell)** | Blackwell architecture — can next-gen discrete GPU close the T/J gap? |
+| 🔥 High | **AMD RX 9070 XT / MI300X** | ROCm efficiency on consumer and data-center AMD silicon |
+| 🔥 High | **Intel Arc B580 / Gaudi 3** | Arc (SYCL/oneAPI) and Gaudi accelerator efficiency profiling |
+| 🟡 Medium | **RTX 4090 / RTX 3090 24GB** | VRAM-to-efficiency trade-off across NVIDIA generations |
+| 🟢 Welcome | **Any M-series chip** | M1/M2/M3/M4/M5 variants build the Apple Silicon scaling curve |
+| 🟢 Welcome | **Any AMD/Intel GPU** | ROCm and Arc data points expand the cross-vendor frontier |
 
 ### Naming Convention
 
 The orchestrator auto-generates your hardware slug from `gpu_name`. Examples:
 - `results/m1_pro/` → Apple M1 Pro
 - `results/rtx_3080/` → NVIDIA RTX 3080
-- `results/m4_max/` → Apple M4 Max
+- `results/m5_max/` → Apple M5 Max
+- `results/rx_9070_xt/` → AMD RX 9070 XT
+- `results/arc_b580/` → Intel Arc B580
 
 > [!TIP]
 > Set `HF_HUB_ENABLE_HF_TRANSFER=1` before running `download_models.py` for 5–10× faster model downloads.
+
+## 🗺️ Roadmap
+
+| Status | Feature | Details |
+|---|---|---|
+| ✅ Done | NVIDIA CUDA Provider | `NvidiaProvider` — pynvml telemetry (power, temp, VRAM, SM clock) |
+| ✅ Done | Apple Silicon Provider | `AppleSiliconProvider` — `powermetrics` plist parsing (whole-SoC power) |
+| 🔜 Planned | **AMD ROCm Provider** | `ROCmProvider` — `rocm-smi` power/temp/VRAM polling for RDNA3+ and MI-series |
+| 🔜 Planned | **Intel Arc/Gaudi Provider** | `IntelProvider` — `xpu-smi` / oneAPI telemetry for Arc discrete GPUs and Gaudi accelerators |
+| 🔜 Planned | **Shared Memory Architecture** | Support for Intel's unified memory model alongside Apple UMA for cross-platform memory-pressure analysis |
+
+> [!NOTE]
+> The `TelemetryProvider` ABC in `providers.py` is designed for exactly this kind of extension — adding a new hardware backend is ~100 LOC implementing `get_hardware_info()`, `start()`, `stop()`, and `get_cli_flags()`.
 
 ## License
 
