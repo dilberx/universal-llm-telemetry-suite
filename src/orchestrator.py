@@ -203,7 +203,7 @@ def run_benchmark(
     tokens_per_joule = (tokens_per_sec / avg_power) if avg_power > 0 else 0.0
     family = detect_model_family(model_name)
     
-    # Accurate Cold Start: latancy minus the actual inference time
+    # Accurate Cold Start: latency minus the actual inference time
     cold_start_sec = max(0.0, latency - (200 / tokens_per_sec)) if tokens_per_sec > 0 else 0.0
 
     return {
