@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "llm-bench"
+version = "0.2.0"
+description = "Figure out which LLM inference optimizations actually work on your GPU"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [{name = "dilbersha"}]
+keywords = ["llm", "inference", "benchmark", "optimization", "kv-cache", "quantization"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "torch>=2.0",
+    "numpy>=1.24",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+full = [
+    "transformers>=4.36",
+    "huggingface_hub>=0.20",
+]
+
+[project.scripts]
+llm-bench = "llm_bench.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/dilbersha/llm-inference-benchmark"
+Repository = "https://github.com/dilbersha/llm-inference-benchmark"
+Issues = "https://github.com/dilbersha/llm-inference-benchmark/issues"
+
+[tool.setuptools.packages.find]
+include = ["llm_bench*", "src*"]

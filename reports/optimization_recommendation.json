@@ -1,0 +1,62 @@
+{
+  "hardware": {
+    "vram_gb": 10.0,
+    "model_params_b": 7.0,
+    "model_mem_fp16_gb": 14.0,
+    "headroom_gb": -4.0,
+    "pressure": "high"
+  },
+  "stack": [
+    {
+      "technique": "INT4 Quantization",
+      "setting": "GPTQ/AWQ INT4",
+      "quality_cost": 0.001,
+      "speedup": 2.0,
+      "memory_savings_pct": 50,
+      "evidence": "216 trials: INT4 retains 0.999 cosine similarity. Layers L0,L4,L8,L12 are fragile \u2014 keep at FP16 if quality matters.",
+      "risk": "Low \u2014 only fragile layers (every 4th) need monitoring"
+    },
+    {
+      "technique": "KV Cache Eviction (H2O)",
+      "setting": "H2O with 30% budget",
+      "quality_cost": 0.225,
+      "speedup": 1.2658227848101264,
+      "memory_savings_pct": 70,
+      "evidence": "960 trials on real Qwen2.5-0.5B: H2O retains 78% quality. Window-based (StreamingLLM) only retains 11% at same budget. DO NOT use window eviction \u2014 it's 7-65\u00d7 worse on real attention.",
+      "risk": "Medium \u2014 quality degrades on layers 0-2 (early layers need full context)"
+    },
+    {
+      "technique": "Attention Head Pruning",
+      "setting": "Remove 25% lowest-entropy heads",
+      "quality_cost": 0.02,
+      "speedup": 1.14,
+      "memory_savings_pct": 5,
+      "evidence": "39 trials: quality cliff at 5% pruning, then plateau from 25-80%. Most heads are redundant \u2014 but the first few matter a lot.",
+      "risk": "Low \u2014 avoid pruning below 25% (quality cliff region)"
+    },
+    {
+      "technique": "Adaptive Token Confidence",
+      "setting": "Skip sampling when top_prob > 0.90",
+      "quality_cost": 0.0,
+      "speedup": 1.1,
+      "memory_savings_pct": 0,
+      "evidence": "976 trials on real model: reasoning tasks = 87% skip rate, code = 50%, creative = 13%, translation = 0%. Use task-aware thresholds, not a single global threshold.",
+      "risk": "None for argmax-safe tokens. WARNING: do NOT trust entropy as quality predictor \u2014 our data shows confident-but-wrong is common on small models."
+    },
+    {
+      "technique": "KV Cache CPU Offloading",
+      "setting": "Pinned memory + async transfers",
+      "quality_cost": 0.0,
+      "speedup": 0.85,
+      "memory_savings_pct": 30,
+      "evidence": "36 trials: pinned memory gives 24.4 GB/s vs 9.5 GB/s paged (2.6\u00d7 faster). A 500MB KV cache offloads in 20ms pinned vs 57ms paged.",
+      "risk": "Adds latency. Only use when VRAM is actually full."
+    }
+  ],
+  "expected_quality": 0.581,
+  "expected_speedup": 2.7,
+  "expected_memory_savings_pct": 80,
+  "warnings": [
+    "These estimates assume optimizations compose multiplicatively (confirmed in 108 stacking trials). No cancellation observed."
+  ]
+}

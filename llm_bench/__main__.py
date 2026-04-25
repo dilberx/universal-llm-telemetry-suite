@@ -274,10 +274,17 @@ def main():
     # run
     run_parser = subparsers.add_parser("run", help="Run benchmark experiments")
     run_parser.add_argument("--experiment", "-e", default="all",
-                            choices=["all", "kv_cache", "token_confidence", "head_pruning"],
+                            choices=["all", "kv_cache", "token_confidence", "head_pruning",
+                                     "real_model", "stacking", "routing", "entropy_quality"],
                             help="Which experiment to run")
     run_parser.add_argument("--device", default=None, help="Override device (cuda/cpu/mps)")
     run_parser.add_argument("--model", choices=list(MODELS.keys()), help="Override model")
+
+    # optimize
+    opt_parser = subparsers.add_parser("optimize", help="Get optimization recommendations for your hardware")
+    opt_parser.add_argument("--vram", type=float, default=None, help="VRAM in GB (auto-detected if omitted)")
+    opt_parser.add_argument("--params", type=float, default=0.5, help="Model size in billions (default: 0.5)")
+    opt_parser.add_argument("--priority", choices=["speed", "quality", "balanced"], default="balanced")
 
     # charts
     subparsers.add_parser("charts", help="Generate charts from existing data")
@@ -358,9 +365,22 @@ def main():
 
         print("\n✅ Benchmark complete! Results in ./reports/")
 
+    elif args.command == "optimize":
+        from llm_bench.optimizer import run_optimize
+        run_optimize(vram_gb=args.vram, model_params_b=args.params, priority=args.priority)
+
     elif args.command == "charts":
         from src.experiments.visualize import generate_all_charts
         generate_all_charts()
+        # Also generate real model charts
+        try:
+            from src.experiments.visualize_real import generate_real_model_charts
+            import glob
+            files = sorted(glob.glob("reports/experiments/real_model_analysis_*.json"))
+            if files:
+                generate_real_model_charts(files[-1])
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
