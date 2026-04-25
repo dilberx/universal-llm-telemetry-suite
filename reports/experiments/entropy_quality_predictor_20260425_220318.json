@@ -1,0 +1,623 @@
+{
+  "experiment": "entropy_quality_predictor",
+  "description": "Tests whether attention entropy during generation predicts output quality. If it does, you get free quality monitoring without running evaluations.",
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_vram_mb": 10239.375,
+    "gpu_driver": "576.88",
+    "cuda_version": "12.8",
+    "cpu_name": "x86_64",
+    "cpu_cores": 16,
+    "ram_gb": 15.6,
+    "python_version": "3.10.12",
+    "torch_version": "2.10.0+cu128",
+    "os_info": "Linux 6.6.87.2-microsoft-standard-WSL2"
+  },
+  "timestamp": "2026-04-25T22:03:18.304968",
+  "total_duration_seconds": 31.920899391174316,
+  "seed": 42,
+  "num_trials": 20,
+  "trials": [
+    {
+      "trial_id": "entropy_quality_predictor_t0001",
+      "config": {
+        "prompt": "math_1",
+        "prompt_type": "factual",
+        "input_len": 8,
+        "has_ground_truth": true
+      },
+      "config_hash": "ab7140e437fb",
+      "metrics": {
+        "quality_score": 0.0,
+        "output_len": 21,
+        "avg_token_entropy": 0.672882413569217,
+        "max_token_entropy": 3.131649971008301,
+        "min_token_entropy": 0.00021073449170216918,
+        "entropy_variance": 0.6449682241090278,
+        "entropy_drift": 0.1852556871483103,
+        "avg_top_prob": 0.7870612959067027,
+        "min_top_prob": 0.2981371581554413,
+        "avg_attention_entropy": 0.6247318958242735,
+        "avg_attention_sparsity": 0.4348958320915699,
+        "confidence_signal": 0.7401368695575123
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:02:52.026739",
+      "end_time": "2026-04-25T22:02:52.026762",
+      "duration_seconds": 1.2814001820515841e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0002",
+      "config": {
+        "prompt": "math_2",
+        "prompt_type": "factual",
+        "input_len": 11,
+        "has_ground_truth": true
+      },
+      "config_hash": "861d8945adba",
+      "metrics": {
+        "quality_score": 1.0,
+        "output_len": 22,
+        "avg_token_entropy": 0.6191967430495424,
+        "max_token_entropy": 2.788323402404785,
+        "min_token_entropy": 0.0001618789683561772,
+        "entropy_variance": 0.4810629342634422,
+        "entropy_drift": 0.1427814095494493,
+        "avg_top_prob": 0.8039111018180847,
+        "min_top_prob": 0.395932674407959,
+        "avg_attention_entropy": 0.7337337074180444,
+        "avg_attention_sparsity": 0.38387937905887765,
+        "confidence_signal": 0.7415796221378452
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:02:53.521542",
+      "end_time": "2026-04-25T22:02:53.521568",
+      "duration_seconds": 1.3485001545632258e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0003",
+      "config": {
+        "prompt": "math_3",
+        "prompt_type": "factual",
+        "input_len": 10,
+        "has_ground_truth": true
+      },
+      "config_hash": "cb3278df02f5",
+      "metrics": {
+        "quality_score": 0.0,
+        "output_len": 19,
+        "avg_token_entropy": 0.4888388561215834,
+        "max_token_entropy": 3.1010091304779053,
+        "min_token_entropy": 9.38740122364834e-05,
+        "entropy_variance": 0.6159000107803566,
+        "entropy_drift": 0.20801081857352988,
+        "avg_top_prob": 0.8561796287695567,
+        "min_top_prob": 0.30132412910461426,
+        "avg_attention_entropy": 0.7243340648710728,
+        "avg_attention_sparsity": 0.40455357171595097,
+        "confidence_signal": 0.7796701973606734
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:02:55.062219",
+      "end_time": "2026-04-25T22:02:55.062243",
+      "duration_seconds": 1.1771997378673404e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0004",
+      "config": {
+        "prompt": "math_4",
+        "prompt_type": "factual",
+        "input_len": 10,
+        "has_ground_truth": true
+      },
+      "config_hash": "bc7b45d71e3a",
+      "metrics": {
+        "quality_score": 0.0,
+        "output_len": 21,
+        "avg_token_entropy": 0.7839251724763017,
+        "max_token_entropy": 2.86956787109375,
+        "min_token_entropy": 7.264050509547815e-05,
+        "entropy_variance": 0.7004022824727592,
+        "entropy_drift": 0.4474104886113007,
+        "avg_top_prob": 0.7534856925408046,
+        "min_top_prob": 0.2931228578090668,
+        "avg_attention_entropy": 0.7063908651471138,
+        "avg_attention_sparsity": 0.40017856905857724,
+        "confidence_signal": 0.7097430497335396
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:02:56.573048",
+      "end_time": "2026-04-25T22:02:56.573075",
+      "duration_seconds": 1.3285000022733584e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0005",
+      "config": {
+        "prompt": "math_5",
+        "prompt_type": "factual",
+        "input_len": 10,
+        "has_ground_truth": true
+      },
+      "config_hash": "254e2474bb1e",
+      "metrics": {
+        "quality_score": 0.0,
+        "output_len": 21,
+        "avg_token_entropy": 0.21121815561402096,
+        "max_token_entropy": 1.9160027503967285,
+        "min_token_entropy": 2.338766080356436e-06,
+        "entropy_variance": 0.18642382761310622,
+        "entropy_drift": -0.07547656237690414,
+        "avg_top_prob": 0.9273012101650238,
+        "min_top_prob": 0.5091565847396851,
+        "avg_attention_entropy": 0.678974907224377,
+        "avg_attention_sparsity": 0.3842261905471484,
+        "confidence_signal": 0.8278227538551003
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:02:58.193527",
+      "end_time": "2026-04-25T22:02:58.193552",
+      "duration_seconds": 1.2552998668979853e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0006",
+      "config": {
+        "prompt": "fact_1",
+        "prompt_type": "factual",
+        "input_len": 8,
+        "has_ground_truth": true
+      },
+      "config_hash": "06a338a9eb1d",
+      "metrics": {
+        "quality_score": 1.0,
+        "output_len": 7,
+        "avg_token_entropy": 0.5372230547099289,
+        "max_token_entropy": 2.384115219116211,
+        "min_token_entropy": 0.0032885477412492037,
+        "entropy_variance": 0.5564711219674195,
+        "entropy_drift": 0.06735096736034996,
+        "avg_top_prob": 0.8791179006749933,
+        "min_top_prob": 0.5434393286705017,
+        "avg_attention_entropy": 0.5901762694120407,
+        "avg_attention_sparsity": 0.4084821467598279,
+        "confidence_signal": 0.7890219964068665
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:02:58.833476",
+      "end_time": "2026-04-25T22:02:58.833504",
+      "duration_seconds": 1.220199919771403e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0007",
+      "config": {
+        "prompt": "fact_2",
+        "prompt_type": "factual",
+        "input_len": 6,
+        "has_ground_truth": true
+      },
+      "config_hash": "0ce74926b928",
+      "metrics": {
+        "quality_score": 0.0,
+        "output_len": 19,
+        "avg_token_entropy": 1.3293558277344952,
+        "max_token_entropy": 6.493821144104004,
+        "min_token_entropy": 0.004315672442317009,
+        "entropy_variance": 2.8773344031887573,
+        "entropy_drift": 1.1227613289219636,
+        "avg_top_prob": 0.7322347303231557,
+        "min_top_prob": 0.043635740876197815,
+        "avg_attention_entropy": 0.514196269835035,
+        "avg_attention_sparsity": 0.47776124253869057,
+        "confidence_signal": 0.6819082640052463
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:00.359621",
+      "end_time": "2026-04-25T22:03:00.359646",
+      "duration_seconds": 1.1952000932069495e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0008",
+      "config": {
+        "prompt": "fact_3",
+        "prompt_type": "factual",
+        "input_len": 8,
+        "has_ground_truth": true
+      },
+      "config_hash": "f24c5f9a73b2",
+      "metrics": {
+        "quality_score": 1.0,
+        "output_len": 26,
+        "avg_token_entropy": 1.0995900611858815,
+        "max_token_entropy": 4.081053733825684,
+        "min_token_entropy": 0.002047864720225334,
+        "entropy_variance": 0.9972545911439051,
+        "entropy_drift": -0.196568588571002,
+        "avg_top_prob": 0.6837159236272176,
+        "min_top_prob": 0.18386654555797577,
+        "avg_attention_entropy": 0.63052087277174,
+        "avg_attention_sparsity": 0.42336309514939785,
+        "confidence_signal": 0.6605551771723354
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:02.013199",
+      "end_time": "2026-04-25T22:03:02.013225",
+      "duration_seconds": 1.2733999028569087e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0009",
+      "config": {
+        "prompt": "fact_4",
+        "prompt_type": "factual",
+        "input_len": 11,
+        "has_ground_truth": true
+      },
+      "config_hash": "0fd4fcf724a4",
+      "metrics": {
+        "quality_score": 0.0,
+        "output_len": 16,
+        "avg_token_entropy": 0.4996240816389521,
+        "max_token_entropy": 3.827348470687866,
+        "min_token_entropy": 0.003438201267272234,
+        "entropy_variance": 0.5910818126677888,
+        "entropy_drift": -0.16922513960550228,
+        "avg_top_prob": 0.858555547396342,
+        "min_top_prob": 0.19509893655776978,
+        "avg_attention_entropy": 0.7301643850902716,
+        "avg_attention_sparsity": 0.3706463985145092,
+        "confidence_signal": 0.7734296085027357
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:03.586376",
+      "end_time": "2026-04-25T22:03:03.586403",
+      "duration_seconds": 1.2814001820515841e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0010",
+      "config": {
+        "prompt": "fact_5",
+        "prompt_type": "factual",
+        "input_len": 9,
+        "has_ground_truth": true
+      },
+      "config_hash": "580d6db4af03",
+      "metrics": {
+        "quality_score": 1.0,
+        "output_len": 1,
+        "avg_token_entropy": 1.0705522870024045,
+        "max_token_entropy": 3.625506639480591,
+        "min_token_entropy": 0.18748953938484192,
+        "entropy_variance": 1.787338035716677,
+        "entropy_drift": -0.8755195091168086,
+        "avg_top_prob": 0.7446340645352999,
+        "min_top_prob": 0.22717274725437164,
+        "avg_attention_entropy": 0.623588482538859,
+        "avg_attention_sparsity": 0.393334802861015,
+        "confidence_signal": 0.6867508556197087
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:04.069707",
+      "end_time": "2026-04-25T22:03:04.069731",
+      "duration_seconds": 1.0870000551221892e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0011",
+      "config": {
+        "prompt": "code_1",
+        "prompt_type": "factual",
+        "input_len": 15,
+        "has_ground_truth": true
+      },
+      "config_hash": "7b7da1394e68",
+      "metrics": {
+        "quality_score": 0.0,
+        "output_len": 22,
+        "avg_token_entropy": 0.9032659010767626,
+        "max_token_entropy": 3.3166310787200928,
+        "min_token_entropy": 0.0001644041622057557,
+        "entropy_variance": 0.9302999158852711,
+        "entropy_drift": 0.6072878261019165,
+        "avg_top_prob": 0.7328820104400317,
+        "min_top_prob": 0.20420493185520172,
+        "avg_attention_entropy": 0.8585555888712406,
+        "avg_attention_sparsity": 0.3095105805744727,
+        "confidence_signal": 0.6741471672703045
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:05.675895",
+      "end_time": "2026-04-25T22:03:05.675921",
+      "duration_seconds": 1.2043001333950087e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0012",
+      "config": {
+        "prompt": "code_2",
+        "prompt_type": "factual",
+        "input_len": 12,
+        "has_ground_truth": true
+      },
+      "config_hash": "87a13b4e5022",
+      "metrics": {
+        "quality_score": 0.0,
+        "output_len": 24,
+        "avg_token_entropy": 1.4697251836458842,
+        "max_token_entropy": 3.5247390270233154,
+        "min_token_entropy": 0.03919140249490738,
+        "entropy_variance": 0.9914623071354766,
+        "entropy_drift": -0.14372384051481868,
+        "avg_top_prob": 0.5883313938975334,
+        "min_top_prob": 0.17374779284000397,
+        "avg_attention_entropy": 0.7452087327837944,
+        "avg_attention_sparsity": 0.33579282214244205,
+        "confidence_signal": 0.5731407503585021
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:07.168848",
+      "end_time": "2026-04-25T22:03:07.168874",
+      "duration_seconds": 1.2353000784059986e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0013",
+      "config": {
+        "prompt": "explain_1",
+        "prompt_type": "open",
+        "input_len": 7,
+        "has_ground_truth": false
+      },
+      "config_hash": "4b5e7d28b1c3",
+      "metrics": {
+        "quality_score": -1.0,
+        "output_len": 13,
+        "avg_token_entropy": 1.03952505486086,
+        "max_token_entropy": 2.5505118370056152,
+        "min_token_entropy": 0.011879965662956238,
+        "entropy_variance": 0.5372598304947469,
+        "entropy_drift": 0.0224814610555768,
+        "avg_top_prob": 0.7181682009249926,
+        "min_top_prob": 0.344456285238266,
+        "avg_attention_entropy": 0.5887093432247639,
+        "avg_attention_sparsity": 0.44855442146460217,
+        "confidence_signal": 0.6864234814637651
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:08.034870",
+      "end_time": "2026-04-25T22:03:08.034899",
+      "duration_seconds": 1.3324999599717557e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0014",
+      "config": {
+        "prompt": "explain_2",
+        "prompt_type": "open",
+        "input_len": 11,
+        "has_ground_truth": false
+      },
+      "config_hash": "b55a6ef209e3",
+      "metrics": {
+        "quality_score": -1.0,
+        "output_len": 26,
+        "avg_token_entropy": 0.9561865451590469,
+        "max_token_entropy": 3.772481918334961,
+        "min_token_entropy": 0.0027527306228876114,
+        "entropy_variance": 0.8612529205212588,
+        "entropy_drift": 0.08296816513563199,
+        "avg_top_prob": 0.7277358487248421,
+        "min_top_prob": 0.1493065506219864,
+        "avg_attention_entropy": 0.7235047966241837,
+        "avg_attention_sparsity": 0.3675718232989311,
+        "confidence_signal": 0.6800110963126644
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:09.635336",
+      "end_time": "2026-04-25T22:03:09.635362",
+      "duration_seconds": 1.3175002095522359e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0015",
+      "config": {
+        "prompt": "creative_1",
+        "prompt_type": "open",
+        "input_len": 7,
+        "has_ground_truth": false
+      },
+      "config_hash": "774749a20d91",
+      "metrics": {
+        "quality_score": -1.0,
+        "output_len": 15,
+        "avg_token_entropy": 3.2056601816102077,
+        "max_token_entropy": 5.809374809265137,
+        "min_token_entropy": 0.1551264226436615,
+        "entropy_variance": 2.0386988405253286,
+        "entropy_drift": -1.0445822023683125,
+        "avg_top_prob": 0.36474307312777166,
+        "min_top_prob": 0.07929640263319016,
+        "avg_attention_entropy": 0.5433217727889618,
+        "avg_attention_sparsity": 0.4345238134264946,
+        "confidence_signal": 0.3769366883525723
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:10.618713",
+      "end_time": "2026-04-25T22:03:10.618740",
+      "duration_seconds": 1.2123000487918034e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0016",
+      "config": {
+        "prompt": "creative_2",
+        "prompt_type": "open",
+        "input_len": 13,
+        "has_ground_truth": false
+      },
+      "config_hash": "9c39f848aeef",
+      "metrics": {
+        "quality_score": -1.0,
+        "output_len": 25,
+        "avg_token_entropy": 1.2908236374457678,
+        "max_token_entropy": 4.070536136627197,
+        "min_token_entropy": 0.017505548894405365,
+        "entropy_variance": 1.564180908317851,
+        "entropy_drift": 0.9993380427360534,
+        "avg_top_prob": 0.7100307583808899,
+        "min_top_prob": 0.19006700813770294,
+        "avg_attention_entropy": 0.857195945456624,
+        "avg_attention_sparsity": 0.3664940831561883,
+        "confidence_signal": 0.6508647775749365
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:12.076981",
+      "end_time": "2026-04-25T22:03:12.077005",
+      "duration_seconds": 1.2373002391541377e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0017",
+      "config": {
+        "prompt": "reason_1",
+        "prompt_type": "factual",
+        "input_len": 24,
+        "has_ground_truth": true
+      },
+      "config_hash": "ebb662f58061",
+      "metrics": {
+        "quality_score": 0.0,
+        "output_len": 25,
+        "avg_token_entropy": 0.39035306764999406,
+        "max_token_entropy": 2.717677593231201,
+        "min_token_entropy": 0.00031993890297599137,
+        "entropy_variance": 0.310925014229528,
+        "entropy_drift": -0.4685761692235246,
+        "avg_top_prob": 0.8821430097023646,
+        "min_top_prob": 0.3568163812160492,
+        "avg_attention_entropy": 1.1735004509488742,
+        "avg_attention_sparsity": 0.2880497680356105,
+        "confidence_signal": 0.7752602743993048
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:13.755789",
+      "end_time": "2026-04-25T22:03:13.755816",
+      "duration_seconds": 1.3354001566767693e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0018",
+      "config": {
+        "prompt": "reason_2",
+        "prompt_type": "factual",
+        "input_len": 28,
+        "has_ground_truth": true
+      },
+      "config_hash": "a728fbe90339",
+      "metrics": {
+        "quality_score": 0.0,
+        "output_len": 26,
+        "avg_token_entropy": 0.36286762625240954,
+        "max_token_entropy": 1.8948404788970947,
+        "min_token_entropy": 2.0237755961716175e-05,
+        "entropy_variance": 0.26814089286859716,
+        "entropy_drift": -0.25784365182432034,
+        "avg_top_prob": 0.8833859950304032,
+        "min_top_prob": 0.4126792848110199,
+        "avg_attention_entropy": 1.1244026223818462,
+        "avg_attention_sparsity": 0.23487229396899542,
+        "confidence_signal": 0.7668953987338561
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:15.158265",
+      "end_time": "2026-04-25T22:03:15.158292",
+      "duration_seconds": 1.3454999134410173e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0019",
+      "config": {
+        "prompt": "ambig_1",
+        "prompt_type": "open",
+        "input_len": 6,
+        "has_ground_truth": false
+      },
+      "config_hash": "d39193aed418",
+      "metrics": {
+        "quality_score": -1.0,
+        "output_len": 25,
+        "avg_token_entropy": 1.655608765874058,
+        "max_token_entropy": 4.54124641418457,
+        "min_token_entropy": 0.015377151779830456,
+        "entropy_variance": 1.7106785755993363,
+        "entropy_drift": -1.2170194558178387,
+        "avg_top_prob": 0.5793873563408851,
+        "min_top_prob": 0.12776874005794525,
+        "avg_attention_entropy": 0.5707820672541857,
+        "avg_attention_sparsity": 0.4863591268658638,
+        "confidence_signal": 0.5876289775911718
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:16.711827",
+      "end_time": "2026-04-25T22:03:16.711852",
+      "duration_seconds": 1.4907996956026182e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "entropy_quality_predictor_t0020",
+      "config": {
+        "prompt": "ambig_2",
+        "prompt_type": "open",
+        "input_len": 4,
+        "has_ground_truth": false
+      },
+      "config_hash": "ff94c826f868",
+      "metrics": {
+        "quality_score": -1.0,
+        "output_len": 27,
+        "avg_token_entropy": 2.424593218167623,
+        "max_token_entropy": 5.1680908203125,
+        "min_token_entropy": 0.08583883941173553,
+        "entropy_variance": 2.892954136704851,
+        "entropy_drift": -0.7775577485561369,
+        "avg_top_prob": 0.5540529854595662,
+        "min_top_prob": 0.07070571929216385,
+        "avg_attention_entropy": 0.3609148592998584,
+        "avg_attention_sparsity": 0.542224702735742,
+        "confidence_signal": 0.5399958401868741
+      },
+      "metadata": {},
+      "start_time": "2026-04-25T22:03:18.231805",
+      "end_time": "2026-04-25T22:03:18.231832",
+      "duration_seconds": 1.3174001651350409e-05,
+      "status": "completed",
+      "error": null
+    }
+  ]
+}
