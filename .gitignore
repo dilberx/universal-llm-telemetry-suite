@@ -1,24 +1,10 @@
-# Large Models
-llm_models/*
-!llm_models/*/
-!llm_models/*/.gitkeep
-*.gguf
-
-# Virtual Environment
-venv/
 __pycache__/
-
-# System/Temp Files
-.DS_Store
+*.pyc
+*.pyo
 .env
-*.log
-
-# Backup & Scratch
-*.bak.csv
-*.bak
-*.zip
-*.plist
-.pyre_configuration
-test_*.py
-scratch_*
-/tmp/
+venv/
+models/
+benchmark_config.json
+*.egg-info/
+dist/
+build/

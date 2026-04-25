@@ -1,15 +1,82 @@
-# LLM-Inference-Telemetry-Suite: Hardware-Aware Performance & Efficiency Benchmarking
+# LLM Inference Optimization Benchmark
+
+> **Which optimizations actually work on YOUR GPU?**
+> 7 experiments · 1,205 trials · 14 charts · RTX 3080 · 1-click setup
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Apple Silicon](https://img.shields.io/badge/Apple_Silicon-M1–M4-black.svg)](https://support.apple.com/en-us/116943)
 [![NVIDIA CUDA](https://img.shields.io/badge/NVIDIA-CUDA-76B900.svg)](https://developer.nvidia.com/cuda-zone)
+[![Apple Silicon](https://img.shields.io/badge/Apple_Silicon-M1–M4-black.svg)](https://support.apple.com/en-us/116943)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A cross-platform (macOS / WSL2 / Linux) framework for auditing LLM inference performance, energy efficiency, and thermal stability across any Apple Silicon SoC or NVIDIA Data-Center GPU.
+A systematic, data-driven comparison of LLM inference optimization techniques on consumer GPUs. Every finding is backed by reproducible experiments with full hardware context.
 
-**Supports any GGUF model compatible with llama.cpp.**
+## 🚀 1-Click Setup
 
-📝 **Deep dive:** [Why Tokens Per Joule Matters More Than Tokens Per Second](https://dilber.hashnode.dev/tokens-per-joule-llm-inference) — full methodology, cost math (Joules → kWh → USD), and VRAM mitigation strategies.
+```bash
+git clone https://github.com/dilbersha/llm-inference-benchmark.git
+cd llm-inference-benchmark
+pip install -r requirements.txt
+python -m llm_bench run          # auto-detects GPU, runs all experiments
+python -m llm_bench charts       # generates publication-quality visualizations
+```
+
+The CLI auto-detects your hardware (CUDA/MPS/CPU), recommends the right model for your VRAM, and downloads it automatically.
+
+## 📊 Key Findings (1,205 Trials on RTX 3080)
+
+| # | Experiment | Trials | Key Finding |
+|---|---|---|---|
+| 1 | **KV Cache Eviction** | 72 | H2O retains 2.8× more quality than StreamingLLM at 75% memory savings |
+| 2 | **Token Confidence** | 300 | 70% of tokens can skip sampling at temp=0.3 with zero quality loss |
+| 3 | **Attention Head Pruning** | 39 | Quality cliff at 5% pruning, then plateau from 25-80% — most heads are redundant |
+| 4 | **Quantization Sensitivity** | 216 | Every 4th layer has outlier-sensitive weights; later layers tolerate INT4 |
+| 5 | **Self-Speculative Decoding** | 62 | Exit at 50% depth → 2× speedup with 0.85 quality retention |
+| 6 | **PCIe Transfer** | 36 | Pinned memory gives 24.4 GB/s vs 9.5 GB/s paged (2.6× faster offloading) |
+| 7 | **Reasoning Token Waste** | 480 | Easy tasks: 80% of thinking tokens are removable; importance sampling beats truncation |
+
+### Quantization Sensitivity Heatmap
+![Quantization Sensitivity Map](reports/charts/quant_sensitivity_24L_1024H.png)
+> **Red = fragile layers that resist quantization.** Layers L0, L4, L8, L12, L16, L20 spike due to weight outliers. Later layers (L17+) are safe to compress aggressively. This pattern suggests mixed-precision quantization (keep outlier layers at FP16, quantize the rest to INT4) could save 40%+ memory with <2% quality loss.
+
+### PCIe Transfer: Pinned vs Paged Memory
+![PCIe Transfer Bandwidth](reports/charts/transfer_bandwidth.png)
+> **Pinned memory is 2.6× faster for KV cache offloading.** At 1GB transfers, pinned achieves 24.4 GB/s vs 9.5 GB/s paged. This matters for CPU offloading strategies — a 500MB KV cache offloads in 20ms (pinned) vs 57ms (paged).
+
+### Self-Speculative Decoding
+![Speculative Decoding](reports/charts/speculative_speedup_vs_quality.png)
+> **The speedup-quality Pareto frontier.** Exiting at 50% model depth gives ~2× speedup with 0.85 cosine similarity. The sweet spot for 32-layer models is layers 16-20.
+
+### Reasoning Token Waste
+![Reasoning Token Waste](reports/charts/reasoning_waste_correctness.png)
+> **Easy tasks waste 80%+ of thinking tokens.** Importance-based sampling (keeping highest-norm states) outperforms naive truncation at all removal rates.
+
+---
+
+## 🔬 Experiment Details
+
+### Available Experiments
+
+| Experiment | CLI Flag | What It Measures |
+|---|---|---|
+| KV Cache Eviction | `--experiment kv_cache` | 6 eviction policies: Full, Window, H2O, SnapKV, PyramidKV, Adaptive |
+| Token Confidence | `--experiment token_confidence` | When argmax is safe to skip full sampling |
+| Head Pruning | `--experiment head_pruning` | Per-head importance scoring and progressive removal |
+| Quantization Sensitivity | *(standalone)* | Per-layer sensitivity to [2,3,4,6,8]-bit quantization |
+| Self-Speculative Decoding | *(standalone)* | Early exit layer selection for LayerSkip-style speculation |
+| PCIe Transfer | *(standalone)* | GPU↔CPU bandwidth at various sizes with pinned/paged memory |
+| Reasoning Token Waste | *(standalone)* | How many CoT tokens can be removed without changing the answer |
+
+### Data Format
+
+Every experiment produces:
+- **JSON** with full trial data, hardware context, and config hashes
+- **CSV** for easy analysis in pandas/Excel
+- **Charts** (dark theme, publication quality)
+
+All data is in `reports/experiments/` and charts in `reports/charts/`.
+
+---
+
 
 ## Reference Baselines: The Efficiency Gap
 
