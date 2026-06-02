@@ -58,6 +58,8 @@ _NEW_COLS_DEFAULTS = {
     "cold_start_sec":  0.0,
 }
 
+_THERMAL_COLS = ["timestamp", "model", "vram_mb", "power_w", "temp_c", "clock_mhz"]
+
 
 def load_csv(path: str) -> pd.DataFrame:
     df = pd.read_csv(path)
@@ -66,6 +68,22 @@ def load_csv(path: str) -> pd.DataFrame:
         if col not in df.columns:
             df[col] = default
     return df
+
+
+def load_thermal_csv(path: str) -> pd.DataFrame:
+    """
+    Load thermal telemetry from both legacy headered logs and current provider
+    logs, which append raw CSV rows without a header.
+    """
+    tdf = pd.read_csv(path)
+    if "timestamp" not in tdf.columns:
+        tdf = pd.read_csv(path, header=None, names=_THERMAL_COLS)
+
+    for col in ("timestamp", "vram_mb", "power_w", "temp_c", "clock_mhz"):
+        if col in tdf.columns:
+            tdf[col] = pd.to_numeric(tdf[col], errors="coerce")
+
+    return tdf.dropna(subset=["timestamp"])
 
 
 def load_aggregate(results_root: str) -> pd.DataFrame:
@@ -305,7 +323,7 @@ def create_dashboard(results_dir: str, aggregate: bool = False) -> None:
     ax = axes[3, 1]
     if os.path.exists(thermal_csv):
         try:
-            tdf = pd.read_csv(thermal_csv)
+            tdf = load_thermal_csv(thermal_csv)
             if not tdf.empty:
                 tdf["time_sec"] = tdf["timestamp"] - tdf["timestamp"].min()
 

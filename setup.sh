@@ -17,15 +17,15 @@ source venv/bin/activate
 # 2. Install Core Requirements
 echo "Installing Core Dependencies..."
 pip install --upgrade pip
-pip install -r requirements.txt
 
 # 3. Detect OS & Install Hardware-Optimized llama-cpp-python
 OS_TYPE=$(uname)
-
 if [ "$OS_TYPE" = "Darwin" ]; then
+    pip install -r requirements-apple-silicon.txt
     echo "🍏 Apple Silicon (macOS) Detected. Installing Metal optimization..."
     CMAKE_ARGS="-DGGML_METAL=on" pip install --force-reinstall --no-cache-dir llama-cpp-python
 elif [ "$OS_TYPE" = "Linux" ]; then
+    pip install -r requirements.txt
     echo "🐧 Linux Detected. Checking for NVIDIA GPU..."
     if command -v nvidia-smi &> /dev/null; then
         echo "🟢 NVIDIA GPU Found. Installing CUDA hardware optimization..."
