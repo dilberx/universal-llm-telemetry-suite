@@ -2,11 +2,11 @@
 
 I wanted to know which inference optimizations actually matter on a consumer GPU. Not what papers claim — what actually happens when you run them on a real model.
 
-So I loaded two models (Qwen2.5-0.5B and Phi-2 2.7B) on my RTX 3080, ran ~3,600 trials across 12 experiment tracks, and found some things that surprised me.
+So I loaded two models (Qwen2.5-0.5B and Phi-2 2.7B) on my RTX 3080, ran ~3,800 trials across 14 experiment tracks, and found some things that surprised me.
 
 ## What I found
 
-**The biggest surprise:** synthetic benchmarks massively understate how bad window-based KV cache eviction (StreamingLLM-style) is on real attention patterns. Papers report H2O being ~2-3× better than window eviction. On real attention, the median H2O/window ratio reaches **~36× on Qwen2.5-0.5B and ~200× on Phi-2** at a 10% KV budget.
+**The biggest surprise:** synthetic benchmarks massively understate how bad window-based KV cache eviction (StreamingLLM-style) is on real attention patterns. Papers report H2O being ~2-3× better than window eviction. On real attention, the median H2O/window attention-mass retention ratio reaches **~36× on Qwen2.5-0.5B and ~200× on Phi-2** at a 10% KV budget. (This is a proxy metric — see the [end-to-end validation](#end-to-end-validation-does-the-proxy-predict-real-output-quality) below for what it means for actual generation.)
 
 ![H2O vs Window per layer](reports/charts/real_h2o_per_layer.png)
 
@@ -16,7 +16,7 @@ Layers 11, 16, and 21 spike hard — those are the layers with the most non-loca
 
 ![Cross model comparison](reports/charts/cross_model_kv_comparison.png)
 
-At 50% KV budget: H2O retains 87% quality on Qwen and 94% on Phi-2. Window retains 16% on Qwen and **7% on Phi-2**. The bigger the model, the worse window eviction gets — because larger models develop more non-local attention patterns that a fixed window can't capture.
+At 50% KV budget: H2O retains 87% attention mass on Qwen and 94% on Phi-2. Window retains 16% on Qwen and **7% on Phi-2**. The bigger the model, the worse window eviction gets — because larger models develop more non-local attention patterns that a fixed window can't capture.
 
 **Token confidence is completely task-dependent.** Same model, same threshold — reasoning tasks let you skip 87% of sampling operations, while translation tasks let you skip 0%. This isn't something you can fix with a global threshold.
 
@@ -28,15 +28,34 @@ At 50% KV budget: H2O retains 87% quality on Qwen and 94% on Phi-2. Window retai
 
 The sweet spot on my 3080: H2O at 50% budget + INT4 quantization → 0.86 quality at 2.35× speed. Skip head pruning unless you really need the extra margin.
 
-**At 90% cache eviction, window attention is basically dead.** H2O still retains 62% of attention quality. Window retains 2%. If you're doing aggressive KV cache compression on a VRAM-limited GPU, window eviction is not an option.
+**At 90% cache eviction, window attention is basically dead.** H2O still retains 62% of attention mass. Window retains 2%. If you're doing aggressive KV cache compression on a VRAM-limited GPU, window eviction is not an option.
 
 ![Extreme compression](reports/charts/real_extreme_compression.png)
+
+### End-to-end validation: does the proxy predict real output quality?
+
+Attention-mass retention is useful as a diagnostic — it explains *why* window eviction fails. But it doesn't directly tell you what happens to the model's output. So I ran fixed-target logprob replay: generate with the full cache first, then re-score those same target tokens under each pruned-cache state. This measures how much the pruned cache distorts the model's probability distribution.
+
+![E2E cross-model logprob](reports/charts/e2e_kv_logprob_cross_model.png)
+
+At 98% KV budget:
+- **Hybrid** (sink tokens + recent window + H2O heavy hitters): 0.037 NLL delta on Qwen, 0.010 on Phi-2. Nearly preserves the full-cache distribution.
+- **H2O**: 0.214 NLL delta on Qwen, 0.342 on Phi-2. Measurably worse but still usable.
+- **Window**: 5.28 NLL delta on Qwen, 0.246 on Phi-2. Collapses the distribution on Qwen.
+
+At 75% budget, all three policies degrade noticeably. Hybrid is still the best, but none of them reliably preserve full-cache greedy output at aggressive compression levels.
+
+On longer contexts (256–768 token WikiText prompts), window eviction gets worse as context grows. H2O improves with longer context. Hybrid stays stable.
+
+![E2E long-context logprob](reports/charts/e2e_kv_logprob_long_context.png)
+
+The proxy attention-mass charts above explain the mechanism. The E2E logprob charts show the actual serving-quality impact.
 
 ## All experiments
 
 | Experiment | Trials | What I measured | What stood out |
 |---|---|---|---|
-| KV Cache Eviction | 72 | 6 policies (H2O, Window, SnapKV, etc.) | H2O wins everywhere |
+| KV Cache Eviction | 72 | 6 policies (H2O, Window, SnapKV, etc.) | H2O wins on attention-mass proxy |
 | Token Confidence | 300 | Skip rates at different thresholds | 70% skip rate at temp=0.3 |
 | Head Pruning | 39 | Progressive head removal | Cliff at 5%, then plateau to 80% |
 | Quantization Sensitivity | 216 | Per-layer sensitivity to INT2-8 | Every 4th layer is fragile |
@@ -48,6 +67,8 @@ The sweet spot on my 3080: H2O at 50% budget + INT4 quantization → 0.86 qualit
 | Optimization Stacking | 108 | 108 combos of KV+prune+quant | Perfect multiplicative composition |
 | Prompt Routing | 22 | Can entropy predict prompt difficulty? | **No — ranges overlap completely** |
 | Entropy → Quality | 20 | Does low entropy mean correct answer? | **No — confident and wrong is common** |
+| E2E KV Cache (greedy) | ~60 | Greedy generation under pruned caches | Naive pruning diverges fast |
+| E2E KV Cache (logprob) | ~130 | Fixed-target distribution replay | Hybrid preserves distribution at 90–98% budget |
 
 ## What didn't work (also useful)
 
@@ -180,6 +201,7 @@ src/
   experiments/         # optimization experiments
     runner.py          # experiment framework (config hashing, JSON/CSV output)
     exp_real_model.py  # real model experiments on Qwen2.5-0.5B and Phi-2
+    exp_e2e_kv_cache.py # end-to-end KV cache generation + logprob replay
     exp_stacking.py    # optimization stacking (108 combos)
     visualize.py       # chart generation
     visualize_real.py  # charts for real model findings

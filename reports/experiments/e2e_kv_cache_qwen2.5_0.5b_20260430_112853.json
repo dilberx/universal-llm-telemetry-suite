@@ -1,0 +1,893 @@
+{
+  "experiment": "e2e_kv_cache_qwen2.5_0.5b",
+  "description": "End-to-end greedy generation on Qwen/Qwen2.5-0.5B with physically pruned KV caches compared against a full-cache baseline.",
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_vram_mb": 10239.375,
+    "gpu_driver": "576.88",
+    "cuda_version": "12.8",
+    "cpu_name": "x86_64",
+    "cpu_cores": 16,
+    "ram_gb": 15.6,
+    "python_version": "3.10.12",
+    "torch_version": "2.10.0+cu128",
+    "os_info": "Linux 6.6.87.2-microsoft-standard-WSL2"
+  },
+  "timestamp": "2026-04-30T11:28:53.292470",
+  "total_duration_seconds": 50.51095128059387,
+  "seed": 42,
+  "num_trials": 25,
+  "trials": [
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0001",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "code_complex",
+        "policy": "full",
+        "budget_frac": 1.0,
+        "max_new_tokens": 32
+      },
+      "config_hash": "fd831f355a6c",
+      "metrics": {
+        "prompt_tokens": 120.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 2.280949507000514,
+        "tokens_per_second": 14.02924523396422,
+        "peak_memory_mb": 997.63623046875,
+        "avg_cache_tokens": 135.5,
+        "max_cache_tokens": 151.0,
+        "final_cache_tokens": 151.0,
+        "token_match_rate": 1.0,
+        "exact_token_match": 1.0,
+        "first_mismatch_index": -1.0,
+        "text_similarity": 1.0
+      },
+      "metadata": {
+        "generated_text": " # x: (batch_size, seq_len, d_model)\n        batch_size, seq_len, d_model = x.shape\n        q = self.W_q"
+      },
+      "start_time": "2026-04-30T11:28:10.191098",
+      "end_time": "2026-04-30T11:28:10.191289",
+      "duration_seconds": 0.00017712099997879704,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0002",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "code_complex",
+        "policy": "window",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "1bb25c1e539d",
+      "metrics": {
+        "prompt_tokens": 120.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.8216289109996069,
+        "tokens_per_second": 17.56669528396989,
+        "peak_memory_mb": 997.7119140625,
+        "avg_cache_tokens": 43.53125,
+        "max_cache_tokens": 120.0,
+        "final_cache_tokens": 46.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.21428571428571427
+      },
+      "metadata": {
+        "generated_text": " # o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o o",
+        "baseline_text": " # x: (batch_size, seq_len, d_model)\n        batch_size, seq_len, d_model = x.shape\n        q = self.W_q"
+      },
+      "start_time": "2026-04-30T11:28:12.084380",
+      "end_time": "2026-04-30T11:28:12.084402",
+      "duration_seconds": 7.683999683649745e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0003",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "code_complex",
+        "policy": "h2o",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "b46e372dce33",
+      "metrics": {
+        "prompt_tokens": 120.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.667424643999766,
+        "tokens_per_second": 19.191272070466347,
+        "peak_memory_mb": 997.7119140625,
+        "avg_cache_tokens": 43.53125,
+        "max_cache_tokens": 120.0,
+        "final_cache_tokens": 46.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.3333333333333333
+      },
+      "metadata": {
+        "generated_text": " # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #",
+        "baseline_text": " # x: (batch_size, seq_len, d_model)\n        batch_size, seq_len, d_model = x.shape\n        q = self.W_q"
+      },
+      "start_time": "2026-04-30T11:28:13.826072",
+      "end_time": "2026-04-30T11:28:13.826093",
+      "duration_seconds": 8.335000529768877e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0004",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "code_complex",
+        "policy": "window",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "10f33a6996bf",
+      "metrics": {
+        "prompt_tokens": 120.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.6194422449998456,
+        "tokens_per_second": 19.759889615577524,
+        "peak_memory_mb": 998.2744140625,
+        "avg_cache_tokens": 69.875,
+        "max_cache_tokens": 120.0,
+        "final_cache_tokens": 76.0,
+        "token_match_rate": 0.0625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 2.0,
+        "text_similarity": 0.08368200836820083
+      },
+      "metadata": {
+        "generated_text": " # x = nn.Linear(d_linear(d_linear(d_linear(d_linear(d_linear(d_linear(d_linear(d_linear(d_linear(d_linear(d_linear(d_linear(d_linear(d",
+        "baseline_text": " # x: (batch_size, seq_len, d_model)\n        batch_size, seq_len, d_model = x.shape\n        q = self.W_q"
+      },
+      "start_time": "2026-04-30T11:28:15.525790",
+      "end_time": "2026-04-30T11:28:15.525814",
+      "duration_seconds": 8.26499945105752e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0005",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "code_complex",
+        "policy": "h2o",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "4cca9a8ff8fd",
+      "metrics": {
+        "prompt_tokens": 120.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 2.0068296600002213,
+        "tokens_per_second": 15.94554866206057,
+        "peak_memory_mb": 998.2744140625,
+        "avg_cache_tokens": 69.875,
+        "max_cache_tokens": 120.0,
+        "final_cache_tokens": 76.0,
+        "token_match_rate": 0.125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.42727272727272725
+      },
+      "metadata": {
+        "generated_text": " # TODO: check if this\n        self.W_o = nn.Linear(d_model\n        self.W_q = nn.Linear_model\n        self.W_o = nn",
+        "baseline_text": " # x: (batch_size, seq_len, d_model)\n        batch_size, seq_len, d_model = x.shape\n        q = self.W_q"
+      },
+      "start_time": "2026-04-30T11:28:17.606725",
+      "end_time": "2026-04-30T11:28:17.606747",
+      "duration_seconds": 8.756000170251355e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0006",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "reasoning",
+        "policy": "full",
+        "budget_frac": 1.0,
+        "max_new_tokens": 32
+      },
+      "config_hash": "a76248575947",
+      "metrics": {
+        "prompt_tokens": 52.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7804664690002028,
+        "tokens_per_second": 17.97281811095784,
+        "peak_memory_mb": 970.1455078125,
+        "avg_cache_tokens": 67.5,
+        "max_cache_tokens": 83.0,
+        "final_cache_tokens": 83.0,
+        "token_match_rate": 1.0,
+        "exact_token_match": 1.0,
+        "first_mismatch_index": -1.0,
+        "text_similarity": 1.0
+      },
+      "metadata": {
+        "generated_text": " 60 mph \u00d7 2 hours = 120 miles. For the second part: 80 mph \u00d7 3 hours = 24"
+      },
+      "start_time": "2026-04-30T11:28:19.457482",
+      "end_time": "2026-04-30T11:28:19.457613",
+      "duration_seconds": 0.00011831099982373416,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0007",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "reasoning",
+        "policy": "window",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "205a6eaaaa48",
+      "metrics": {
+        "prompt_tokens": 52.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.700428027000271,
+        "tokens_per_second": 18.818791205442125,
+        "peak_memory_mb": 970.2861328125,
+        "avg_cache_tokens": 21.625,
+        "max_cache_tokens": 52.0,
+        "final_cache_tokens": 25.0,
+        "token_match_rate": 0.0625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.273972602739726
+      },
+      "metadata": {
+        "generated_text": " 1 distance = speed \u00d7 time. For the first part: 1 distance = distance = distance = distance = distance = distance = distance = distance = distance",
+        "baseline_text": " 60 mph \u00d7 2 hours = 120 miles. For the second part: 80 mph \u00d7 3 hours = 24"
+      },
+      "start_time": "2026-04-30T11:28:21.228520",
+      "end_time": "2026-04-30T11:28:21.228542",
+      "duration_seconds": 7.984000149008352e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0008",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "reasoning",
+        "policy": "h2o",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "ebc2f5b0bf3a",
+      "metrics": {
+        "prompt_tokens": 52.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.9399963899995782,
+        "tokens_per_second": 16.494876054901813,
+        "peak_memory_mb": 970.2861328125,
+        "avg_cache_tokens": 21.625,
+        "max_cache_tokens": 52.0,
+        "final_cache_tokens": 25.0,
+        "token_match_rate": 0.0625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.0380952380952381
+      },
+      "metadata": {
+        "generated_text": " 1111111111111111111111111111111",
+        "baseline_text": " 60 mph \u00d7 2 hours = 120 miles. For the second part: 80 mph \u00d7 3 hours = 24"
+      },
+      "start_time": "2026-04-30T11:28:23.240155",
+      "end_time": "2026-04-30T11:28:23.240181",
+      "duration_seconds": 1.174200042441953e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0009",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "reasoning",
+        "policy": "window",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "c8c3a6c5e2d4",
+      "metrics": {
+        "prompt_tokens": 52.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7196908360001544,
+        "tokens_per_second": 18.60799588513777,
+        "peak_memory_mb": 970.4384765625,
+        "avg_cache_tokens": 34.8125,
+        "max_cache_tokens": 52.0,
+        "final_cache_tokens": 42.0,
+        "token_match_rate": 0.0625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.3316062176165803
+      },
+      "metadata": {
+        "generated_text": " 1 distance = speed \u00d7 time. For the first part: speed \u00d7 time = speed \u00d7 time. For the second: speed \u00d7 time = speed \u00d7 time",
+        "baseline_text": " 60 mph \u00d7 2 hours = 120 miles. For the second part: 80 mph \u00d7 3 hours = 24"
+      },
+      "start_time": "2026-04-30T11:28:25.034064",
+      "end_time": "2026-04-30T11:28:25.034085",
+      "duration_seconds": 8.214999979827553e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0010",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "reasoning",
+        "policy": "h2o",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "a1da0c47c245",
+      "metrics": {
+        "prompt_tokens": 52.0,
+        "new_tokens": 5.0,
+        "wall_time_s": 0.25797218099978636,
+        "tokens_per_second": 19.381934829647932,
+        "peak_memory_mb": 970.4384765625,
+        "avg_cache_tokens": 32.4,
+        "max_cache_tokens": 52.0,
+        "final_cache_tokens": 28.0,
+        "token_match_rate": 0.0625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 2.0,
+        "text_similarity": 0.21951219512195122
+      },
+      "metadata": {
+        "generated_text": " 6 miles.",
+        "baseline_text": " 60 mph \u00d7 2 hours = 120 miles. For the second part: 80 mph \u00d7 3 hours = 24"
+      },
+      "start_time": "2026-04-30T11:28:25.364945",
+      "end_time": "2026-04-30T11:28:25.364968",
+      "duration_seconds": 8.32599926070543e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0011",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "creative",
+        "policy": "full",
+        "budget_frac": 1.0,
+        "max_new_tokens": 32
+      },
+      "config_hash": "1edcc6fd225c",
+      "metrics": {
+        "prompt_tokens": 42.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.8478607200004262,
+        "tokens_per_second": 17.317322487374817,
+        "peak_memory_mb": 965.60205078125,
+        "avg_cache_tokens": 57.5,
+        "max_cache_tokens": 73.0,
+        "final_cache_tokens": 73.0,
+        "token_match_rate": 1.0,
+        "exact_token_match": 1.0,
+        "first_mismatch_index": -1.0,
+        "text_similarity": 1.0
+      },
+      "metadata": {
+        "generated_text": " a small, intricately carved wooden box nestled in the corner. It was filled with a collection of ancient scrolls, each one bearing the name of a legendary hero"
+      },
+      "start_time": "2026-04-30T11:28:27.285219",
+      "end_time": "2026-04-30T11:28:27.285677",
+      "duration_seconds": 0.00044231499941815855,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0012",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "creative",
+        "policy": "window",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "bd8510fce807",
+      "metrics": {
+        "prompt_tokens": 42.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.980376002000412,
+        "tokens_per_second": 16.158547653413418,
+        "peak_memory_mb": 965.71923828125,
+        "avg_cache_tokens": 18.40625,
+        "max_cache_tokens": 42.0,
+        "final_cache_tokens": 22.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.273972602739726
+      },
+      "metadata": {
+        "generated_text": " a peculiarity in the air. In the dim candlelight, she noticed a peculiarity in a peculiarity in a peculiarity in a peculiarity in a",
+        "baseline_text": " a small, intricately carved wooden box nestled in the corner. It was filled with a collection of ancient scrolls, each one bearing the name of a legendary hero"
+      },
+      "start_time": "2026-04-30T11:28:29.343049",
+      "end_time": "2026-04-30T11:28:29.343071",
+      "duration_seconds": 8.305999472213443e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0013",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "creative",
+        "policy": "h2o",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "f089afe69ae5",
+      "metrics": {
+        "prompt_tokens": 42.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.817187530999945,
+        "tokens_per_second": 17.609629966144077,
+        "peak_memory_mb": 965.71923828125,
+        "avg_cache_tokens": 18.40625,
+        "max_cache_tokens": 42.0,
+        "final_cache_tokens": 22.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.07390300230946882
+      },
+      "metadata": {
+        "generated_text": " a moment of discovery, she said Professor, Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor Professor",
+        "baseline_text": " a small, intricately carved wooden box nestled in the corner. It was filled with a collection of ancient scrolls, each one bearing the name of a legendary hero"
+      },
+      "start_time": "2026-04-30T11:28:31.249488",
+      "end_time": "2026-04-30T11:28:31.249512",
+      "duration_seconds": 9.47800072026439e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0014",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "creative",
+        "policy": "window",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "b04f1ca54561",
+      "metrics": {
+        "prompt_tokens": 42.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.987337139000374,
+        "tokens_per_second": 16.10194836699722,
+        "peak_memory_mb": 965.82470703125,
+        "avg_cache_tokens": 29.65625,
+        "max_cache_tokens": 42.0,
+        "final_cache_tokens": 37.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.3583061889250814
+      },
+      "metadata": {
+        "generated_text": " a faint parchment. In the dim candlelight, she noticed a faint parchment. In the dim candlelight, she noticed a faint parchment. In the dim candle",
+        "baseline_text": " a small, intricately carved wooden box nestled in the corner. It was filled with a collection of ancient scrolls, each one bearing the name of a legendary hero"
+      },
+      "start_time": "2026-04-30T11:28:33.307561",
+      "end_time": "2026-04-30T11:28:33.307583",
+      "duration_seconds": 7.793999429850373e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0015",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "creative",
+        "policy": "h2o",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "d5e800e5bd0f",
+      "metrics": {
+        "prompt_tokens": 42.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7590587580007195,
+        "tokens_per_second": 18.19154695910784,
+        "peak_memory_mb": 965.82470703125,
+        "avg_cache_tokens": 29.65625,
+        "max_cache_tokens": 42.0,
+        "final_cache_tokens": 37.0,
+        "token_match_rate": 0.09375,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.2588996763754045
+      },
+      "metadata": {
+        "generated_text": " a moment of silence enveloped as she could hear the whispers in her name. She looked around the shelves and saw a book in the library she saw a book",
+        "baseline_text": " a small, intricately carved wooden box nestled in the corner. It was filled with a collection of ancient scrolls, each one bearing the name of a legendary hero"
+      },
+      "start_time": "2026-04-30T11:28:35.138698",
+      "end_time": "2026-04-30T11:28:35.138720",
+      "duration_seconds": 7.773999641358387e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0016",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "instruction",
+        "policy": "full",
+        "budget_frac": 1.0,
+        "max_new_tokens": 32
+      },
+      "config_hash": "e6409cf39998",
+      "metrics": {
+        "prompt_tokens": 27.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.8865829729993493,
+        "tokens_per_second": 16.961883181382362,
+        "peak_memory_mb": 960.38818359375,
+        "avg_cache_tokens": 42.5,
+        "max_cache_tokens": 58.0,
+        "final_cache_tokens": 58.0,
+        "token_match_rate": 1.0,
+        "exact_token_match": 1.0,
+        "first_mismatch_index": -1.0,
+        "text_similarity": 1.0
+      },
+      "metadata": {
+        "generated_text": " Additionally, provide an example of a real-world application of gradient descent in machine learning.\nGradient descent is a popular optimization algorithm used in machine learning to find the minimum"
+      },
+      "start_time": "2026-04-30T11:28:37.096665",
+      "end_time": "2026-04-30T11:28:37.096815",
+      "duration_seconds": 0.00013803700039716205,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0017",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "instruction",
+        "policy": "window",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "bdaadf2eaa3c",
+      "metrics": {
+        "prompt_tokens": 27.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7789043590000801,
+        "tokens_per_second": 17.988600588953055,
+        "peak_memory_mb": 960.49365234375,
+        "avg_cache_tokens": 13.59375,
+        "max_cache_tokens": 27.0,
+        "final_cache_tokens": 18.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.0851063829787234
+      },
+      "metadata": {
+        "generated_text": " Additionally how it affects convergence. Additionally how it affects convergence. Additionally how it affects convergence. Additionally how it it it it it it it it it it it it",
+        "baseline_text": " Additionally, provide an example of a real-world application of gradient descent in machine learning.\nGradient descent is a popular optimization algorithm used in machine learning to find the minimum"
+      },
+      "start_time": "2026-04-30T11:28:38.948117",
+      "end_time": "2026-04-30T11:28:38.948138",
+      "duration_seconds": 7.874000402807724e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0018",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "instruction",
+        "policy": "h2o",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "b5fd0850b19d",
+      "metrics": {
+        "prompt_tokens": 27.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 2.0631107569997766,
+        "tokens_per_second": 15.510558457140295,
+        "peak_memory_mb": 960.49365234375,
+        "avg_cache_tokens": 13.59375,
+        "max_cache_tokens": 27.0,
+        "final_cache_tokens": 18.0,
+        "token_match_rate": 0.0625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 2.0,
+        "text_similarity": 0.14184397163120568
+      },
+      "metadata": {
+        "generated_text": " Additionally, and how it's\n\n# What is a method for a function f ( x 1, 1111111111",
+        "baseline_text": " Additionally, provide an example of a real-world application of gradient descent in machine learning.\nGradient descent is a popular optimization algorithm used in machine learning to find the minimum"
+      },
+      "start_time": "2026-04-30T11:28:41.084761",
+      "end_time": "2026-04-30T11:28:41.084781",
+      "duration_seconds": 8.295000043290202e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0019",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "instruction",
+        "policy": "window",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "1eff70645dd4",
+      "metrics": {
+        "prompt_tokens": 27.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7852961950002282,
+        "tokens_per_second": 17.924196606488543,
+        "peak_memory_mb": 960.54052734375,
+        "avg_cache_tokens": 21.90625,
+        "max_cache_tokens": 29.0,
+        "final_cache_tokens": 29.0,
+        "token_match_rate": 0.09375,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 2.0,
+        "text_similarity": 0.09223300970873786
+      },
+      "metadata": {
+        "generated_text": " Additionally, the learning rate affects convergence. Additionally, the learning rate affects convergence. Additionally, the learning rate affects convergence. Additionally, the learning rate affects convergence.",
+        "baseline_text": " Additionally, provide an example of a real-world application of gradient descent in machine learning.\nGradient descent is a popular optimization algorithm used in machine learning to find the minimum"
+      },
+      "start_time": "2026-04-30T11:28:42.944129",
+      "end_time": "2026-04-30T11:28:42.944151",
+      "duration_seconds": 8.366000656678807e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0020",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "instruction",
+        "policy": "h2o",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "7a424eab2649",
+      "metrics": {
+        "prompt_tokens": 27.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.8735591450003994,
+        "tokens_per_second": 17.079791735100617,
+        "peak_memory_mb": 960.54052734375,
+        "avg_cache_tokens": 21.90625,
+        "max_cache_tokens": 29.0,
+        "final_cache_tokens": 29.0,
+        "token_match_rate": 0.0625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 2.0,
+        "text_similarity": 0.09045226130653267
+      },
+      "metadata": {
+        "generated_text": " Additionally, you should explain the concept of gradient descent in machine learning process in machine learning in machine learning. Gradient descent is a method for the learning machine. gradient",
+        "baseline_text": " Additionally, provide an example of a real-world application of gradient descent in machine learning.\nGradient descent is a popular optimization algorithm used in machine learning to find the minimum"
+      },
+      "start_time": "2026-04-30T11:28:44.893230",
+      "end_time": "2026-04-30T11:28:44.893253",
+      "duration_seconds": 9.067000064533204e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0021",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "multilingual",
+        "policy": "full",
+        "budget_frac": 1.0,
+        "max_new_tokens": 32
+      },
+      "config_hash": "8fed02340df2",
+      "metrics": {
+        "prompt_tokens": 21.0,
+        "new_tokens": 18.0,
+        "wall_time_s": 0.8244236880000244,
+        "tokens_per_second": 21.833433781683706,
+        "peak_memory_mb": 958.4033203125,
+        "avg_cache_tokens": 29.5,
+        "max_cache_tokens": 38.0,
+        "final_cache_tokens": 38.0,
+        "token_match_rate": 1.0,
+        "exact_token_match": 1.0,
+        "first_mismatch_index": -1.0,
+        "text_similarity": 1.0
+      },
+      "metadata": {
+        "generated_text": " Le rapide brun de la b\u00eate de fox se jette sur le chat lent."
+      },
+      "start_time": "2026-04-30T11:28:45.785989",
+      "end_time": "2026-04-30T11:28:45.786105",
+      "duration_seconds": 0.00010225000005448237,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0022",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "multilingual",
+        "policy": "window",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "f57e2546dc91",
+      "metrics": {
+        "prompt_tokens": 21.0,
+        "new_tokens": 30.0,
+        "wall_time_s": 1.66169958699993,
+        "tokens_per_second": 18.05380481207357,
+        "peak_memory_mb": 958.4853515625,
+        "avg_cache_tokens": 11.366666666666667,
+        "max_cache_tokens": 21.0,
+        "final_cache_tokens": 15.0,
+        "token_match_rate": 0.05555555555555555,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.336
+      },
+      "metadata": {
+        "generated_text": " Le Le Dog: Translation: Le Le Dog: Translation:::::::::::::::::/",
+        "baseline_text": " Le rapide brun de la b\u00eate de fox se jette sur le chat lent."
+      },
+      "start_time": "2026-04-30T11:28:47.525847",
+      "end_time": "2026-04-30T11:28:47.525869",
+      "duration_seconds": 7.72500061430037e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0023",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "multilingual",
+        "policy": "h2o",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "4c944aab59e1",
+      "metrics": {
+        "prompt_tokens": 21.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.8274687949997315,
+        "tokens_per_second": 17.510558914908696,
+        "peak_memory_mb": 958.4853515625,
+        "avg_cache_tokens": 11.65625,
+        "max_cache_tokens": 21.0,
+        "final_cache_tokens": 16.0,
+        "token_match_rate": 0.05555555555555555,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.13186813186813187
+      },
+      "metadata": {
+        "generated_text": " Leopopular TV show.\nThe pop show pop pop pop show pop pop pop pop pop pop pop pop pop pop pop pop pop pop pop pop pop pop",
+        "baseline_text": " Le rapide brun de la b\u00eate de fox se jette sur le chat lent."
+      },
+      "start_time": "2026-04-30T11:28:49.424559",
+      "end_time": "2026-04-30T11:28:49.424580",
+      "duration_seconds": 7.81499966251431e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0024",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "multilingual",
+        "policy": "window",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "92a206c9012f",
+      "metrics": {
+        "prompt_tokens": 21.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.9202228880003531,
+        "tokens_per_second": 16.664732099575993,
+        "peak_memory_mb": 958.5322265625,
+        "avg_cache_tokens": 18.8125,
+        "max_cache_tokens": 26.0,
+        "final_cache_tokens": 26.0,
+        "token_match_rate": 0.05555555555555555,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.2169811320754717
+      },
+      "metadata": {
+        "generated_text": " Le brown fox jumps over the lazy dog. Translation: Le brown fox jumps over the lazy dog. Translation: Le brown fox jumps over the lazy dog. Translation",
+        "baseline_text": " Le rapide brun de la b\u00eate de fox se jette sur le chat lent."
+      },
+      "start_time": "2026-04-30T11:28:51.419865",
+      "end_time": "2026-04-30T11:28:51.419888",
+      "duration_seconds": 8.285000149044208e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0025",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "multilingual",
+        "policy": "h2o",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "b71b417cc672",
+      "metrics": {
+        "prompt_tokens": 21.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7501821949999794,
+        "tokens_per_second": 18.283810732059457,
+        "peak_memory_mb": 958.5322265625,
+        "avg_cache_tokens": 18.8125,
+        "max_cache_tokens": 26.0,
+        "final_cache_tokens": 26.0,
+        "token_match_rate": 0.05555555555555555,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.2094240837696335
+      },
+      "metadata": {
+        "generated_text": " Leash is a famous for its foxesr name is Le is a name of the foxes'\nThe English: The English translation of the English sentence '",
+        "baseline_text": " Le rapide brun de la b\u00eate de fox se jette sur le chat lent."
+      },
+      "start_time": "2026-04-30T11:28:53.243915",
+      "end_time": "2026-04-30T11:28:53.243938",
+      "duration_seconds": 8.29599957796745e-06,
+      "status": "completed",
+      "error": null
+    }
+  ]
+}

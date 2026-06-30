@@ -1,0 +1,1726 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-06-14T19:32:23+00:00",
+  "workspace": "/home/dilbersha/dev/llm-inference-benchmark",
+  "git": {
+    "branch": "main",
+    "head": "ad76b57118c211d40363cdf966aa1c30ccf05113",
+    "staged_entries_before_manifest": [
+      {
+        "status": "D",
+        "path": "CONCLUSIONS.md"
+      },
+      {
+        "status": "M",
+        "path": "README.md"
+      },
+      {
+        "status": "D",
+        "path": "docs/assets/avatar.png"
+      },
+      {
+        "status": "D",
+        "path": "docs/assets/comparison_table.png"
+      },
+      {
+        "status": "D",
+        "path": "docs/assets/substack_banner_final.png"
+      },
+      {
+        "status": "M",
+        "path": "llm_bench/__main__.py"
+      },
+      {
+        "status": "D",
+        "path": "llm_models/deepseek/.gitkeep"
+      },
+      {
+        "status": "D",
+        "path": "llm_models/gemma/.gitkeep"
+      },
+      {
+        "status": "D",
+        "path": "llm_models/llama/.gitkeep"
+      },
+      {
+        "status": "D",
+        "path": "llm_models/mistral/.gitkeep"
+      },
+      {
+        "status": "D",
+        "path": "llm_models/mistral7b/.gitkeep"
+      },
+      {
+        "status": "D",
+        "path": "llm_models/phi/.gitkeep"
+      },
+      {
+        "status": "D",
+        "path": "llm_models/qwen/.gitkeep"
+      },
+      {
+        "status": "A",
+        "path": "reports/charts/e2e_kv_logprob_cross_model.png"
+      },
+      {
+        "status": "A",
+        "path": "reports/charts/e2e_kv_logprob_long_context.png"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_112853.csv"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_112853.json"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114230.csv"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114230.json"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114329.csv"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114329.json"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_logprob_phi_2_20260430_164402.csv"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_logprob_phi_2_20260430_164402.json"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_121345.csv"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_121345.json"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_164935.csv"
+      },
+      {
+        "status": "A",
+        "path": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_164935.json"
+      },
+      {
+        "status": "A",
+        "path": "src/experiments/exp_e2e_kv_cache.py"
+      }
+    ]
+  },
+  "counts": {
+    "charts": 25,
+    "experiment_json": 17,
+    "experiment_csv": 17,
+    "experiment_pairs": 18,
+    "report_json": 2,
+    "result_csv": 5,
+    "other_artifacts": 3,
+    "old_head_artifacts": 4
+  },
+  "old_artifacts_from_head": [
+    {
+      "path": "CONCLUSIONS.md",
+      "available_in_head": true,
+      "mode": "100644",
+      "type": "blob",
+      "blob": "963a3716706fa9579717eebb6a7a1943914e4da6",
+      "size_bytes": 2969,
+      "index_status": "D "
+    },
+    {
+      "path": "docs/assets/avatar.png",
+      "available_in_head": true,
+      "mode": "100644",
+      "type": "blob",
+      "blob": "1ce5a6e19712584fab2739d5a0f84ece5f004f4b",
+      "size_bytes": 513264,
+      "index_status": "D "
+    },
+    {
+      "path": "docs/assets/comparison_table.png",
+      "available_in_head": true,
+      "mode": "100644",
+      "type": "blob",
+      "blob": "28b208e67df08363f8dbf127f9c2f33428b95f97",
+      "size_bytes": 35039,
+      "index_status": "D "
+    },
+    {
+      "path": "docs/assets/substack_banner_final.png",
+      "available_in_head": true,
+      "mode": "100644",
+      "type": "blob",
+      "blob": "423574f6d715ecd7cfd756bd44bb022f79aa501d",
+      "size_bytes": 253188,
+      "index_status": "D "
+    }
+  ],
+  "experiment_pairs": [
+    {
+      "stem": "attention_head_importance_20260425_191637",
+      "experiment": "attention_head_importance",
+      "num_trials": 39,
+      "json": "reports/experiments/attention_head_importance_20260425_191637.json",
+      "csv": "reports/experiments/attention_head_importance_20260425_191637.csv",
+      "csv_rows": 39
+    },
+    {
+      "stem": "e2e_kv_cache_qwen2.5_0.5b_20260430_112853",
+      "experiment": "e2e_kv_cache_qwen2.5_0.5b",
+      "num_trials": 25,
+      "json": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_112853.json",
+      "csv": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_112853.csv",
+      "csv_rows": 25
+    },
+    {
+      "stem": "e2e_kv_cache_qwen2.5_0.5b_20260430_114230",
+      "experiment": "e2e_kv_cache_qwen2.5_0.5b",
+      "num_trials": 45,
+      "json": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114230.json",
+      "csv": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114230.csv",
+      "csv_rows": 45
+    },
+    {
+      "stem": "e2e_kv_cache_qwen2.5_0.5b_20260430_114329",
+      "experiment": "e2e_kv_cache_qwen2.5_0.5b",
+      "num_trials": 20,
+      "json": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114329.json",
+      "csv": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114329.csv",
+      "csv_rows": 20
+    },
+    {
+      "stem": "e2e_kv_logprob_phi_2_20260430_164402",
+      "experiment": "e2e_kv_logprob_phi_2",
+      "num_trials": 50,
+      "json": "reports/experiments/e2e_kv_logprob_phi_2_20260430_164402.json",
+      "csv": "reports/experiments/e2e_kv_logprob_phi_2_20260430_164402.csv",
+      "csv_rows": 50
+    },
+    {
+      "stem": "e2e_kv_logprob_qwen2.5_0.5b_20260430_121345",
+      "experiment": "e2e_kv_logprob_qwen2.5_0.5b",
+      "num_trials": 50,
+      "json": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_121345.json",
+      "csv": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_121345.csv",
+      "csv_rows": 50
+    },
+    {
+      "stem": "e2e_kv_logprob_qwen2.5_0.5b_20260430_164935",
+      "experiment": "e2e_kv_logprob_qwen2.5_0.5b",
+      "num_trials": 30,
+      "json": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_164935.json",
+      "csv": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_164935.csv",
+      "csv_rows": 30
+    },
+    {
+      "stem": "entropy_quality_predictor_20260425_220318",
+      "experiment": "entropy_quality_predictor",
+      "num_trials": 20,
+      "json": "reports/experiments/entropy_quality_predictor_20260425_220318.json",
+      "csv": "reports/experiments/entropy_quality_predictor_20260425_220318.csv",
+      "csv_rows": 20
+    },
+    {
+      "stem": "memory_transfer_benchmark_20260425_195159",
+      "experiment": "memory_transfer_benchmark",
+      "num_trials": 36,
+      "json": "reports/experiments/memory_transfer_benchmark_20260425_195159.json",
+      "csv": "reports/experiments/memory_transfer_benchmark_20260425_195159.csv",
+      "csv_rows": 36
+    },
+    {
+      "stem": "optimization_stacking_20260425_205327",
+      "experiment": "optimization_stacking",
+      "num_trials": 108,
+      "json": "reports/experiments/optimization_stacking_20260425_205327.json",
+      "csv": "reports/experiments/optimization_stacking_20260425_205327.csv",
+      "csv_rows": 108
+    },
+    {
+      "stem": "prompt_routing_20260425_220235",
+      "experiment": "prompt_routing",
+      "num_trials": 22,
+      "json": "reports/experiments/prompt_routing_20260425_220235.json",
+      "csv": "reports/experiments/prompt_routing_20260425_220235.csv",
+      "csv_rows": 22
+    },
+    {
+      "stem": "quantization_sensitivity_20260425_194405",
+      "experiment": "quantization_sensitivity",
+      "num_trials": 216,
+      "json": "reports/experiments/quantization_sensitivity_20260425_194405.json",
+      "csv": null,
+      "csv_rows": null
+    },
+    {
+      "stem": "quantization_sensitivity_20260425_194406",
+      "experiment": null,
+      "num_trials": null,
+      "json": null,
+      "csv": "reports/experiments/quantization_sensitivity_20260425_194406.csv",
+      "csv_rows": 216
+    },
+    {
+      "stem": "real_model_analysis_20260425_201739",
+      "experiment": "real_model_analysis",
+      "num_trials": 976,
+      "json": "reports/experiments/real_model_analysis_20260425_201739.json",
+      "csv": "reports/experiments/real_model_analysis_20260425_201739.csv",
+      "csv_rows": 976
+    },
+    {
+      "stem": "real_model_analysis_phi_2_20260426_142120",
+      "experiment": "real_model_analysis_phi_2",
+      "num_trials": 1296,
+      "json": "reports/experiments/real_model_analysis_phi_2_20260426_142120.json",
+      "csv": "reports/experiments/real_model_analysis_phi_2_20260426_142120.csv",
+      "csv_rows": 1296
+    },
+    {
+      "stem": "reasoning_token_waste_20260425_195211",
+      "experiment": "reasoning_token_waste",
+      "num_trials": 480,
+      "json": "reports/experiments/reasoning_token_waste_20260425_195211.json",
+      "csv": "reports/experiments/reasoning_token_waste_20260425_195211.csv",
+      "csv_rows": 480
+    },
+    {
+      "stem": "self_speculative_decoding_20260425_195132",
+      "experiment": "self_speculative_decoding",
+      "num_trials": 62,
+      "json": "reports/experiments/self_speculative_decoding_20260425_195132.json",
+      "csv": "reports/experiments/self_speculative_decoding_20260425_195132.csv",
+      "csv_rows": 62
+    },
+    {
+      "stem": "token_confidence_threshold_20260425_191621",
+      "experiment": "token_confidence_threshold",
+      "num_trials": 300,
+      "json": "reports/experiments/token_confidence_threshold_20260425_191621.json",
+      "csv": "reports/experiments/token_confidence_threshold_20260425_191621.csv",
+      "csv_rows": 300
+    }
+  ],
+  "charts": [
+    {
+      "path": "reports/charts/cross_model_kv_comparison.png",
+      "category": "chart_png",
+      "size_bytes": 110738,
+      "mtime_utc": "2026-04-26T10:27:03.312926+00:00",
+      "sha256": "96cd59a8d06ac087a3e36cad02bd9341ddfdbe5f57ca391dbe310993dba1e249",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 2083,
+        "height": 798
+      }
+    },
+    {
+      "path": "reports/charts/e2e_kv_logprob_cross_model.png",
+      "category": "chart_png",
+      "size_bytes": 108613,
+      "mtime_utc": "2026-04-30T11:17:24.864557+00:00",
+      "sha256": "3056f5ccd91fd251d929dccf4c1f59cdba3d85e2205f68d24fa9a81b8d9448c2",
+      "git_status": "A ",
+      "png": {
+        "width": 2084,
+        "height": 1181
+      }
+    },
+    {
+      "path": "reports/charts/e2e_kv_logprob_long_context.png",
+      "category": "chart_png",
+      "size_bytes": 122921,
+      "mtime_utc": "2026-04-30T11:29:37.724487+00:00",
+      "sha256": "83a45a64e24640ef39a239ff15a7245ba2dd1bb1d1960b2eebbbeb59980b24d3",
+      "git_status": "A ",
+      "png": {
+        "width": 2520,
+        "height": 810
+      }
+    },
+    {
+      "path": "reports/charts/entropy_quality_predictor.png",
+      "category": "chart_png",
+      "size_bytes": 111534,
+      "mtime_utc": "2026-04-25T16:59:29.709222+00:00",
+      "sha256": "c372ef0508c080b3b936d116073056ae2311d34b5eac22b313fb1712c061ff40",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 2084,
+        "height": 733
+      }
+    },
+    {
+      "path": "reports/charts/head_pruning_kl_div.png",
+      "category": "chart_png",
+      "size_bytes": 79706,
+      "mtime_utc": "2026-04-26T10:27:00.084927+00:00",
+      "sha256": "46e5ab58d2c4cd72469887abf7d531a8fb1e9355323ea13fd28e8725634fc904",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1481,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/head_pruning_quality.png",
+      "category": "chart_png",
+      "size_bytes": 100423,
+      "mtime_utc": "2026-04-26T10:26:59.788927+00:00",
+      "sha256": "704641fce217a45397e66dce55bb0a0f6e34ac5e335f106f8e6f6e4a5e0a76d7",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/kv_cache_quality_vs_memory.png",
+      "category": "chart_png",
+      "size_bytes": 84071,
+      "mtime_utc": "2026-04-26T10:27:00.296927+00:00",
+      "sha256": "eaae4cd38b0045dc4a623a9aeb1c4fcfec650cb138c33f5a9483f31b7198743b",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/quant_sensitivity_12L_768H.png",
+      "category": "chart_png",
+      "size_bytes": 88724,
+      "mtime_utc": "2026-04-26T10:27:00.604927+00:00",
+      "sha256": "f968e905b245cb9ae7f9323c83e80c2d7b43b484ef00544e3b3085316d66835f",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1126,
+        "height": 880
+      }
+    },
+    {
+      "path": "reports/charts/quant_sensitivity_24L_1024H.png",
+      "category": "chart_png",
+      "size_bytes": 119436,
+      "mtime_utc": "2026-04-26T10:27:01.012927+00:00",
+      "sha256": "dc62d81f0ff6a599540feb2f5c358e771388821f8ce29c13f5425ba2e1ee4329",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1140,
+        "height": 1240
+      }
+    },
+    {
+      "path": "reports/charts/quant_sensitivity_by_position.png",
+      "category": "chart_png",
+      "size_bytes": 196029,
+      "mtime_utc": "2026-04-26T10:27:01.176927+00:00",
+      "sha256": "f3a56849222a9a025325cce2c2a4801ab55c0c035760be3c9a5a16c6753e0ecd",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1481,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/real_extreme_compression.png",
+      "category": "chart_png",
+      "size_bytes": 136891,
+      "mtime_utc": "2026-04-26T10:27:02.944926+00:00",
+      "sha256": "8d6b481ce6a4b0bcd95a43d89f23c9b206d809b8f0dc80df02a81c952d5c292c",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/real_h2o_per_layer.png",
+      "category": "chart_png",
+      "size_bytes": 192864,
+      "mtime_utc": "2026-04-26T10:27:02.440926+00:00",
+      "sha256": "1d548d9444c3e210eddff1d77156c4a68bd3de0eb8e00b4607f4096832e05e02",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1781,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/real_sink_vs_sparsity.png",
+      "category": "chart_png",
+      "size_bytes": 80019,
+      "mtime_utc": "2026-04-26T10:27:02.796926+00:00",
+      "sha256": "ec58340036470f5ca7eec50fadcd4f1b2f22f25cfb6a3e2eb22401ed5178a228",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/real_token_confidence_by_task.png",
+      "category": "chart_png",
+      "size_bytes": 86136,
+      "mtime_utc": "2026-04-26T10:27:02.600926+00:00",
+      "sha256": "6445f46ceb9343da79884a655c81c14a2c1c9e7de242ec0e1479e0c9935d83b3",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/reasoning_strategy_comparison.png",
+      "category": "chart_png",
+      "size_bytes": 89789,
+      "mtime_utc": "2026-04-26T10:27:02.120926+00:00",
+      "sha256": "10a2f6268ff41ff5d4499c4f5d3f23c663193ef758d770886559d4162b3a28e1",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/reasoning_waste_correctness.png",
+      "category": "chart_png",
+      "size_bytes": 107343,
+      "mtime_utc": "2026-04-26T10:27:01.968926+00:00",
+      "sha256": "32464db77cf5eb7de2c395a8efb793d7bc6f45e61b3b8baec60d384d359a687f",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/routing_score_by_difficulty.png",
+      "category": "chart_png",
+      "size_bytes": 118285,
+      "mtime_utc": "2026-04-25T16:59:29.341222+00:00",
+      "sha256": "a5dfde602430f5111ddb3900e33415ba546c79a955a1100d59ed351da98f73c0",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 2084,
+        "height": 733
+      }
+    },
+    {
+      "path": "reports/charts/speculative_acceptance_rate.png",
+      "category": "chart_png",
+      "size_bytes": 76605,
+      "mtime_utc": "2026-04-26T10:27:01.488927+00:00",
+      "sha256": "90f181dfd2586f6b0ea3ef3e0b12e4f8734ea1b103e9421acbfe5788749f59d2",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/speculative_speedup_vs_quality.png",
+      "category": "chart_png",
+      "size_bytes": 113283,
+      "mtime_utc": "2026-04-26T10:27:01.340927+00:00",
+      "sha256": "7566790b100100b3c371d9321ee4f830e259c5b03e6748ee97dc5b08395ee8be",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/stacking_composition.png",
+      "category": "chart_png",
+      "size_bytes": 51023,
+      "mtime_utc": "2026-04-25T15:24:25.931131+00:00",
+      "sha256": "4c8d9ebd098cdbdca14a5fd4d8ea1b034ffa0cdb6d650485b91aeff3242d9003",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 890
+      }
+    },
+    {
+      "path": "reports/charts/stacking_pareto.png",
+      "category": "chart_png",
+      "size_bytes": 142529,
+      "mtime_utc": "2026-04-25T15:24:25.791131+00:00",
+      "sha256": "b4ed192b2541658b2355fb49838a1b4f7d4b51b1cee9cc4ac1dba780128a14b8",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1782,
+        "height": 1030
+      }
+    },
+    {
+      "path": "reports/charts/token_confidence_skip_rate.png",
+      "category": "chart_png",
+      "size_bytes": 71778,
+      "mtime_utc": "2026-04-26T10:26:59.260927+00:00",
+      "sha256": "9a48c9f31abe865957166a54b5085c7e36b00747c93592d50615b1ba74f3700f",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/token_confidence_temperature.png",
+      "category": "chart_png",
+      "size_bytes": 69186,
+      "mtime_utc": "2026-04-26T10:26:59.432927+00:00",
+      "sha256": "c46dcb3f59d392337e6753bab6e3db4f4a24b6d993b05b625da998d5540e09a4",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/token_confidence_vocab_size.png",
+      "category": "chart_png",
+      "size_bytes": 80484,
+      "mtime_utc": "2026-04-26T10:26:59.592927+00:00",
+      "sha256": "543532701c0fa7cfb963c3adadac06e6365c0a4e95c20c2b97c6f7fb10d852e0",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 883
+      }
+    },
+    {
+      "path": "reports/charts/transfer_bandwidth.png",
+      "category": "chart_png",
+      "size_bytes": 122848,
+      "mtime_utc": "2026-04-26T10:27:01.776927+00:00",
+      "sha256": "2f778bc2ac9bb5ac5089bf3702e3118e47255e19fc0d35be914bd9efcfc4a809",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 1482,
+        "height": 881
+      }
+    }
+  ],
+  "experiment_json": [
+    {
+      "path": "reports/experiments/attention_head_importance_20260425_191637.json",
+      "category": "experiment_json",
+      "size_bytes": 37492,
+      "mtime_utc": "2026-04-25T13:46:37.573093+00:00",
+      "sha256": "7d48450f93eaa738b1810e36a42591201df0640639d345ba3693bd25b534e908",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "attention_head_importance",
+      "timestamp": "2026-04-25T19:16:37.572352",
+      "num_trials": 39,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_112853.json",
+      "category": "experiment_json",
+      "size_bytes": 33308,
+      "mtime_utc": "2026-04-30T05:58:53.290392+00:00",
+      "sha256": "2340388488a0bcc0928cc8a1c4e7cfa4afcd403df929f6614cf6e5d48754f609",
+      "git_status": "A ",
+      "experiment": "e2e_kv_cache_qwen2.5_0.5b",
+      "timestamp": "2026-04-30T11:28:53.292470",
+      "num_trials": 25,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114230.json",
+      "category": "experiment_json",
+      "size_bytes": 60227,
+      "mtime_utc": "2026-04-30T06:12:30.790314+00:00",
+      "sha256": "b074385602ec80efe7a0af2b9c9382895b6d4122abb65db63676c58ac3995d73",
+      "git_status": "A ",
+      "experiment": "e2e_kv_cache_qwen2.5_0.5b",
+      "timestamp": "2026-04-30T11:42:30.788461",
+      "num_trials": 45,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114329.json",
+      "category": "experiment_json",
+      "size_bytes": 26493,
+      "mtime_utc": "2026-04-30T06:13:29.394308+00:00",
+      "sha256": "1cf8181b564239b1963500d6e06f778c6833fc0cd3fd7bad0f73708bd5e077df",
+      "git_status": "A ",
+      "experiment": "e2e_kv_cache_qwen2.5_0.5b",
+      "timestamp": "2026-04-30T11:43:29.392817",
+      "num_trials": 20,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_logprob_phi_2_20260430_164402.json",
+      "category": "experiment_json",
+      "size_bytes": 97099,
+      "mtime_utc": "2026-04-30T11:14:02.756577+00:00",
+      "sha256": "e6564c8c04764aa49a06b49da860be62b8360c4c6571cba509851890e4b20730",
+      "git_status": "A ",
+      "experiment": "e2e_kv_logprob_phi_2",
+      "timestamp": "2026-04-30T16:44:02.751410",
+      "num_trials": 50,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_121345.json",
+      "category": "experiment_json",
+      "size_bytes": 97320,
+      "mtime_utc": "2026-04-30T06:43:45.406134+00:00",
+      "sha256": "07d1261138bddec2519ca74a65019b230774b3e5e7dd0fc586e6352fda40b61f",
+      "git_status": "A ",
+      "experiment": "e2e_kv_logprob_qwen2.5_0.5b",
+      "timestamp": "2026-04-30T12:13:45.400690",
+      "num_trials": 50,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_164935.json",
+      "category": "experiment_json",
+      "size_bytes": 59397,
+      "mtime_utc": "2026-04-30T11:19:35.088544+00:00",
+      "sha256": "508d64219b52f07968f2fc2ece28107c5bcfa7d76efe01d9a8e9f75857bebe9a",
+      "git_status": "A ",
+      "experiment": "e2e_kv_logprob_qwen2.5_0.5b",
+      "timestamp": "2026-04-30T16:49:35.088583",
+      "num_trials": 30,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/entropy_quality_predictor_20260425_220318.json",
+      "category": "experiment_json",
+      "size_bytes": 21496,
+      "mtime_utc": "2026-04-25T16:33:18.305750+00:00",
+      "sha256": "84a9a78616090548c87936e8e3cd0ecc33e6a3537b2cb5d3bb16c18812001157",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "entropy_quality_predictor",
+      "timestamp": "2026-04-25T22:03:18.304968",
+      "num_trials": 20,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/memory_transfer_benchmark_20260425_195159.json",
+      "category": "experiment_json",
+      "size_bytes": 29463,
+      "mtime_utc": "2026-04-25T14:21:59.128384+00:00",
+      "sha256": "7e72e252dbf9ed968d12e4d717802c9e65ed1871cd77e69fbe0d22fd3d003941",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "memory_transfer_benchmark",
+      "timestamp": "2026-04-25T19:51:59.129970",
+      "num_trials": 36,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/optimization_stacking_20260425_205327.json",
+      "category": "experiment_json",
+      "size_bytes": 107443,
+      "mtime_utc": "2026-04-25T15:23:27.531150+00:00",
+      "sha256": "76a23134b8ec85d0dc5f0248a57a50f75a82d22579b6a715def26be934f3e072",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "optimization_stacking",
+      "timestamp": "2026-04-25T20:53:27.529948",
+      "num_trials": 108,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/prompt_routing_20260425_220235.json",
+      "category": "experiment_json",
+      "size_bytes": 31114,
+      "mtime_utc": "2026-04-25T16:32:35.221764+00:00",
+      "sha256": "8582e1bec7caabee0a5411ed6bc95e6a0334c4c07e57f5ecdf12d93c939083b1",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "prompt_routing",
+      "timestamp": "2026-04-25T22:02:35.222480",
+      "num_trials": 22,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/quantization_sensitivity_20260425_194405.json",
+      "category": "experiment_json",
+      "size_bytes": 183129,
+      "mtime_utc": "2026-04-25T14:14:06.008540+00:00",
+      "sha256": "73c9db15521c6c85a4f6ff8b8cd93955ff071630a2a9b049b59feddb2a64affa",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "quantization_sensitivity",
+      "timestamp": "2026-04-25T19:44:05.975419",
+      "num_trials": 216,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/real_model_analysis_20260425_201739.json",
+      "category": "experiment_json",
+      "size_bytes": 783826,
+      "mtime_utc": "2026-04-25T14:47:39.871869+00:00",
+      "sha256": "c7e5dfb3112904cee7f1781c129b8f49d81aab00670b691cf53edb166c30bcec",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "real_model_analysis",
+      "timestamp": "2026-04-25T20:17:39.823375",
+      "num_trials": 976,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/real_model_analysis_phi_2_20260426_142120.json",
+      "category": "experiment_json",
+      "size_bytes": 1049233,
+      "mtime_utc": "2026-04-26T08:51:20.150847+00:00",
+      "sha256": "cbf43ed40d8f3b640e1b67e40e6e80d057a6a46c0599da2041d87938907ec7a1",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "real_model_analysis_phi_2",
+      "timestamp": "2026-04-26T14:21:20.073406",
+      "num_trials": 1296,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/reasoning_token_waste_20260425_195211.json",
+      "category": "experiment_json",
+      "size_bytes": 344742,
+      "mtime_utc": "2026-04-25T14:22:11.332380+00:00",
+      "sha256": "cff408b1dcfc1e596fc1cbfc53b550db787bfb90d6b2e7dce42955d6185c0f4a",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "reasoning_token_waste",
+      "timestamp": "2026-04-25T19:52:11.311004",
+      "num_trials": 480,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/self_speculative_decoding_20260425_195132.json",
+      "category": "experiment_json",
+      "size_bytes": 46895,
+      "mtime_utc": "2026-04-25T14:21:32.612393+00:00",
+      "sha256": "d7ef996afb5d987113e629c97063344c2b51e9f2c077a7ee0420d991c8b636ce",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "self_speculative_decoding",
+      "timestamp": "2026-04-25T19:51:32.612322",
+      "num_trials": 62,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    },
+    {
+      "path": "reports/experiments/token_confidence_threshold_20260425_191621.json",
+      "category": "experiment_json",
+      "size_bytes": 268438,
+      "mtime_utc": "2026-04-25T13:46:21.093098+00:00",
+      "sha256": "7c516f21626c1c4eccd2a7686f9500e527d8e2a427fadf502d775801c5912092",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "experiment": "token_confidence_threshold",
+      "timestamp": "2026-04-25T19:16:21.080343",
+      "num_trials": 300,
+      "top_level_keys": [
+        "experiment",
+        "description",
+        "hardware",
+        "timestamp",
+        "total_duration_seconds",
+        "seed",
+        "num_trials",
+        "trials"
+      ]
+    }
+  ],
+  "experiment_csv": [
+    {
+      "path": "reports/experiments/attention_head_importance_20260425_191637.csv",
+      "category": "experiment_csv",
+      "size_bytes": 8818,
+      "mtime_utc": "2026-04-25T13:46:37.573093+00:00",
+      "sha256": "9b01db6b9debe40d5c96cdf73d6ff2051e75490306ad296d13f1b2f1a86c5e2c",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 39,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_heads",
+        "cfg_layers",
+        "cfg_model",
+        "cfg_pattern",
+        "cfg_prune_fraction",
+        "cfg_seq_len",
+        "metric_attention_mass_retained",
+        "metric_heads_pruned",
+        "metric_heads_remaining",
+        "metric_importance_max",
+        "metric_importance_mean",
+        "metric_importance_min",
+        "metric_importance_std",
+        "metric_kl_divergence",
+        "metric_prune_fraction",
+        "metric_quality_score"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_112853.csv",
+      "category": "experiment_csv",
+      "size_bytes": 5833,
+      "mtime_utc": "2026-04-30T05:58:53.290392+00:00",
+      "sha256": "ac6204601755252a6a84492993fa9d004d8ea258d542555b43227d150a6e3e5f",
+      "git_status": "A ",
+      "rows": 25,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_budget_frac",
+        "cfg_experiment",
+        "cfg_max_new_tokens",
+        "cfg_model",
+        "cfg_policy",
+        "cfg_prompt",
+        "metric_avg_cache_tokens",
+        "metric_exact_token_match",
+        "metric_final_cache_tokens",
+        "metric_first_mismatch_index",
+        "metric_max_cache_tokens",
+        "metric_new_tokens",
+        "metric_peak_memory_mb",
+        "metric_prompt_tokens",
+        "metric_text_similarity",
+        "metric_token_match_rate",
+        "metric_tokens_per_second",
+        "metric_wall_time_s"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114230.csv",
+      "category": "experiment_csv",
+      "size_bytes": 10248,
+      "mtime_utc": "2026-04-30T06:12:30.790314+00:00",
+      "sha256": "c212e38ea63999203d571056eab0a98792c93be66c67d7ddca4b98bc2c11c24f",
+      "git_status": "A ",
+      "rows": 45,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_budget_frac",
+        "cfg_experiment",
+        "cfg_max_new_tokens",
+        "cfg_model",
+        "cfg_policy",
+        "cfg_prompt",
+        "metric_avg_cache_tokens",
+        "metric_exact_token_match",
+        "metric_final_cache_tokens",
+        "metric_first_mismatch_index",
+        "metric_max_cache_tokens",
+        "metric_new_tokens",
+        "metric_peak_memory_mb",
+        "metric_prompt_tokens",
+        "metric_text_similarity",
+        "metric_token_match_rate",
+        "metric_tokens_per_second",
+        "metric_wall_time_s"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_cache_qwen2.5_0.5b_20260430_114329.csv",
+      "category": "experiment_csv",
+      "size_bytes": 4714,
+      "mtime_utc": "2026-04-30T06:13:29.394308+00:00",
+      "sha256": "4247baf2c1b4ea8414b4a9a64d0f842f68806a447653b856114e500e226a667b",
+      "git_status": "A ",
+      "rows": 20,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_budget_frac",
+        "cfg_experiment",
+        "cfg_max_new_tokens",
+        "cfg_model",
+        "cfg_policy",
+        "cfg_prompt",
+        "metric_avg_cache_tokens",
+        "metric_exact_token_match",
+        "metric_final_cache_tokens",
+        "metric_first_mismatch_index",
+        "metric_max_cache_tokens",
+        "metric_new_tokens",
+        "metric_peak_memory_mb",
+        "metric_prompt_tokens",
+        "metric_text_similarity",
+        "metric_token_match_rate",
+        "metric_tokens_per_second",
+        "metric_wall_time_s"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_logprob_phi_2_20260430_164402.csv",
+      "category": "experiment_csv",
+      "size_bytes": 16960,
+      "mtime_utc": "2026-04-30T11:14:02.756577+00:00",
+      "sha256": "bb88b94d0ed6f1f483ece97a97ad4bf733ad82b2e4c35d60ee4702a67db31e21",
+      "git_status": "A ",
+      "rows": 50,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_budget_frac",
+        "cfg_experiment",
+        "cfg_max_new_tokens",
+        "cfg_model",
+        "cfg_policy",
+        "cfg_prompt",
+        "metric_avg_cache_tokens",
+        "metric_avg_logprob_delta_vs_full",
+        "metric_final_cache_tokens",
+        "metric_max_cache_tokens",
+        "metric_mean_logprob",
+        "metric_nll",
+        "metric_nll_delta_vs_full",
+        "metric_peak_memory_mb",
+        "metric_perplexity",
+        "metric_perplexity_ratio_vs_full",
+        "metric_prompt_tokens",
+        "metric_scored_tokens",
+        "metric_tokens_per_second",
+        "metric_top1_match_delta_vs_full",
+        "metric_top1_match_rate",
+        "metric_total_logprob",
+        "metric_wall_time_s"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_121345.csv",
+      "category": "experiment_csv",
+      "size_bytes": 17518,
+      "mtime_utc": "2026-04-30T06:43:45.406134+00:00",
+      "sha256": "8f26f178d18d8e5b69a3cb44b2b92b466656512cd798c3e73bed5fb756136ea8",
+      "git_status": "A ",
+      "rows": 50,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_budget_frac",
+        "cfg_experiment",
+        "cfg_max_new_tokens",
+        "cfg_model",
+        "cfg_policy",
+        "cfg_prompt",
+        "metric_avg_cache_tokens",
+        "metric_avg_logprob_delta_vs_full",
+        "metric_final_cache_tokens",
+        "metric_max_cache_tokens",
+        "metric_mean_logprob",
+        "metric_nll",
+        "metric_nll_delta_vs_full",
+        "metric_peak_memory_mb",
+        "metric_perplexity",
+        "metric_perplexity_ratio_vs_full",
+        "metric_prompt_tokens",
+        "metric_scored_tokens",
+        "metric_tokens_per_second",
+        "metric_top1_match_delta_vs_full",
+        "metric_top1_match_rate",
+        "metric_total_logprob",
+        "metric_wall_time_s"
+      ]
+    },
+    {
+      "path": "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260430_164935.csv",
+      "category": "experiment_csv",
+      "size_bytes": 10681,
+      "mtime_utc": "2026-04-30T11:19:35.088544+00:00",
+      "sha256": "fb4c3ec3233adaacb73fec439b819873d7a4ea616693529f0a28036e8f18a694",
+      "git_status": "A ",
+      "rows": 30,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_budget_frac",
+        "cfg_experiment",
+        "cfg_max_new_tokens",
+        "cfg_model",
+        "cfg_policy",
+        "cfg_prompt",
+        "metric_avg_cache_tokens",
+        "metric_avg_logprob_delta_vs_full",
+        "metric_final_cache_tokens",
+        "metric_max_cache_tokens",
+        "metric_mean_logprob",
+        "metric_nll",
+        "metric_nll_delta_vs_full",
+        "metric_peak_memory_mb",
+        "metric_perplexity",
+        "metric_perplexity_ratio_vs_full",
+        "metric_prompt_tokens",
+        "metric_scored_tokens",
+        "metric_tokens_per_second",
+        "metric_top1_match_delta_vs_full",
+        "metric_top1_match_rate",
+        "metric_total_logprob",
+        "metric_wall_time_s"
+      ]
+    },
+    {
+      "path": "reports/experiments/entropy_quality_predictor_20260425_220318.csv",
+      "category": "experiment_csv",
+      "size_bytes": 5806,
+      "mtime_utc": "2026-04-25T16:33:18.305750+00:00",
+      "sha256": "1fc7f7d256ac984acd505fc786154e7e430f56e09952ea55cee42776e237d932",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 20,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_has_ground_truth",
+        "cfg_input_len",
+        "cfg_prompt",
+        "cfg_prompt_type",
+        "metric_avg_attention_entropy",
+        "metric_avg_attention_sparsity",
+        "metric_avg_token_entropy",
+        "metric_avg_top_prob",
+        "metric_confidence_signal",
+        "metric_entropy_drift",
+        "metric_entropy_variance",
+        "metric_max_token_entropy",
+        "metric_min_token_entropy",
+        "metric_min_top_prob",
+        "metric_output_len",
+        "metric_quality_score"
+      ]
+    },
+    {
+      "path": "reports/experiments/memory_transfer_benchmark_20260425_195159.csv",
+      "category": "experiment_csv",
+      "size_bytes": 6916,
+      "mtime_utc": "2026-04-25T14:21:59.128384+00:00",
+      "sha256": "6c325139d35e22ea599595441d2a1a004d4c1956f0c93b58994505f865724f25",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 36,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_device",
+        "cfg_direction",
+        "cfg_size_mb",
+        "cfg_use_pinned_memory",
+        "metric_bandwidth_gbps_max",
+        "metric_bandwidth_gbps_mean",
+        "metric_transfer_time_ms_max",
+        "metric_transfer_time_ms_mean",
+        "metric_transfer_time_ms_min",
+        "metric_transfer_time_ms_p50"
+      ]
+    },
+    {
+      "path": "reports/experiments/optimization_stacking_20260425_205327.csv",
+      "category": "experiment_csv",
+      "size_bytes": 24257,
+      "mtime_utc": "2026-04-25T15:23:27.531150+00:00",
+      "sha256": "6228c51f7e393780035689140ac0c334eba67db3afdf2474184091b26977e060",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 108,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_input_len",
+        "cfg_kv_policy",
+        "cfg_prompt",
+        "cfg_prune_fraction",
+        "cfg_quant_level",
+        "metric_combined_quality",
+        "metric_combined_speed_factor",
+        "metric_kv_memory_saved_pct",
+        "metric_kv_quality",
+        "metric_kv_speed_factor",
+        "metric_prune_quality",
+        "metric_prune_speed_factor",
+        "metric_quality_speed_score",
+        "metric_quant_cosine_sim",
+        "metric_quant_speed_factor",
+        "metric_quant_top_agree"
+      ]
+    },
+    {
+      "path": "reports/experiments/prompt_routing_20260425_220235.csv",
+      "category": "experiment_csv",
+      "size_bytes": 8332,
+      "mtime_utc": "2026-04-25T16:32:35.221764+00:00",
+      "sha256": "8e0a13088fdb00b70d1d84c8293c6613b792b2b22ea4796919808d8145c0a1cd",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 22,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_expected_difficulty",
+        "cfg_input_len",
+        "cfg_prompt",
+        "cfg_prompt_text_len",
+        "metric_avg_attention_entropy",
+        "metric_avg_attention_sparsity",
+        "metric_avg_gen_entropy",
+        "metric_avg_gen_top_prob",
+        "metric_decode_time_ms",
+        "metric_difficulty_label",
+        "metric_first_token_entropy",
+        "metric_first_token_top10_mass",
+        "metric_first_token_top5_mass",
+        "metric_first_token_top_prob",
+        "metric_input_token_count",
+        "metric_max_sink_mass",
+        "metric_min_gen_top_prob",
+        "metric_output_len",
+        "metric_output_repetition",
+        "metric_prefill_time_ms",
+        "metric_routing_score",
+        "metric_tokens_above_90pct",
+        "metric_tokens_above_95pct",
+        "metric_unique_token_ratio"
+      ]
+    },
+    {
+      "path": "reports/experiments/quantization_sensitivity_20260425_194406.csv",
+      "category": "experiment_csv",
+      "size_bytes": 48163,
+      "mtime_utc": "2026-04-25T14:14:06.012540+00:00",
+      "sha256": "134afffff05f80f5910e73c7ab80cf1d86e60672ee2c5293f9433540e537db39",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 216,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_bits",
+        "cfg_hidden_dim",
+        "cfg_layer_idx",
+        "cfg_layer_position",
+        "cfg_model",
+        "cfg_num_layers",
+        "metric_cosine_similarity",
+        "metric_kl_divergence",
+        "metric_mse",
+        "metric_outlier_pct",
+        "metric_sensitivity",
+        "metric_weight_range",
+        "metric_weight_std"
+      ]
+    },
+    {
+      "path": "reports/experiments/real_model_analysis_20260425_201739.csv",
+      "category": "experiment_csv",
+      "size_bytes": 189365,
+      "mtime_utc": "2026-04-25T14:47:39.879869+00:00",
+      "sha256": "e39bc7fbc9b802b6e5a1d51a4a7603a35d03354c3ffa31b900f847a4586b57b7",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 976,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_budget_frac",
+        "cfg_experiment",
+        "cfg_input_len",
+        "cfg_layer",
+        "cfg_num_heads",
+        "cfg_num_layers",
+        "cfg_prompt",
+        "metric_avg_entropy",
+        "metric_avg_top5_mass",
+        "metric_avg_top_prob",
+        "metric_budget_frac",
+        "metric_budget_tokens",
+        "metric_entropy_max",
+        "metric_entropy_mean",
+        "metric_entropy_min",
+        "metric_entropy_std",
+        "metric_focused_head_count",
+        "metric_h2o_quality",
+        "metric_h2o_vs_window",
+        "metric_layer",
+        "metric_max_top_prob",
+        "metric_memory_saved_pct",
+        "metric_min_top_prob",
+        "metric_most_diffuse_head_entropy",
+        "metric_most_focused_head_entropy",
+        "metric_num_tokens",
+        "metric_seq_len",
+        "metric_sink_mass_max",
+        "metric_sink_mass_mean",
+        "metric_sink_quality",
+        "metric_skip_rate_50",
+        "metric_skip_rate_80",
+        "metric_skip_rate_90",
+        "metric_skip_rate_95",
+        "metric_skip_rate_99",
+        "metric_sparsity_mean",
+        "metric_window_quality"
+      ]
+    },
+    {
+      "path": "reports/experiments/real_model_analysis_phi_2_20260426_142120.csv",
+      "category": "experiment_csv",
+      "size_bytes": 262210,
+      "mtime_utc": "2026-04-26T08:51:20.162847+00:00",
+      "sha256": "a32d95ddbb9933987a2a85520dd4ebc345c63cbb019ce7b894ed46f7b8092966",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 1296,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_budget_frac",
+        "cfg_experiment",
+        "cfg_input_len",
+        "cfg_layer",
+        "cfg_num_heads",
+        "cfg_num_layers",
+        "cfg_prompt",
+        "metric_avg_entropy",
+        "metric_avg_top5_mass",
+        "metric_avg_top_prob",
+        "metric_budget_frac",
+        "metric_budget_tokens",
+        "metric_entropy_max",
+        "metric_entropy_mean",
+        "metric_entropy_min",
+        "metric_entropy_std",
+        "metric_focused_head_count",
+        "metric_h2o_quality",
+        "metric_h2o_vs_window",
+        "metric_layer",
+        "metric_max_top_prob",
+        "metric_memory_saved_pct",
+        "metric_min_top_prob",
+        "metric_most_diffuse_head_entropy",
+        "metric_most_focused_head_entropy",
+        "metric_nonfinite_token_steps",
+        "metric_num_tokens",
+        "metric_seq_len",
+        "metric_sink_mass_max",
+        "metric_sink_mass_mean",
+        "metric_sink_quality",
+        "metric_skip_rate_50",
+        "metric_skip_rate_80",
+        "metric_skip_rate_90",
+        "metric_skip_rate_95",
+        "metric_skip_rate_99",
+        "metric_sparsity_mean",
+        "metric_valid_tokens",
+        "metric_window_quality"
+      ]
+    },
+    {
+      "path": "reports/experiments/reasoning_token_waste_20260425_195211.csv",
+      "category": "experiment_csv",
+      "size_bytes": 63614,
+      "mtime_utc": "2026-04-25T14:22:11.336380+00:00",
+      "sha256": "5306d456e42cdfdda8765e899e987dfdaa71b2cabc595595f8552f1f783936b3",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 480,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_chain_length",
+        "cfg_difficulty",
+        "cfg_keep_fraction",
+        "cfg_strategy",
+        "metric_answer_correct",
+        "metric_quality_cosine",
+        "metric_quality_mse",
+        "metric_tokens_kept",
+        "metric_tokens_removed",
+        "metric_tokens_removed_pct"
+      ]
+    },
+    {
+      "path": "reports/experiments/self_speculative_decoding_20260425_195132.csv",
+      "category": "experiment_csv",
+      "size_bytes": 9301,
+      "mtime_utc": "2026-04-25T14:21:32.612393+00:00",
+      "sha256": "aa0b39c506d50e8ae0ffc869c250a93080679a8c3068ce016cab7a8b9f5ba2d3",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 62,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_exit_layer",
+        "cfg_exit_position",
+        "cfg_hidden_dim",
+        "cfg_model",
+        "cfg_num_layers",
+        "metric_acceptance_rate",
+        "metric_compute_saved_pct",
+        "metric_cosine_similarity",
+        "metric_effective_speedup",
+        "metric_layers_saved",
+        "metric_mse"
+      ]
+    },
+    {
+      "path": "reports/experiments/token_confidence_threshold_20260425_191621.csv",
+      "category": "experiment_csv",
+      "size_bytes": 62773,
+      "mtime_utc": "2026-04-25T13:46:21.097098+00:00",
+      "sha256": "8ad741b0bde9c658c1eaf23094198bd7b487aedce3eee0129abe21fcb4d5abec",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 300,
+      "columns": [
+        "trial_id",
+        "status",
+        "duration_s",
+        "cfg_profile",
+        "cfg_seq_len",
+        "cfg_temperature",
+        "cfg_threshold",
+        "cfg_vocab_size",
+        "metric_argmax_sample_agreement",
+        "metric_avg_top_prob",
+        "metric_confident_entropy_avg",
+        "metric_median_top_prob",
+        "metric_p10_top_prob",
+        "metric_p90_top_prob",
+        "metric_skip_rate",
+        "metric_threshold",
+        "metric_uncertain_entropy_avg"
+      ]
+    }
+  ],
+  "report_json": [
+    {
+      "path": "reports/kv_cache/initial_results.json",
+      "category": "report_json",
+      "size_bytes": 23550,
+      "mtime_utc": "2026-04-25T10:09:46.389445+00:00",
+      "sha256": "1e926e9d2252e83055ccda52c833e6e26f3f8fb3a0ea041679ad33abd8a27170",
+      "git_status": "tracked_clean_or_untracked_clean"
+    },
+    {
+      "path": "reports/optimization_recommendation.json",
+      "category": "report_json",
+      "size_bytes": 2683,
+      "mtime_utc": "2026-04-26T10:27:04.700925+00:00",
+      "sha256": "08d83bef278d42df8e632877ad95b6ecd8d53304deddf5bd5f6e33465af7d5c7",
+      "git_status": "tracked_clean_or_untracked_clean"
+    }
+  ],
+  "result_csv": [
+    {
+      "path": "results/m1_pro/production_benchmarks.csv",
+      "category": "experiment_csv",
+      "size_bytes": 50431,
+      "mtime_utc": "2026-04-13T15:12:05.843648+00:00",
+      "sha256": "23b9b8fedbd212131cf27afc817c9916df67c2dbe56cb9bbe434c9fb8cc84353",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 330,
+      "columns": [
+        "gpu_name",
+        "total_vram_gb",
+        "base_clock_mhz",
+        "memory_type",
+        "isolation_level",
+        "model",
+        "family",
+        "context_length",
+        "run_number",
+        "latency_sec",
+        "tokens_per_sec",
+        "ttft_ms",
+        "max_vram_mb",
+        "avg_power_watts",
+        "tokens_per_joule",
+        "avg_temp_c",
+        "avg_clock_mhz",
+        "cold_start_sec",
+        "perplexity"
+      ]
+    },
+    {
+      "path": "results/m1_pro/thermal_log.csv",
+      "category": "experiment_csv",
+      "size_bytes": 374141,
+      "mtime_utc": "2026-04-13T15:12:05.843648+00:00",
+      "sha256": "a6e1135a924820dd0671fcf79558f06ec6023beb3f39af482d497835255637b5",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 4978,
+      "columns": [
+        "1773894923.904309",
+        "DeepSeek-R1-Distill-Qwen-7B-Q4_K_M.gguf",
+        "4589.27",
+        "24.005",
+        "0.0",
+        "0.0"
+      ]
+    },
+    {
+      "path": "results/master_ledger.csv",
+      "category": "experiment_csv",
+      "size_bytes": 11311,
+      "mtime_utc": "2026-04-13T15:12:05.843648+00:00",
+      "sha256": "ee020d4346e0ad7c1914ff03a19644dc73fd90a07c78314c8fceafba5d1c077d",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 60,
+      "columns": [
+        "gpu_name",
+        "hardware_slug",
+        "memory_type",
+        "isolation_level",
+        "model",
+        "family",
+        "quantization",
+        "param_count_b",
+        "context_length",
+        "run_number",
+        "latency_sec",
+        "tokens_per_sec",
+        "ttft_ms",
+        "cold_start_sec",
+        "max_vram_mb",
+        "avg_power_watts",
+        "tokens_per_joule",
+        "avg_temp_c",
+        "avg_clock_mhz",
+        "base_clock_mhz",
+        "perplexity",
+        "run_date",
+        "notes"
+      ]
+    },
+    {
+      "path": "results/reference_benchmarks/rtx_3080_baseline/production_benchmarks.csv",
+      "category": "experiment_csv",
+      "size_bytes": 14939,
+      "mtime_utc": "2026-04-13T15:12:05.843648+00:00",
+      "sha256": "659aec3c85d3e1345e1036a587256e3765812a510612b7404f4aff05b5573350",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 150,
+      "columns": [
+        "model",
+        "family",
+        "context_length",
+        "run_number",
+        "latency_sec",
+        "tokens_per_sec",
+        "max_vram_mb",
+        "avg_power_watts",
+        "tokens_per_joule",
+        "avg_temp_c",
+        "avg_clock_mhz",
+        "perplexity"
+      ]
+    },
+    {
+      "path": "results/reference_benchmarks/rtx_3080_baseline/thermal_log.csv",
+      "category": "experiment_csv",
+      "size_bytes": 90372,
+      "mtime_utc": "2026-04-13T15:12:05.843648+00:00",
+      "sha256": "00504cb744c69702c211949f4592916c7bab9c420bf05ebbb70500a9f7920f81",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "rows": 1094,
+      "columns": [
+        "timestamp",
+        "model",
+        "vram_mb",
+        "power_w",
+        "temp_c",
+        "clock_mhz"
+      ]
+    }
+  ],
+  "other_artifacts": [
+    {
+      "path": "results/dashboard.png",
+      "category": "other_artifact",
+      "size_bytes": 1719212,
+      "mtime_utc": "2026-04-13T15:12:05.839648+00:00",
+      "sha256": "6e4c857d837257823d49187680dfa2d03f3ff12526c00125048046548d8ed1db",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 7111,
+        "height": 5340
+      }
+    },
+    {
+      "path": "docs/assets/efficiency_frontier.png",
+      "category": "other_artifact",
+      "size_bytes": 219517,
+      "mtime_utc": "2026-04-13T15:12:05.823648+00:00",
+      "sha256": "a1f76d7b2dfff8f371964f48a8dabaec3b9c82169fcf070c2a04dc354c6ee8bb",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 2766,
+        "height": 1580
+      }
+    },
+    {
+      "path": "docs/assets/m1_pro_vs_3080_comparison.png",
+      "category": "other_artifact",
+      "size_bytes": 613522,
+      "mtime_utc": "2026-04-13T15:12:05.827648+00:00",
+      "sha256": "226d0b2c567b10bee1dd6622d1219c2441675468fec07f34c317f944a3645821",
+      "git_status": "tracked_clean_or_untracked_clean",
+      "png": {
+        "width": 4351,
+        "height": 3112
+      }
+    }
+  ]
+}

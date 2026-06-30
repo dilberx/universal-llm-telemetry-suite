@@ -241,3 +241,101 @@ class TestBenchmarkRunner:
         assert "h2o" in table
         assert "adaptive" in table
         assert "Quality" in table
+
+
+# ============================================================================
+# E2E KV Cache and Routing Tests
+# ============================================================================
+
+class TestE2EKVCachePruning:
+    def _create_mock_cache(self, seq_len=16):
+        from transformers.cache_utils import DynamicCache
+        k1 = torch.rand(1, 4, seq_len, 8)
+        v1 = torch.rand(1, 4, seq_len, 8)
+        k2 = torch.rand(1, 4, seq_len, 8)
+        v2 = torch.rand(1, 4, seq_len, 8)
+        return DynamicCache.from_legacy_cache(((k1, v1), (k2, v2)))
+
+    def test_prune_state_pyramid(self):
+        from src.experiments.exp_e2e_kv_cache import _prune_state
+        cache = self._create_mock_cache(seq_len=16)
+        positions = torch.arange(16)
+        importance = torch.rand(16)
+
+        # budget_frac = 0.5 -> overall target budget is 8 tokens
+        new_cache, new_pos, new_imp = _prune_state(
+            policy="pyramid",
+            budget_frac=0.5,
+            min_keep=4,
+            cache=cache,
+            positions=positions,
+            importance=importance,
+            total_positions_seen=16,
+        )
+
+        legacy = new_cache.to_legacy_cache()
+        assert legacy[0][0].shape[2] == 8
+        assert legacy[1][0].shape[2] == 8
+
+        assert new_pos.numel() == 8
+
+    def test_prune_state_snapkv(self):
+        from src.experiments.exp_e2e_kv_cache import _prune_state
+        cache = self._create_mock_cache(seq_len=16)
+        positions = torch.arange(16)
+        importance = torch.rand(16)
+        raw_attentions = [torch.rand(1, 4, 1, 16) for _ in range(2)]
+
+        new_cache, _, _ = _prune_state(
+            policy="snapkv",
+            budget_frac=0.5,
+            min_keep=4,
+            cache=cache,
+            positions=positions,
+            importance=importance,
+            total_positions_seen=16,
+            raw_attentions=raw_attentions,
+        )
+        legacy = new_cache.to_legacy_cache()
+        assert legacy[0][0].shape[2] == 8
+
+    def test_prune_state_adaptive(self):
+        from src.experiments.exp_e2e_kv_cache import _prune_state
+        cache = self._create_mock_cache(seq_len=16)
+        positions = torch.arange(16)
+        importance = torch.rand(16)
+        
+        # High entropy attention (uniform)
+        raw_attentions_high = [torch.ones(1, 4, 1, 16) / 16.0 for _ in range(2)]
+        cache_high, _, _ = _prune_state(
+            policy="adaptive",
+            budget_frac=0.5,
+            min_keep=4,
+            cache=cache,
+            positions=positions,
+            importance=importance,
+            total_positions_seen=16,
+            raw_attentions=raw_attentions_high,
+        )
+        
+        # Low entropy attention (concentrated on token 0)
+        raw_attentions_low = [torch.zeros(1, 4, 1, 16) for _ in range(2)]
+        for r in raw_attentions_low:
+            r[:, :, :, 0] = 1.0
+            
+        cache_low, _, _ = _prune_state(
+            policy="adaptive",
+            budget_frac=0.5,
+            min_keep=2,
+            cache=cache,
+            positions=positions,
+            importance=importance,
+            total_positions_seen=16,
+            raw_attentions=raw_attentions_low,
+        )
+        
+        legacy_high = cache_high.to_legacy_cache()
+        legacy_low = cache_low.to_legacy_cache()
+        
+        # High entropy should keep more or equal tokens than low entropy
+        assert legacy_high[0][0].shape[2] >= legacy_low[0][0].shape[2]

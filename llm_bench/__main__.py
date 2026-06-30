@@ -31,6 +31,7 @@ import shutil
 import subprocess
 import sys
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 
@@ -214,40 +215,86 @@ def check_dependencies() -> bool:
 
 # ── Experiment Runners ───────────────────────────────────────────────
 
+ExperimentRunnerFn = Callable[[str], object]
+
+
+def _run_kv_cache(device: str):
+    from src.kv_cache_bench.benchmark import KVCacheBenchmark, BenchmarkConfig
+    config = BenchmarkConfig(device=device)
+    bench = KVCacheBenchmark(config)
+    report = bench.run()
+    report.save("./reports/kv_cache/latest_results.json")
+    print(report.summary_table())
+    return report
+
+
+def _run_token_confidence(device: str):
+    from src.experiments.exp_token_confidence import run_token_confidence_experiment
+    return run_token_confidence_experiment()
+
+
+def _run_head_pruning(device: str):
+    from src.experiments.exp_attention_heads import run_attention_head_experiment
+    return run_attention_head_experiment()
+
+
+def _run_real_model(device: str):
+    from src.experiments.exp_real_model import run_real_model_experiment
+    return run_real_model_experiment()
+
+
+def _run_stacking(device: str):
+    from src.experiments.exp_stacking import run_stacking_experiment
+    return run_stacking_experiment()
+
+
+def _run_routing(device: str):
+    from src.experiments.exp_routing import run_routing_experiment
+    return run_routing_experiment()
+
+
+def _run_entropy_quality(device: str):
+    from src.experiments.exp_entropy_quality import run_entropy_quality_experiment
+    return run_entropy_quality_experiment()
+
+
+def _run_e2e_kv_cache(device: str):
+    from src.experiments.exp_e2e_kv_cache import run_e2e_kv_cache_experiment
+    return run_e2e_kv_cache_experiment()
+
+
+EXPERIMENT_RUNNERS: dict[str, ExperimentRunnerFn] = {
+    "kv_cache": _run_kv_cache,
+    "token_confidence": _run_token_confidence,
+    "head_pruning": _run_head_pruning,
+    "real_model": _run_real_model,
+    "stacking": _run_stacking,
+    "routing": _run_routing,
+    "entropy_quality": _run_entropy_quality,
+    "e2e_kv_cache": _run_e2e_kv_cache,
+}
+
+DEFAULT_EXPERIMENTS = ("kv_cache", "token_confidence", "head_pruning")
+
+
 def run_experiment(name: str, device: str = "cpu"):
     """Run a specific experiment."""
     print(f"\n🔬 Running experiment: {name}")
     print(f"   Device: {device}")
     print("─" * 50)
 
-    if name == "token_confidence":
-        from src.experiments.exp_token_confidence import run_token_confidence_experiment
-        return run_token_confidence_experiment()
-
-    elif name == "head_pruning":
-        from src.experiments.exp_attention_heads import run_attention_head_experiment
-        return run_attention_head_experiment()
-
-    elif name == "kv_cache":
-        from src.kv_cache_bench.benchmark import KVCacheBenchmark, BenchmarkConfig
-        config = BenchmarkConfig(device=device)
-        bench = KVCacheBenchmark(config)
-        report = bench.run()
-        report.save("./reports/kv_cache/latest_results.json")
-        print(report.summary_table())
-        return report
-
-    else:
+    runner = EXPERIMENT_RUNNERS.get(name)
+    if runner is None:
         print(f"  ⚠ Unknown experiment: {name}")
         return None
+    return runner(device)
 
 
 def run_all(device: str = "cpu"):
-    """Run all experiments."""
-    experiments = ["kv_cache", "token_confidence", "head_pruning"]
+    """Run the default experiment set."""
     results = {}
 
-    for exp in experiments:
+    for exp in DEFAULT_EXPERIMENTS:
         try:
             results[exp] = run_experiment(exp, device)
         except Exception as e:
@@ -274,8 +321,7 @@ def main():
     # run
     run_parser = subparsers.add_parser("run", help="Run benchmark experiments")
     run_parser.add_argument("--experiment", "-e", default="all",
-                            choices=["all", "kv_cache", "token_confidence", "head_pruning",
-                                     "real_model", "stacking", "routing", "entropy_quality"],
+                            choices=["all", *EXPERIMENT_RUNNERS],
                             help="Which experiment to run")
     run_parser.add_argument("--device", default=None, help="Override device (cuda/cpu/mps)")
     run_parser.add_argument("--model", choices=list(MODELS.keys()), help="Override model")
@@ -360,6 +406,8 @@ def main():
         try:
             from src.experiments.visualize import generate_all_charts
             generate_all_charts()
+            from src.experiments.visualize_e2e import generate_e2e_charts
+            generate_e2e_charts()
         except Exception as e:
             print(f"  ⚠ Chart generation failed: {e}")
 
@@ -372,6 +420,8 @@ def main():
     elif args.command == "charts":
         from src.experiments.visualize import generate_all_charts
         generate_all_charts()
+        from src.experiments.visualize_e2e import generate_e2e_charts
+        generate_e2e_charts()
         # Also generate real model charts
         try:
             from src.experiments.visualize_real import (
