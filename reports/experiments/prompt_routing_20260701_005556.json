@@ -1,0 +1,595 @@
+{
+  "experiment": "prompt_routing",
+  "description": "Measures SEER (Speculative Early-Exit Routing) on Qwen2.5-0.5B vs Phi-2 2.7B. Evaluates live trajectory stability to decide whether to abort and route.",
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_vram_mb": 10239.375,
+    "gpu_driver": "576.88",
+    "cuda_version": "12.8",
+    "cpu_name": "x86_64",
+    "cpu_cores": 16,
+    "ram_gb": 15.6,
+    "python_version": "3.10.12",
+    "torch_version": "2.10.0+cu128",
+    "os_info": "Linux 6.18.33.2-microsoft-standard-WSL2"
+  },
+  "timestamp": "2026-07-01T00:55:56.493638",
+  "total_duration_seconds": 38.709131479263306,
+  "seed": 42,
+  "num_trials": 22,
+  "trials": [
+    {
+      "trial_id": "prompt_routing_t0001",
+      "config": {
+        "prompt": "greeting",
+        "expected_difficulty": "easy",
+        "input_len": 7
+      },
+      "config_hash": "d457f46ee3d4",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.22820000847180685,
+        "avg_small_entropy": 4.216814200083415,
+        "difficulty_label": 0
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:32.816490",
+      "end_time": "2026-07-01T00:55:32.816513",
+      "duration_seconds": 9.958999953596503e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0002",
+      "config": {
+        "prompt": "simple_math",
+        "expected_difficulty": "easy",
+        "input_len": 10
+      },
+      "config_hash": "b45cafd9af31",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.5504869620005289,
+        "avg_small_entropy": 1.706556995709737,
+        "difficulty_label": 0
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:34.014072",
+      "end_time": "2026-07-01T00:55:34.014092",
+      "duration_seconds": 9.196999826599495e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0003",
+      "config": {
+        "prompt": "yes_no",
+        "expected_difficulty": "easy",
+        "input_len": 5
+      },
+      "config_hash": "0fd2f3144d55",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.4042164621253808,
+        "avg_small_entropy": 3.1692699591318765,
+        "difficulty_label": 0
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:35.120517",
+      "end_time": "2026-07-01T00:55:35.120559",
+      "duration_seconds": 1.1771999879783834e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0004",
+      "config": {
+        "prompt": "definition",
+        "expected_difficulty": "easy",
+        "input_len": 5
+      },
+      "config_hash": "696b45dce689",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.664254387219747,
+        "avg_small_entropy": 1.9674673477808635,
+        "difficulty_label": 0
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:36.215800",
+      "end_time": "2026-07-01T00:55:36.215826",
+      "duration_seconds": 1.3024000054429052e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0005",
+      "config": {
+        "prompt": "format",
+        "expected_difficulty": "easy",
+        "input_len": 8
+      },
+      "config_hash": "58345bba2ba9",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.6920307278633118,
+        "avg_small_entropy": 1.2961742410746713,
+        "difficulty_label": 0
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:37.342993",
+      "end_time": "2026-07-01T00:55:37.343013",
+      "duration_seconds": 9.807999958866276e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0006",
+      "config": {
+        "prompt": "list",
+        "expected_difficulty": "easy",
+        "input_len": 6
+      },
+      "config_hash": "8e06bf238142",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.49199263751506805,
+        "avg_small_entropy": 2.3833621740341187,
+        "difficulty_label": 0
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:38.403419",
+      "end_time": "2026-07-01T00:55:38.403443",
+      "duration_seconds": 1.1761999985537841e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0007",
+      "config": {
+        "prompt": "complete",
+        "expected_difficulty": "easy",
+        "input_len": 5
+      },
+      "config_hash": "6ad6be9262db",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.3175765524307887,
+        "avg_small_entropy": 3.123629093170166,
+        "difficulty_label": 0
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:39.503799",
+      "end_time": "2026-07-01T00:55:39.503822",
+      "duration_seconds": 9.909000027619186e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0008",
+      "config": {
+        "prompt": "emoji",
+        "expected_difficulty": "easy",
+        "input_len": 7
+      },
+      "config_hash": "b82dfc09ae2a",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.24791925897200903,
+        "avg_small_entropy": 4.044755299886067,
+        "difficulty_label": 0
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:40.601009",
+      "end_time": "2026-07-01T00:55:40.601030",
+      "duration_seconds": 9.276999890062143e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0009",
+      "config": {
+        "prompt": "explain_simple",
+        "expected_difficulty": "medium",
+        "input_len": 11
+      },
+      "config_hash": "4a7b9361da32",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.6529049177964529,
+        "avg_small_entropy": 1.4886907537778218,
+        "difficulty_label": 1
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:41.792071",
+      "end_time": "2026-07-01T00:55:41.792182",
+      "duration_seconds": 2.030800010288658e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0010",
+      "config": {
+        "prompt": "code_easy",
+        "expected_difficulty": "medium",
+        "input_len": 12
+      },
+      "config_hash": "4540665e4021",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.5881011784076691,
+        "avg_small_entropy": 1.6293360988299053,
+        "difficulty_label": 1
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:42.989668",
+      "end_time": "2026-07-01T00:55:42.989691",
+      "duration_seconds": 1.0278999980073422e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0011",
+      "config": {
+        "prompt": "summarize",
+        "expected_difficulty": "medium",
+        "input_len": 28
+      },
+      "config_hash": "6ceae771a362",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.22233333686987558,
+        "avg_small_entropy": 3.65208633740743,
+        "difficulty_label": 1
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:44.080112",
+      "end_time": "2026-07-01T00:55:44.080136",
+      "duration_seconds": 1.1160999974890728e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0012",
+      "config": {
+        "prompt": "rewrite",
+        "expected_difficulty": "medium",
+        "input_len": 18
+      },
+      "config_hash": "91d1f0efaa3a",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.16096505771080652,
+        "avg_small_entropy": 4.301062107086182,
+        "difficulty_label": 1
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:45.216384",
+      "end_time": "2026-07-01T00:55:45.216407",
+      "duration_seconds": 1.0929999916697852e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0013",
+      "config": {
+        "prompt": "translate_common",
+        "expected_difficulty": "medium",
+        "input_len": 10
+      },
+      "config_hash": "920818be20d8",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.5070489197969437,
+        "avg_small_entropy": 2.5175978342692056,
+        "difficulty_label": 1
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:46.301263",
+      "end_time": "2026-07-01T00:55:46.301284",
+      "duration_seconds": 8.966999985204893e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0014",
+      "config": {
+        "prompt": "classify",
+        "expected_difficulty": "medium",
+        "input_len": 18
+      },
+      "config_hash": "b2120375c8b6",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.5190457180142403,
+        "avg_small_entropy": 1.8813250909248989,
+        "difficulty_label": 1
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:47.417636",
+      "end_time": "2026-07-01T00:55:47.417659",
+      "duration_seconds": 9.567999995852006e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0015",
+      "config": {
+        "prompt": "reason_multi",
+        "expected_difficulty": "hard",
+        "input_len": 25
+      },
+      "config_hash": "1fae62c05407",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.8471472064654032,
+        "avg_small_entropy": 0.6176337635455033,
+        "difficulty_label": 2
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:48.475023",
+      "end_time": "2026-07-01T00:55:48.475044",
+      "duration_seconds": 9.868000006463262e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0016",
+      "config": {
+        "prompt": "code_hard",
+        "expected_difficulty": "hard",
+        "input_len": 21
+      },
+      "config_hash": "b115819f17bb",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.6422380159298579,
+        "avg_small_entropy": 1.6534117013216019,
+        "difficulty_label": 2
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:49.545861",
+      "end_time": "2026-07-01T00:55:49.545882",
+      "duration_seconds": 9.246999979950488e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0017",
+      "config": {
+        "prompt": "math_word",
+        "expected_difficulty": "hard",
+        "input_len": 41
+      },
+      "config_hash": "cb06e0f0d018",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.7535931766033173,
+        "avg_small_entropy": 1.1768507808446884,
+        "difficulty_label": 2
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:50.642531",
+      "end_time": "2026-07-01T00:55:50.642553",
+      "duration_seconds": 9.337999927083729e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0018",
+      "config": {
+        "prompt": "creative_long",
+        "expected_difficulty": "hard",
+        "input_len": 17
+      },
+      "config_hash": "5811d9887fea",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.23029891649881998,
+        "avg_small_entropy": 3.6605711778004966,
+        "difficulty_label": 2
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:51.912445",
+      "end_time": "2026-07-01T00:55:51.912468",
+      "duration_seconds": 1.032899990605074e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0019",
+      "config": {
+        "prompt": "debate",
+        "expected_difficulty": "hard",
+        "input_len": 10
+      },
+      "config_hash": "f3e9e16994be",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.5748055924971899,
+        "avg_small_entropy": 1.6788989153380196,
+        "difficulty_label": 2
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:53.008426",
+      "end_time": "2026-07-01T00:55:53.008459",
+      "duration_seconds": 1.5930000017760904e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0020",
+      "config": {
+        "prompt": "translate_rare",
+        "expected_difficulty": "hard",
+        "input_len": 19
+      },
+      "config_hash": "4a637186a01a",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.34434130291144055,
+        "avg_small_entropy": 2.896584073702494,
+        "difficulty_label": 2
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:54.099533",
+      "end_time": "2026-07-01T00:55:54.099556",
+      "duration_seconds": 1.0008999879573821e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0021",
+      "config": {
+        "prompt": "multi_step",
+        "expected_difficulty": "hard",
+        "input_len": 34
+      },
+      "config_hash": "46dba987f6fc",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.41385718683401745,
+        "avg_small_entropy": 2.788696507612864,
+        "difficulty_label": 2
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:55.261106",
+      "end_time": "2026-07-01T00:55:55.261130",
+      "duration_seconds": 9.688000091045978e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "prompt_routing_t0022",
+      "config": {
+        "prompt": "ambiguous",
+        "expected_difficulty": "hard",
+        "input_len": 16
+      },
+      "config_hash": "dea8a11db9ee",
+      "metrics": {
+        "seer_aborted": 1.0,
+        "tokens_saved_ratio": 0.0425,
+        "quality_retained": 1.0,
+        "avg_small_prob": 0.6064648379882177,
+        "avg_small_entropy": 2.3001931123435497,
+        "difficulty_label": 2
+      },
+      "metadata": {
+        "routed_text": "!!!!!!!!!!!!!!!!!!!!",
+        "large_baseline_text": "!!!!!!!!!!!!!!!!!!!!"
+      },
+      "start_time": "2026-07-01T00:55:56.365445",
+      "end_time": "2026-07-01T00:55:56.365466",
+      "duration_seconds": 9.697999985291972e-06,
+      "status": "completed",
+      "error": null
+    }
+  ]
+}
