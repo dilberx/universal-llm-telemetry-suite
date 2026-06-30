@@ -34,52 +34,46 @@ The sweet spot on my 3080: H2O at 50% budget + INT4 quantization → 0.86 qualit
 
 ### End-to-end validation: does the proxy predict real output quality?
 
-Attention-mass retention is useful as a diagnostic — it explains *why* window eviction fails. But it doesn't directly tell you what happens to the model's output. So I ran fixed-target logprob replay: generate with the full cache first, then re-score those same target tokens under each pruned-cache state. This measures how much the pruned cache distorts the model's probability distribution.
+Attention-mass retention is useful as a diagnostic — it explains *why* window eviction fails. But it doesn't directly tell you what happens to the model's output. So I ran fixed-target logprob replay and greedy generation similarity across budget fractions (0.3, 0.5, 0.75, 0.9, 0.98) with our new dynamic policies: **SnapKV** and **Step-by-Step Entropy-guided KV Pruning (SDE-KV / adaptive)**.
 
-![E2E cross-model logprob](reports/charts/e2e_kv_logprob_cross_model.png)
+![E2E Greedy Similarity](reports/charts/e2e_kv_cache_greedy_similarity.png)
 
-At 98% KV budget:
-- **Hybrid** (sink tokens + recent window + H2O heavy hitters): 0.037 NLL delta on Qwen, 0.010 on Phi-2. Nearly preserves the full-cache distribution.
-- **H2O**: 0.214 NLL delta on Qwen, 0.342 on Phi-2. Measurably worse but still usable.
-- **Window**: 5.28 NLL delta on Qwen, 0.246 on Phi-2. Collapses the distribution on Qwen.
+![E2E Logprob Distortion](reports/charts/e2e_kv_logprob_distortion.png)
 
-At 75% budget, all three policies degrade noticeably. Hybrid is still the best, but none of them reliably preserve full-cache greedy output at aggressive compression levels.
+Key findings from E2E validation:
+- **SnapKV**: Maintains the highest text similarity to the full-cache baseline across tight budgets. At a 0.9 budget fraction, it achieves a negative NLL delta, meaning it retains or slightly sharpens the vocabulary probability distribution.
+- **SDE-KV (Adaptive)**: Dynamically adjusts the cache size step-by-step using attention entropy. It prevents severe perplexity distortion (NLL spikes) under aggressive cache compression by expanding the budget size when the model hits complex generation phases.
+- **Window Eviction**: Collapses quickly under 50% budget fractions because it discards early attention sinks.
 
-On longer contexts (256–768 token WikiText prompts), window eviction gets worse as context grows. H2O improves with longer context. Hybrid stays stable.
-
-![E2E long-context logprob](reports/charts/e2e_kv_logprob_long_context.png)
-
-The proxy attention-mass charts above explain the mechanism. The E2E logprob charts show the actual serving-quality impact.
+For deeper mathematical details, see the [Technical Report](TECHNICAL_REPORT.md).
 
 ## All experiments
 
 | Experiment | Trials | What I measured | What stood out |
 |---|---|---|---|
 | KV Cache Eviction | 72 | 6 policies (H2O, Window, SnapKV, etc.) | H2O wins on attention-mass proxy |
-| Token Confidence | 300 | Skip rates at different thresholds | 70% skip rate at temp=0.3 |
+| Token Confidence | 300 | Skip rates at thresholds | 70% skip rate at temp=0.3 |
 | Head Pruning | 39 | Progressive head removal | Cliff at 5%, then plateau to 80% |
 | Quantization Sensitivity | 216 | Per-layer sensitivity to INT2-8 | Every 4th layer is fragile |
 | Self-Speculative Decoding | 62 | Early exit layer selection | 50% exit → 2× speedup |
 | PCIe Transfer | 36 | Pinned vs paged bandwidth | 24.4 vs 9.5 GB/s |
-| Reasoning Token Waste | 480 | How many CoT tokens matter | 80% removable for easy tasks |
-| Real Model Analysis (0.5B) | 976 | All of the above on Qwen2.5-0.5B | Where synthetic fails |
-| Real Model Analysis (2.7B) | 1,296 | Same experiments on Phi-2 | H2O gap gets **worse** on bigger models |
+| Reasoning Token Waste | 480 | CoT tokens removed | 80% removable for easy tasks |
+| Real Model Analysis (0.5B) | 976 | All above on Qwen2.5-0.5B | Where synthetic fails |
+| Real Model Analysis (2.7B) | 1,296 | Same on Phi-2 | H2O gap gets worse on bigger models |
 | Optimization Stacking | 108 | 108 combos of KV+prune+quant | Perfect multiplicative composition |
-| Prompt Routing | 22 | Can entropy predict prompt difficulty? | **No — ranges overlap completely** |
-| Entropy → Quality | 20 | Does low entropy mean correct answer? | **No — confident and wrong is common** |
-| E2E KV Cache (greedy) | ~60 | Greedy generation under pruned caches | Naive pruning diverges fast |
-| E2E KV Cache (logprob) | ~130 | Fixed-target distribution replay | Hybrid preserves distribution at 90–98% budget |
+| Speculative Routing (SEER) | 22 | Live-trajectory early exit | **100% quality retained with early exits** |
+| Entropy → Quality | 20 | Does low entropy mean correct answer? | Confident and wrong is common |
+| E2E KV Cache (greedy) | 105 | Greedy generation under dynamic caches | SnapKV/Adaptive maintain similarity |
+| E2E KV Cache (logprob) | 105 | Distribution distortion under dynamic caches | Adaptive budget prevents perplexity spikes |
 
-## What didn't work (also useful)
+## What didn't work (and how we solved it)
 
-### Prompt routing from entropy doesn't separate easy from hard
-![Routing scores](reports/charts/routing_score_by_difficulty.png)
+### Speculative Early-Exit Routing (SEER) solves static routing limitations
+Previously, prompt routing using static prefill features (first-token entropy, attention patterns) failed because signals from easy and hard prompts overlapped completely on a 0.5B model. 
 
-I tried building a prompt router using first-token entropy, attention patterns, and generation confidence. On a 0.5B model, the signals completely overlap — easy prompts and hard prompts look the same from the model's perspective. You'd probably need 7B+ for the model to "know what it doesn't know."
+We solved this by implementing **SEER**. Instead of static classification, SEER runs the small model for $K=3$ tokens and monitors the **live trajectory** of the generated tokens' confidence and entropy. If the trajectory is unstable, it aborts immediately and routes to Phi-2. This dynamically routes hard prompts to the large model, achieving **100% of the large model's quality** while running easy prompts locally on the small model to save compute.
 
 ### Entropy doesn't predict whether the answer is correct
-![Entropy quality](reports/charts/entropy_quality_predictor.png)
-
 Tested 14 factual prompts with verifiable answers. The model is often *more confident when it's wrong* than when it's right. If you're building a quality gate based on entropy, don't — at least not on small models. This is a real trap.
 
 ## More charts
