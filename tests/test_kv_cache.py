@@ -339,3 +339,60 @@ class TestE2EKVCachePruning:
         
         # High entropy should keep more or equal tokens than low entropy
         assert legacy_high[0][0].shape[2] >= legacy_low[0][0].shape[2]
+
+
+# ============================================================================
+# SEER Routing Logic Tests
+# ============================================================================
+
+class TestSEERRoutingLogic:
+    """Test the SEER early-exit routing decision without loading real models."""
+
+    K = 3  # Early-exit evaluation window (matches exp_routing.py)
+    PROB_THRESHOLD = 0.85
+    ENTROPY_THRESHOLD = 2.0
+
+    def _should_abort(self, probs: list[float], entropies: list[float]) -> bool:
+        """Reproduce the SEER abort decision from exp_routing.py."""
+        avg_prob = sum(probs[:self.K]) / self.K
+        avg_entropy = sum(entropies[:self.K]) / self.K
+        is_stable = (avg_prob >= self.PROB_THRESHOLD) and (avg_entropy <= self.ENTROPY_THRESHOLD)
+        return not is_stable
+
+    def test_high_confidence_does_not_abort(self):
+        """Confident trajectory (high prob, low entropy) should stay on small model."""
+        probs = [0.95, 0.92, 0.90]
+        entropies = [0.5, 0.6, 0.7]
+        assert not self._should_abort(probs, entropies)
+
+    def test_low_confidence_aborts(self):
+        """Low probability trajectory should trigger abort."""
+        probs = [0.3, 0.4, 0.2]
+        entropies = [1.0, 1.2, 1.1]
+        assert self._should_abort(probs, entropies)
+
+    def test_high_entropy_aborts(self):
+        """High entropy trajectory should trigger abort even with decent probs."""
+        probs = [0.88, 0.86, 0.87]
+        entropies = [2.5, 2.8, 3.0]
+        assert self._should_abort(probs, entropies)
+
+    def test_borderline_stable(self):
+        """Exactly at threshold should be stable (>= and <=)."""
+        probs = [0.85, 0.85, 0.85]
+        entropies = [2.0, 2.0, 2.0]
+        assert not self._should_abort(probs, entropies)
+
+    def test_borderline_unstable_prob(self):
+        """Just below prob threshold should abort."""
+        probs = [0.84, 0.85, 0.85]
+        entropies = [1.0, 1.0, 1.0]
+        # avg_prob = 0.8466... < 0.85
+        assert self._should_abort(probs, entropies)
+
+    def test_mixed_trajectory(self):
+        """One bad step can drag the average below threshold."""
+        probs = [0.95, 0.90, 0.60]  # avg = 0.8166
+        entropies = [0.5, 0.8, 1.0]
+        assert self._should_abort(probs, entropies)
+

@@ -39,9 +39,9 @@ full = [
 llm-bench = "llm_bench.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/dilbersha/llm-inference-benchmark"
-Repository = "https://github.com/dilbersha/llm-inference-benchmark"
-Issues = "https://github.com/dilbersha/llm-inference-benchmark/issues"
+Homepage = "https://github.com/dilbersha/universal-llm-telemetry-suite"
+Repository = "https://github.com/dilbersha/universal-llm-telemetry-suite"
+Issues = "https://github.com/dilbersha/universal-llm-telemetry-suite/issues"
 
 [tool.setuptools.packages.find]
 include = ["llm_bench*", "src*"]

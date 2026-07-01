@@ -66,12 +66,12 @@ For deeper mathematical details, see the [Technical Report](TECHNICAL_REPORT.md)
 | E2E KV Cache (greedy) | 105 | Greedy generation under dynamic caches | SnapKV/Adaptive maintain similarity |
 | E2E KV Cache (logprob) | 105 | Distribution distortion under dynamic caches | Adaptive budget prevents perplexity spikes |
 
-## What didn't work (and how we solved it)
+## What didn't work (and how I solved it)
 
 ### Speculative Early-Exit Routing (SEER) solves static routing limitations
 Previously, prompt routing using static prefill features (first-token entropy, attention patterns) failed because signals from easy and hard prompts overlapped completely on a 0.5B model. 
 
-We solved this by implementing **SEER**. Instead of static classification, SEER runs the small model for $K=3$ tokens and monitors the **live trajectory** of the generated tokens' confidence and entropy. If the trajectory is unstable, it aborts immediately and routes to Phi-2. This dynamically routes hard prompts to the large model, achieving **100% of the large model's quality** while running easy prompts locally on the small model to save compute.
+I solved this by implementing **SEER**. Instead of static classification, SEER runs the small model for $K=3$ tokens and monitors the **live trajectory** of the generated tokens' confidence and entropy. If the trajectory is unstable, it aborts immediately and routes to Phi-2. This dynamically routes hard prompts to the large model, achieving **100% of the large model's quality** while running easy prompts locally on the small model to save compute.
 
 ### Entropy doesn't predict whether the answer is correct
 Tested 14 factual prompts with verifiable answers. The model is often *more confident when it's wrong* than when it's right. If you're building a quality gate based on entropy, don't — at least not on small models. This is a real trap.

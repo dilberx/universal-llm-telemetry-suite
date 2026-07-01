@@ -65,7 +65,7 @@ This guarantees that all layers maintain identical sequence lengths, preventing 
 
 ## 3. Performance & Quality Evaluation
 
-Our benchmark compares SDE-KV (`adaptive`) and head-variance pruning (`snapkv`) against standard H2O and Window baselines under aggressive compression levels.
+The benchmark compares SDE-KV (`adaptive`) and head-variance pruning (`snapkv`) against standard H2O and Window baselines under aggressive compression levels.
 
 ### 1. Greedy Generation Quality
 Using Qwen2.5-0.5B, `snapkv` retains higher semantic similarity to the full-cache baseline than standard `h2o` or `window` policies at tight budgets:
