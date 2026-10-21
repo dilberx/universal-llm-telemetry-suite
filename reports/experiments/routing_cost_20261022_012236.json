@@ -1,0 +1,255 @@
+{
+  "experiment": "routing_cost",
+  "description": "Per-token decode cost of Qwen2.5-0.5B and Phi-2 at batch 1 to 32, SDPA attention, bfloat16, and the SEER savings implied by each measured cost ratio.",
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_vram_mb": 10239.375,
+    "gpu_driver": "617.42",
+    "cuda_version": "12.8",
+    "cpu_name": "x86_64",
+    "cpu_cores": 16,
+    "ram_gb": 15.6,
+    "python_version": "3.10.12",
+    "torch_version": "2.10.0+cu128",
+    "os_info": "Linux 6.18.54.1-microsoft-standard-WSL2"
+  },
+  "timestamp": "2026-10-22T01:22:36.483650",
+  "total_duration_seconds": 43.739845991134644,
+  "seed": 42,
+  "num_trials": 12,
+  "trials": [
+    {
+      "trial_id": "routing_cost_t0001",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "batch_size": 1,
+        "part": "latency"
+      },
+      "config_hash": "309ec3cf208a",
+      "metrics": {
+        "decode_ms_per_seq_token": 40.00544494766999,
+        "prefill_ms": 35.043486997892614
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:00.477578",
+      "end_time": "2026-10-22T01:22:00.477594",
+      "duration_seconds": 5.360001523513347e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0002",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "batch_size": 4,
+        "part": "latency"
+      },
+      "config_hash": "69d0bbeefd21",
+      "metrics": {
+        "decode_ms_per_seq_token": 10.12445600003718,
+        "prefill_ms": 37.96930099633755
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:03.928945",
+      "end_time": "2026-10-22T01:22:03.928962",
+      "duration_seconds": 5.2299947128631175e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0003",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "batch_size": 16,
+        "part": "latency"
+      },
+      "config_hash": "22a0b0573ac2",
+      "metrics": {
+        "decode_ms_per_seq_token": 2.6408034440895505,
+        "prefill_ms": 50.225333994603716
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:07.539453",
+      "end_time": "2026-10-22T01:22:07.539469",
+      "duration_seconds": 4.979003279004246e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0004",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "batch_size": 32,
+        "part": "latency"
+      },
+      "config_hash": "2e654cf06f83",
+      "metrics": {
+        "decode_ms_per_seq_token": 1.469576842103044,
+        "prefill_ms": 41.76074299903121
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:11.218563",
+      "end_time": "2026-10-22T01:22:11.218577",
+      "duration_seconds": 4.688998160418123e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0005",
+      "config": {
+        "model": "microsoft/phi-2",
+        "batch_size": 1,
+        "part": "latency"
+      },
+      "config_hash": "0c7a919c4c8b",
+      "metrics": {
+        "decode_ms_per_seq_token": 47.34037036809911,
+        "prefill_ms": 56.57743500341894
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:23.543050",
+      "end_time": "2026-10-22T01:22:23.543074",
+      "duration_seconds": 8.455994247924536e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0006",
+      "config": {
+        "model": "microsoft/phi-2",
+        "batch_size": 4,
+        "part": "latency"
+      },
+      "config_hash": "eda6768e7bf3",
+      "metrics": {
+        "decode_ms_per_seq_token": 11.606765210576429,
+        "prefill_ms": 40.09951400075806
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:27.510709",
+      "end_time": "2026-10-22T01:22:27.510725",
+      "duration_seconds": 4.78899892186746e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0007",
+      "config": {
+        "model": "microsoft/phi-2",
+        "batch_size": 16,
+        "part": "latency"
+      },
+      "config_hash": "756e6f1d775b",
+      "metrics": {
+        "decode_ms_per_seq_token": 2.7759201282989174,
+        "prefill_ms": 78.8014919962734
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:31.594827",
+      "end_time": "2026-10-22T01:22:31.594843",
+      "duration_seconds": 5.130001227371395e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0008",
+      "config": {
+        "model": "microsoft/phi-2",
+        "batch_size": 32,
+        "part": "latency"
+      },
+      "config_hash": "1ec7a3ed10fc",
+      "metrics": {
+        "decode_ms_per_seq_token": 1.4272094457330815,
+        "prefill_ms": 155.12301999842748
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:36.365613",
+      "end_time": "2026-10-22T01:22:36.365628",
+      "duration_seconds": 5.2199975471012294e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0009",
+      "config": {
+        "batch_size": 1,
+        "part": "savings",
+        "threshold": 0.55
+      },
+      "config_hash": "5fc271e15ad2",
+      "metrics": {
+        "cost_ratio": 0.845059821809678,
+        "savings_vs_large_only": -0.004636982662310052,
+        "kept_local": 9.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:36.483232",
+      "end_time": "2026-10-22T01:22:36.483249",
+      "duration_seconds": 5.059999239165336e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0010",
+      "config": {
+        "batch_size": 4,
+        "part": "savings",
+        "threshold": 0.55
+      },
+      "config_hash": "4c78d2d6106e",
+      "metrics": {
+        "cost_ratio": 0.8722892051621304,
+        "savings_vs_large_only": -0.020720272279830088,
+        "kept_local": 9.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:36.483331",
+      "end_time": "2026-10-22T01:22:36.483337",
+      "duration_seconds": 3.6560013541020453e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0011",
+      "config": {
+        "batch_size": 16,
+        "part": "savings",
+        "threshold": 0.55
+      },
+      "config_hash": "d01f8eff06a0",
+      "metrics": {
+        "cost_ratio": 0.9513254423886589,
+        "savings_vs_large_only": -0.06740376404824655,
+        "kept_local": 9.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:36.483407",
+      "end_time": "2026-10-22T01:22:36.483412",
+      "duration_seconds": 3.144996298942715e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "routing_cost_t0012",
+      "config": {
+        "batch_size": 32,
+        "part": "savings",
+        "threshold": 0.55
+      },
+      "config_hash": "ea2dc0991737",
+      "metrics": {
+        "cost_ratio": 1.0296854792382633,
+        "savings_vs_large_only": -0.11368785174787588,
+        "kept_local": 9.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:22:36.483479",
+      "end_time": "2026-10-22T01:22:36.483484",
+      "duration_seconds": 3.0759983928874135e-06,
+      "status": "completed",
+      "error": null
+    }
+  ]
+}

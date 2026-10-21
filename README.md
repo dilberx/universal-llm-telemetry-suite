@@ -1,6 +1,6 @@
 # LLM Inference Optimization Benchmark
 
-I wanted to know which inference optimizations actually matter on a consumer GPU. Not what papers claim — what actually happens when you run them on a real model.
+I wanted to know which inference optimizations actually matter on a consumer GPU. Not what papers claim, but what actually happens when you run them on a real model.
 
 So I loaded two models (Qwen2.5-0.5B and Phi-2 2.7B) on my RTX 3080, ran ~3,800 trials across 14 experiment tracks, and found some things that surprised me.
 
@@ -12,7 +12,7 @@ Earlier versions of this README quoted 36× and 207× for the first two. Those c
 
 ![H2O vs Window per layer](reports/charts/real_h2o_per_layer.png)
 
-Layers 11, 16, and 21 spike hard — those are the layers with the most non-local attention patterns. Window eviction just throws away the tokens that matter most.
+Layers 11, 16, and 21 spike hard. Those are the layers with the most non-local attention patterns. Window eviction just throws away the tokens that matter most.
 
 ### This holds across models
 
@@ -22,21 +22,21 @@ At a 50% KV budget on 1024 tokens: H2O retains 83% of attention mass on Qwen and
 
 On the original 43-token prompts the same comparison read 87%/94% for H2O and 16%/7% for window. Window looks worse at short lengths than it does at 1024 tokens, which is the opposite of the intuition that long context is where window eviction breaks down. I originally read the cross-model difference as a scale effect; adding a third model at 7B shows that reading was wrong. See [the scale check](#does-the-gap-widen-with-scale-no) below.
 
-**Token confidence is completely task-dependent.** Same model, same threshold — reasoning tasks let you skip 87% of sampling operations, while translation tasks let you skip 0%. This isn't something you can fix with a global threshold.
+**Token confidence is completely task-dependent.** Same model, same threshold: reasoning tasks let you skip 87% of sampling operations, while translation tasks let you skip 0%. This isn't something you can fix with a global threshold.
 
 ![Confidence by task type](reports/charts/real_token_confidence_by_task.png)
 
-**Optimizations stack multiplicatively.** I tested 108 combinations of KV cache eviction + head pruning + quantization. The combined quality is just the product of individual quality losses. No cancellation, no synergy — you can predict exactly what stacking will cost you.
+**Optimizations stack multiplicatively.** I tested 108 combinations of KV cache eviction + head pruning + quantization. The combined quality is just the product of individual quality losses. No cancellation, no synergy. You can predict exactly what stacking will cost you.
 
 ![Stacking Pareto](reports/charts/stacking_pareto.png)
 
 The sweet spot on my 3080: H2O at 50% budget + INT4 quantization → 0.86 quality at 2.35× speed. Skip head pruning unless you really need the extra margin.
 
-**At 90% cache eviction, window attention is basically dead.** On 1024 tokens, H2O retains 51% of attention mass on Qwen2.5-0.5B and 74% on Phi-2, while window retains 3.9% and 1.7%. If you're doing aggressive KV cache compression on a VRAM-limited GPU, window eviction is not an option. (The chart below is from the original short-prompt run, where the same comparison read 62% against 2%.)
+**At 90% cache eviction, window attention is basically dead.** On 1024 tokens, H2O retains 51% of attention mass on Qwen2.5-0.5B and 74% on Phi-2, while window retains 3.9% and 1.7%. If you're doing aggressive KV cache compression on a VRAM-limited GPU, window eviction is not an option. (On the original short prompts the same comparison read 62% against 2%.)
 
 ![Extreme compression](reports/charts/real_extreme_compression.png)
 
-*This chart is from the original short-prompt run and has not been regenerated. The numbers in the text above it are the corrected 1024-token measurements; treat the figure as illustrating the shape of the effect, not its size.*
+*Per-layer retention at a 10% budget from the 1024-token profiler pass (two windows on the 0.5B, one on the 7B), so its medians differ slightly from the four-window figures in the text. Phi-2 has no per-layer profile at 1024 tokens and is not shown. Reproduce with `python -m src.experiments.visualize_1024`.*
 
 ### Does the gap widen with scale? No.
 
@@ -131,18 +131,18 @@ So the practical summary: if you are choosing a KV eviction policy, the input le
 
 ### End-to-end validation: does the proxy predict real output quality?
 
-Attention-mass retention is useful as a diagnostic — it explains *why* window eviction fails. But it doesn't directly tell you what happens to the model's output. So I ran fixed-target logprob replay and greedy generation similarity across budget fractions (0.3, 0.5, 0.75, 0.9, 0.98) with two dynamic policies: **SnapKV** and **Step-by-Step Entropy-guided KV Pruning (SDE-KV / adaptive)**.
+Attention-mass retention is useful as a diagnostic: it explains *why* window eviction fails. But it doesn't directly tell you what happens to the model's output. So I ran fixed-target logprob replay and greedy generation similarity at 1024 tokens across budget fractions (0.1, 0.2, 0.3, 0.5, 0.75, 0.9), with window, H2O and hybrid plus two dynamic policies: **SnapKV** and **Step-by-Step Entropy-guided KV Pruning (SDE-KV / adaptive)**.
 
 ![E2E Greedy Similarity](reports/charts/e2e_kv_cache_greedy_similarity.png)
 
 ![E2E Logprob Distortion](reports/charts/e2e_kv_logprob_distortion.png)
 
-*Both E2E charts above are from the original short-prompt runs. The 1024-token results that supersede them are in [the proxy audit](#does-the-proxy-predict-quality-within-a-policy-yes-across-policies-it-inverts).*
+*Both charts are medians over five 1024-token wikitext windows. Greedy similarity is for the 0.5B only; the 7B was scored on NLL. The full tables are in [the proxy audit](#does-the-proxy-predict-quality-within-a-policy-yes-across-policies-it-inverts).*
 
 Key findings from E2E validation:
-- **SnapKV**: Maintains the highest text similarity to the full-cache baseline across tight budgets. At a 0.9 budget fraction, it achieves a negative NLL delta, meaning it retains or slightly sharpens the vocabulary probability distribution.
-- **SDE-KV (Adaptive)**: Dynamically adjusts the cache size step-by-step using attention entropy. It prevents severe perplexity distortion (NLL spikes) under aggressive cache compression by expanding the budget size when the model hits complex generation phases.
-- **Window Eviction**: Collapses quickly under 50% budget fractions because it discards early attention sinks.
+- **SnapKV and hybrid** are the two best policies at both scales. On the 7B, SnapKV adds 0.10 nats at a 10% budget against 0.65 for hybrid; on the 0.5B the two are within 0.1 of each other at every budget. Both reproduce the full-cache greedy output exactly at a 90% budget on the 0.5B.
+- **SDE-KV (adaptive)** sits in the middle at both scales and flattens early: on the 7B it still adds 0.73 nats at a 90% budget. Its step-by-step budget expansion avoids the worst failures but does not close the gap to the sink-based policies.
+- **H2O and window** are the two worst. Which of them is worse depends on the model: window on the 0.5B, H2O on the 7B, where H2O adds 5.9 nats at a 10% budget.
 
 **Prior art.** These policies are not new as of 2026. Layer and head budget allocation is covered by [LAVa](https://arxiv.org/abs/2509.09754), [ZigZagKV](https://arxiv.org/abs/2412.09036), [CAKE](https://arxiv.org/abs/2503.12491) and [Ada-KV](https://arxiv.org/abs/2407.11550). Decode-time entropy-guided allocation is covered by [InfoKV](https://arxiv.org/abs/2606.26875), [ReasonAlloc](https://arxiv.org/abs/2606.11164) and [Moment-KV](https://arxiv.org/abs/2605.29873). Rate-distortion budget allocation is covered by [RDKV](https://arxiv.org/abs/2605.08317) and [RateQuant](https://arxiv.org/abs/2605.06675). SDE-KV has not been benchmarked head-to-head against any of them, so treat it here as a reimplementation used as a probe, not as a competitive policy. What this repo contributes is the cross-scale measurement and the proxy-versus-end-to-end audit, not the policies.
 
@@ -244,9 +244,18 @@ The experiment was rewritten to load both models in bfloat16 with a finite-logit
 
 **The signal itself works, which is the part worth keeping.** Mean top-probability over the first K=3 tokens separates prompts the small model handles well from ones it does not, at AUC 0.92 (95% CI 0.77 to 1.00, bootstrap, n=22, median split). The same statistic averaged over the full 20-token generation gets AUC 0.65 (CI 0.40 to 0.88). The predictive content is concentrated in the first few tokens and gets diluted by longer averaging. This is a real difference from the static-prefill result below, which found no separation at all.
 
-**It still saves nothing on this hardware.** Measured cost is 45.0 ms/token for Qwen2.5-0.5B against 53.3 ms/token for Phi-2, a ratio of 0.844 for models 5.4x apart in parameters. This benchmark loop is bound by eager attention and per-token Python overhead, not model compute. At that ratio the best operating point holding mean quality at or above 0.80 saves -0.4%, which is to say it costs slightly more than always calling the large model.
+**It still saves nothing on this hardware.** Measured cost is 45.0 ms/token for Qwen2.5-0.5B against 53.3 ms/token for Phi-2, a ratio of 0.844 for models 5.4x apart in parameters. Decode at this size is bound by per-step overhead, not model compute. At that ratio the best operating point holding mean quality at or above 0.80 saves -0.4%, which is to say it costs slightly more than always calling the large model.
 
-The same operating point (escalate below 0.55, keep 9 of 22 prompts local) would save a projected 38% at the parameter cost ratio and 44% under batched serving. Those two numbers are projections from the measured quality data and an assumed cost ratio. They have not been measured and should not be quoted as results.
+**Batching does not rescue it; it makes it worse.** An earlier version of this section projected 44% savings under batched serving from an assumed cost ratio. Measured instead (`exp_routing_cost.py`, SDPA attention, bf16, Hugging Face `generate` with the KV cache, 20 tokens), at the same operating point (escalate below 0.55, keep 9 of 22 prompts local):
+
+| Batch | Qwen2.5-0.5B ms/token | Phi-2 ms/token | Cost ratio | Savings |
+|---|---|---|---|---|
+| 1 | 40.0 | 47.3 | 0.845 | -0.5% |
+| 4 | 10.1 | 11.6 | 0.872 | -2.1% |
+| 16 | 2.64 | 2.78 | 0.951 | -6.7% |
+| 32 | 1.47 | 1.43 | 1.030 | -11.4% |
+
+Times are per sequence-token, so batching cuts both models' cost by about 30 times, but it cuts the larger model's slightly more, and at batch 32 the 0.5B is no cheaper than Phi-2. Both models are far too small to be compute-bound on this card: each decode step costs roughly the same whatever the model does, so a small model buys nothing and every escalation pays for the first K tokens twice. The 38% figure at the parameter ratio assumes cost scales with parameters, which it does not here. Routing between models this small does not save cost on this hardware at any batch size measured. Whether it does for larger, compute-bound pairs or under a serving engine is not tested here.
 
 **A separate problem surfaced.** The hand-assigned difficulty labels do not track what the small model can actually do. Measured small-model quality is 0.42 on prompts labelled hard, 0.35 on easy, and 0.26 on medium. The ordering is not monotone and the labels are close to uninformative, which undermines the ground truth used in the static-routing experiment below as well.
 
@@ -281,7 +290,7 @@ One practical consequence: the difficulty ordering is not the intuitive one. `co
 Caveats: n=20 after dropping two prompts where the large model produced no scorable output, one model pair, and the tercile group means are noisy at this sample size. The correlations are the result; the group means are illustrative. Reproduce with `python -m src.experiments.exp_difficulty_validation`.
 
 ### Entropy doesn't predict whether the answer is correct
-Tested 14 factual prompts with verifiable answers. The model is often *more confident when it's wrong* than when it's right. If you're building a quality gate based on entropy, don't — at least not on small models. This is a real trap.
+Tested 14 factual prompts with verifiable answers. The model is often *more confident when it's wrong* than when it's right. If you're building a quality gate based on entropy, don't, at least not on small models. This is a real trap.
 
 ## Single-pass retention curves
 
@@ -382,85 +391,85 @@ Reproduce with `python -m src.experiments.exp_profiler_validation`, `python -m s
 
 vLLM RFC [#39076](https://github.com/vllm-project/vllm/issues/39076) proposed freeing KV blocks from a running request once their attention mass stays low during decode. It projected a 30 to 60 percent smaller active KV cache at 32K to 128K contexts and reported no measurements. The RFC was closed as not planned, but the question applies to any decode-time block-expiry scheme, so this measures the premise.
 
-**Method.** The RFC's rule at its defaults: blocks of 16 tokens, mass read every 32 steps, smoothed with an EMA of 0.9, a block expires after 3 consecutive low reads. It runs on Qwen2.5-0.5B and 1.5B at 2K to 32K tokens of wikitext, using exact softmax weights. Expired blocks are masked out of attention, so the quality effect is real and no memory is freed. Each run is scored against the full cache on identical teacher-forced inputs, by per-token KL divergence of the next-token distribution. Two controls free the same number of blocks without looking at attention: a recent window after the sink block, and random blocks that spare the sink. Uniform random expiry is not used, because it removes the attention-sink block about half the time and says nothing about mass. A threshold of zero gives the noise floor, which was exactly 0 in all 12 windows in both fp32 and bf16.
+**Method.** The RFC's rule at its defaults: blocks of 16 tokens, mass read every 32 steps, smoothed with an EMA of 0.9, a block expires after 3 consecutive low reads. It runs on Qwen2.5-0.5B and 1.5B at 2K to 32K tokens of wikitext, using exact softmax weights. Expired blocks are masked out of attention, so the quality effect is real and no memory is freed. Each run is scored against the full cache on identical teacher-forced inputs, by per-token KL divergence of the next-token distribution. Two controls free the same number of blocks without looking at attention: a recent window after the sink block, and random blocks that spare the sink. Uniform random expiry is not used, because it removes the attention-sink block about half the time and says nothing about mass. A threshold of zero gives the noise floor, which was exactly 0 in all 31 windows in both fp32 and bf16.
 
 The RFC sums mass over heads but does not say whether layers are also summed, which changes the threshold by a factor of up to heads times layers. Results are given for each reading, and also relative to the uniform share 1/blocks, because a fixed absolute threshold means very different things at 2K and 32K.
 
 ### Attention mass is concentrated, more so at long context
 
-Share of a request's blocks that hold 90% of the layer-pooled attention mass, Qwen2.5-0.5B, two windows per length:
+Share of a request's blocks that hold 90% of the layer-pooled attention mass, Qwen2.5-0.5B, five windows per length:
 
 | Context | 2K | 4K | 8K | 16K | 32K |
 |---|---|---|---|---|---|
-| Blocks holding 90% of mass | 45.1% | 18.3% | 22.2% | 14.0% | 17.0% |
+| Blocks holding 90% of mass | 39.2% | 21.3% | 25.9% | 20.2% | 21.6% |
 
-The 1.5B gives 22.6% at 8K and 17.8% at 32K.
+The 1.5B gives 27.3% at 8K and 17.4% at 32K (three windows each).
 
 ### The projected savings are reachable on ordinary text, under one reading of the threshold
 
-The RFC's threshold of 1e-3, read as a sum over heads only, frees nothing at short context and 38 to 59 percent at 16K and above, at a small cost:
+The RFC's threshold of 1e-3, read as a sum over heads only, frees almost nothing up to 8K and 32 to 67 percent at 16K and above, at a small cost on ordinary text:
 
 | Model | Context | Blocks freed | KL vs full cache |
 |---|---|---|---|
 | 0.5B | 2K | 0% | 0.0000 |
-| 0.5B | 4K | 0% | 0.0000 |
-| 0.5B | 8K | 2.6% | 0.0000 |
-| 0.5B | 16K | 37.5% | 0.0007 |
-| 0.5B | 32K | 56.1% | 0.0040 |
-| 1.5B | 8K | 0.6% | 0.0011 |
-| 1.5B | 32K | 58.7% | 0.0067 |
+| 0.5B | 4K | 0.1% | 0.0000 |
+| 0.5B | 8K | 2.8% | 0.0000 |
+| 0.5B | 16K | 31.6% | 0.0015 |
+| 0.5B | 32K | 56.3% | 0.0138 |
+| 1.5B | 8K | 0.9% | 0.0007 |
+| 1.5B | 32K | 67.3% | 0.0084 |
 
-Read as a sum over heads and layers, the same threshold frees 0.0% of blocks in every window of both models.
+Read as a sum over heads and layers, the same threshold frees at most 0.1% of blocks in any window of either model.
 
 Against rules that ignore attention, on ordinary text (0.5B, KL, lower is better):
 
 | Context | Freed | Mass-gated | Sink + recent window | Random, sink spared |
 |---|---|---|---|---|
-| 2K | 30% | 0.0171 | 0.0373 | 0.0530 |
-| 4K | 30% | 0.0054 | 0.0059 | 0.1878 |
-| 8K | 30% | 0.0069 | 0.0178 | 0.0433 |
-| 16K | 30% | 0.0009 | 0.0022 | 0.0644 |
-| 32K | 30% | 0.0008 | 0.0035 | 0.0451 |
-| 2K | 60% | 0.0455 | 0.1125 | 0.1135 |
-| 4K | 60% | 0.0240 | 0.0514 | 0.3445 |
-| 8K | 60% | 0.0518 | 0.0439 | 0.1422 |
-| 16K | 60% | 0.0049 | 0.0062 | 0.1567 |
-| 32K | 60% | 0.0055 | 0.0082 | 0.1500 |
+| 2K | 30% | 0.0211 | 0.0284 | 0.0553 |
+| 4K | 30% | 0.0027 | 0.0032 | 0.0928 |
+| 8K | 30% | 0.0049 | 0.0102 | 0.0420 |
+| 16K | 30% | 0.0015 | 0.0035 | 0.0467 |
+| 32K | 30% | 0.0023 | 0.0050 | 0.0369 |
+| 2K | 60% | 0.0573 | 0.0996 | 0.1318 |
+| 4K | 60% | 0.0159 | 0.0287 | 0.1999 |
+| 8K | 60% | 0.0339 | 0.0362 | 0.1211 |
+| 16K | 60% | 0.0083 | 0.0114 | 0.1167 |
+| 32K | 60% | 0.0154 | 0.0194 | 0.1184 |
 
-The mass signal is about 2.5 to 70 times better than random, depending on length and share freed, but only about 1 to 4 times better than a plain recent window, and at 8K and 60% freed it is slightly worse than that window.
+The mass signal is about 2.3 to 34 times better than random, depending on length and share freed, but only about 1.1 to 2.3 times better than a plain recent window. With five windows per length it is never worse than that window; with two, it was at 8K and 60% freed, so that earlier reversal was noise.
 
 ### But a block that goes quiet and is needed later can be lost
 
-Wikitext articles concatenated together are the best case for expiry, because earlier articles really are irrelevant to later ones. So a second test places a 128-token passage in the context, decodes 160 unrelated tokens, which is long enough for the passage's blocks to be judged dead, and then has the model copy the passage back. The full cache copies it with 79 to 94 percent accuracy, depending on length.
+Wikitext articles concatenated together are the best case for expiry, because earlier articles really are irrelevant to later ones. So a second test places a 128-token passage in the context, decodes 160 unrelated tokens, which is long enough for the passage's blocks to be judged dead, and then has the model copy the passage back. The full cache copies it with 89 to 95 percent accuracy, depending on length and model.
 
-At a threshold of 0.1 times the uniform share, which frees 17 to 45 percent of blocks:
+At a threshold of 0.1 times the uniform share, which frees 16 to 44 percent of blocks on average (8 to 57 percent in single windows):
 
 | Model | Context | All blocks freed | Passage blocks freed | Copy accuracy (full cache) |
 |---|---|---|---|---|
-| 0.5B | 2K | 17% | 6% | 0.88 (0.94) |
-| 0.5B | 4K | 20% | 0% | 0.93 (0.94) |
-| 0.5B | 8K | 45% | 75% | **0.56 (0.91)** |
-| 0.5B | 16K | 43% | 0% | 0.92 (0.93) |
-| 0.5B | 32K | 38% | 0% | 0.76 (0.79) |
-| 1.5B | 8K | 41% | 12% | 0.92 (0.93) |
-| 1.5B | 32K | 40% | 0% | 0.93 (0.94) |
+| 0.5B | 2K | 16% | 2% | 0.92 (0.94) |
+| 0.5B | 4K | 25% | 2% | 0.89 (0.91) |
+| 0.5B | 8K | 42% | 40% | **0.74 (0.90)** |
+| 0.5B | 16K | 42% | 0% | 0.92 (0.92) |
+| 0.5B | 32K | 37% | 2% | 0.84 (0.89) |
+| 1.5B | 8K | 44% | 4% | 0.94 (0.95) |
+| 1.5B | 32K | 38% | 0% | 0.94 (0.94) |
 
 ![Freeing blocks costs a passage that went quiet](reports/charts/block_expiry_dormant_passage.png)
 
-The 0.5B rows are the mean of two windows, with the passage at 25% and 50% depth. There is no single safe threshold:
+The 0.5B rows are the mean of five windows and the 1.5B rows of three. There is no single safe threshold:
 
-- **Failure at 8K:** On the 0.5B, 4 of 10 windows lost at least 5 points of copy accuracy at this threshold. The worst were both 8K windows, at 0.34 and 0.35 points, while ordinary-text KL at 8K gave no warning.
+- **Failures at most lengths:** On the 0.5B, 7 of 25 windows lost at least 5 points of copy accuracy at this threshold, at 2K, 4K, 8K and 32K. The worst were two 8K windows, at 0.34 and 0.35, while ordinary-text KL at 8K gave no warning. The 1.5B lost at most 1 point in all 6 of its windows.
 - **Same text, other model:** The 1.5B's 8K window uses the same text as the 0.5B's first 8K window, where the 0.5B freed 88% of the passage. The 1.5B freed 12% and kept its accuracy.
-- **The RFC's own threshold:** At 32K the head-summed reading frees 54% of blocks on the 0.5B and cuts copy accuracy from 0.79 to 0.64. On the 1.5B it frees 62% and cuts accuracy from 0.94 to 0.61.
+- **The RFC's own threshold:** At 32K the head-summed reading frees 53% of blocks on the 0.5B and cuts mean copy accuracy from 0.89 to 0.80; 3 of 5 windows lost 12 to 19 points. On the 1.5B it frees 60% and cuts accuracy from 0.94 to 0.81; 2 of 3 windows lost 7 and 33 points. At 8K and below it frees too little to matter.
 - **The recent window:** It loses the passage whenever the passage sits in the oldest blocks, which is its own kind of failure.
 
 ### A block-level rule gives up most of the per-layer saving
 
-At the same 0.1 threshold, 41 to 56 percent of blocks are dead when judged on mass pooled across layers at 4K and above, but only 2 to 5 percent are dead in every layer at once. The median layer, judged alone, has 57 to 69 percent dead blocks. A KV block holds every layer of its group, so a block-level rule can only act on the pooled view.
+At the same 0.1 threshold, 31 to 48 percent of blocks are dead when judged on mass pooled across layers at 4K and above, but only 1 to 3 percent are dead in every layer at once. The median layer, judged alone, has 49 to 65 percent dead blocks. A KV block holds every layer of its group, so a block-level rule can only act on the pooled view.
 
 ### Limits
 
-- Two windows per length on the 0.5B and one per length on the 1.5B. Per-window results are in `reports/experiments/block_expiry_*`.
+- Five windows per length on the 0.5B and three per length on the 1.5B. Per-window results are in `reports/experiments/block_expiry_*`.
 - Two small models, both grouped-query attention. No multi-head model here supports a long context.
 - One retrieval-style task: copying a 128-token passage. The passage text differs between windows, so passage and length are not separated.
 - Contexts up to 32K, not the 128K the RFC discusses.
@@ -474,7 +483,7 @@ Reproduce with `python -m src.experiments.exp_block_expiry --lengths 8192:2`, th
 ### Quantization sensitivity heatmap
 ![Quant sensitivity](reports/charts/quant_sensitivity_24L_1024H.png)
 
-Red = layers that break when quantized. There's a clear periodic pattern — every 4th layer has weight outliers that resist compression. Later layers (L17+) are safe to compress to INT4.
+Red = layers that break when quantized. There's a clear periodic pattern: every 4th layer has weight outliers that resist compression. Later layers (L17+) are safe to compress to INT4.
 
 ### PCIe bandwidth: pinned vs paged
 ![Transfer bandwidth](reports/charts/transfer_bandwidth.png)
@@ -580,7 +589,7 @@ M1 Pro gets 2.42 tokens/joule vs 0.90 on the 3080. The 3080 is faster in raw thr
 | Apple M1 Pro | 32GB UMA | Qwen-2.5-3B | Q5_K_M | 2.40 | @dilbersha |
 | Apple M1 Pro | 32GB UMA | Llama-3.1-8B | Q8_0 | 0.63 | @dilbersha |
 | NVIDIA RTX 3080 | 10GB VRAM | Qwen-3B | Q4_K_M | 0.90 | @dilbersha |
-| Your GPU? | — | — | — | — | Open a PR |
+| Your GPU? | - | - | - | - | Open a PR |
 
 ### Running the telemetry suite
 
@@ -600,17 +609,17 @@ Results land in `results/<hardware-slug>/`. The orchestrator detects your GPU au
 ## Contributing
 
 If you have different hardware, run the suite and open a PR with your CSV. I'm especially interested in:
-- RTX 4090 / 5090 — how much does the next gen improve things?
-- Apple M4 / M5 — does the UMA advantage keep scaling?
-- AMD RDNA3+ / MI300X — ROCm efficiency data is basically nonexistent
-- Intel Arc — nobody benchmarks these
+- RTX 4090 / 5090: how much does the next gen improve things?
+- Apple M4 / M5: does the UMA advantage keep scaling?
+- AMD RDNA3+ / MI300X: ROCm efficiency data is basically nonexistent
+- Intel Arc: nobody benchmarks these
 
 ## Methodology
 
 - 10 runs per config, report mean with 95% CI
 - WikiText-2 perplexity alongside throughput (speed means nothing if output is garbage)
 - Continuous thermal logging (temperature + clock speed) to catch throttling
-- Config hashing for reproducibility — every trial is traceable
+- Config hashing for reproducibility: every trial is traceable
 
 ## Project structure
 

@@ -1,0 +1,1026 @@
+{
+  "experiment": "block_expiry_q15b_n8192_w2",
+  "description": "Block-level attention mass and the RFC 39076 expiry rule on /home/dilbersha/models/Qwen2.5-1.5B, contexts [8192], 256 teacher-forced decode steps, block size 16, K=32, alpha=0.9, W=3. Dead-block fractions, closed-loop KL / NLL cost against the full cache with noise-floor, sink-protected random and sink-plus-recent controls, and a dormant-then-needed copy test.",
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_vram_mb": 10239.375,
+    "gpu_driver": "617.42",
+    "cuda_version": "12.8",
+    "cpu_name": "x86_64",
+    "cpu_cores": 16,
+    "ram_gb": 15.6,
+    "python_version": "3.10.12",
+    "torch_version": "2.10.0+cu128",
+    "os_info": "Linux 6.18.54.1-microsoft-standard-WSL2"
+  },
+  "timestamp": "2026-10-22T01:20:35.076325",
+  "total_duration_seconds": 432.6447546482086,
+  "seed": 42,
+  "num_trials": 25,
+  "trials": [
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0001",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "A"
+      },
+      "config_hash": "f388eae1433f",
+      "metrics": {
+        "n_blocks_end": 528.0,
+        "uniform_share": 0.001893939393939394,
+        "blocks_for_90pct": 0.3738140417457306,
+        "blocks_for_99pct": 0.8937381404174574,
+        "nll_full_mean": 2.342265743377993
+      },
+      "metadata": {
+        "dead_by_theta": {
+          "rel_0.03": {
+            "theta": 5.859375e-05,
+            "theta_rel_uniform": 0.0309375,
+            "pooled": 0.0,
+            "all_layers": 0.0,
+            "layer_min": 0.0,
+            "layer_median": 0.022770398481973434,
+            "layer_max": 0.4781783681214421
+          },
+          "rel_0.1": {
+            "theta": 0.0001953125,
+            "theta_rel_uniform": 0.10312500000000001,
+            "pooled": 0.11954459203036052,
+            "all_layers": 0.0,
+            "layer_min": 0.011385199240986717,
+            "layer_median": 0.3586337760910816,
+            "layer_max": 0.7893738140417458
+          },
+          "rel_0.3": {
+            "theta": 0.0005859375,
+            "theta_rel_uniform": 0.309375,
+            "pooled": 0.8102466793168881,
+            "all_layers": 0.10815939278937381,
+            "layer_min": 0.29601518026565465,
+            "layer_median": 0.7988614800759013,
+            "layer_max": 0.9127134724857685
+          },
+          "rel_1": {
+            "theta": 0.001953125,
+            "theta_rel_uniform": 1.03125,
+            "pooled": 0.9392789373814042,
+            "all_layers": 0.8121442125237192,
+            "layer_min": 0.8349146110056926,
+            "layer_median": 0.9430740037950665,
+            "layer_max": 0.9582542694497154
+          },
+          "literal_sum_heads_layers": {
+            "theta": 2.9761904761904763e-06,
+            "theta_rel_uniform": 0.0015714285714285715,
+            "pooled": 0.0,
+            "all_layers": 0.0,
+            "layer_min": 0.0,
+            "layer_median": 0.0,
+            "layer_max": 0.003795066413662239
+          },
+          "literal_sum_heads": {
+            "theta": 8.333333333333333e-05,
+            "theta_rel_uniform": 0.044,
+            "pooled": 0.0,
+            "all_layers": 0.0,
+            "layer_min": 0.0,
+            "layer_median": 0.07020872865275142,
+            "layer_max": 0.5920303605313093
+          },
+          "literal_as_normalised": {
+            "theta": 0.001,
+            "theta_rel_uniform": 0.528,
+            "pooled": 0.8956356736242884,
+            "all_layers": 0.40417457305502846,
+            "layer_min": 0.5806451612903226,
+            "layer_median": 0.8937381404174574,
+            "layer_max": 0.9411764705882353
+          }
+        },
+        "pooled_block_mass_sorted": [
+          0.264099956,
+          0.17939128,
+          0.068799824,
+          0.019933389,
+          0.014191121,
+          0.012746664,
+          0.01212006,
+          0.009540509,
+          0.007836775,
+          0.007521108,
+          0.007413608,
+          0.006699856,
+          0.006229099,
+          0.005337027,
+          0.005267519,
+          0.004976145,
+          0.00461562,
+          0.004305739,
+          0.004245079,
+          0.004212577,
+          0.004030596,
+          0.003885702,
+          0.003803335,
+          0.00322599,
+          0.003051216,
+          0.002930658,
+          0.002846277,
+          0.002774488,
+          0.002742894,
+          0.002288444,
+          0.002022531,
+          0.002007443,
+          0.00178283,
+          0.001709008,
+          0.00168813,
+          0.001568554,
+          0.001526554,
+          0.001493502,
+          0.001431969,
+          0.001388096,
+          0.001360455,
+          0.001297409,
+          0.001262795,
+          0.001234228,
+          0.001218646,
+          0.00121433,
+          0.001192665,
+          0.001166386,
+          0.001149412,
+          0.001141101,
+          0.001088424,
+          0.001029923,
+          0.001025902,
+          0.001010282,
+          0.001006062,
+          0.000976488,
+          0.000936583,
+          0.000935754,
+          0.000935593,
+          0.000921044,
+          0.000879198,
+          0.000848102,
+          0.000834507,
+          0.000828137
+        ]
+      },
+      "start_time": "2026-10-22T01:13:43.005367",
+      "end_time": "2026-10-22T01:13:43.005706",
+      "duration_seconds": 0.0003309879975859076,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0002",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "none",
+        "theta": 0.0,
+        "theta_rel_uniform": 0.0,
+        "arm": "mass"
+      },
+      "config_hash": "af65a804f3cc",
+      "metrics": {
+        "expired_frac_end": 0.0,
+        "any_expiry": 0.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.0,
+        "kl_max": 0.0,
+        "nll_delta": 0.0,
+        "top1_agree": 1.0,
+        "acc_delta": 0.0,
+        "expired_frac_mean": 0.0,
+        "masked_steps": 0.0
+      },
+      "metadata": {
+        "new_per_read": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "start_time": "2026-10-22T01:13:59.253874",
+      "end_time": "2026-10-22T01:13:59.253893",
+      "duration_seconds": 7.554001058451831e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0003",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "rel_0.03",
+        "theta": 5.859375e-05,
+        "theta_rel_uniform": 0.03,
+        "arm": "mass"
+      },
+      "config_hash": "fcb08945a839",
+      "metrics": {
+        "expired_frac_end": 0.0,
+        "any_expiry": 0.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.0,
+        "kl_max": 0.0,
+        "nll_delta": 0.0,
+        "top1_agree": 1.0,
+        "acc_delta": 0.0,
+        "expired_frac_mean": 0.0,
+        "masked_steps": 0.0
+      },
+      "metadata": {
+        "new_per_read": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "start_time": "2026-10-22T01:14:16.375068",
+      "end_time": "2026-10-22T01:14:16.375085",
+      "duration_seconds": 7.854003342799842e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0004",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "rel_0.1",
+        "theta": 0.0001953125,
+        "theta_rel_uniform": 0.1,
+        "arm": "mass"
+      },
+      "config_hash": "20896efa1d9a",
+      "metrics": {
+        "expired_frac_end": 0.028462998102466792,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.0013903897281732469,
+        "kl_max": 0.004889970645308495,
+        "nll_delta": -0.002882907778621302,
+        "top1_agree": 0.98125,
+        "acc_delta": 0.00625,
+        "expired_frac_mean": 0.019857952573831727,
+        "masked_steps": 160.0
+      },
+      "metadata": {
+        "new_per_read": [
+          0,
+          0,
+          2,
+          7,
+          2,
+          4,
+          0,
+          0
+        ]
+      },
+      "start_time": "2026-10-22T01:15:05.899945",
+      "end_time": "2026-10-22T01:15:05.899964",
+      "duration_seconds": 8.025002898648381e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0005",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "rel_0.1",
+        "theta": 0.0001953125,
+        "theta_rel_uniform": 0.1,
+        "arm": "random_nosink"
+      },
+      "config_hash": "60e229eb83bd",
+      "metrics": {
+        "expired_frac_end": 0.028462998102466792,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.0018428347341341578,
+        "kl_max": 0.052484504878520966,
+        "nll_delta": -0.0061937494132507705,
+        "top1_agree": 0.9875,
+        "acc_delta": 0.00625,
+        "expired_frac_mean": 0.019857952573831727,
+        "masked_steps": 160.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:15:05.900011",
+      "end_time": "2026-10-22T01:15:05.900021",
+      "duration_seconds": 6.1920000007376075e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0006",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "rel_0.1",
+        "theta": 0.0001953125,
+        "theta_rel_uniform": 0.1,
+        "arm": "oldest"
+      },
+      "config_hash": "505fe5f7bf7b",
+      "metrics": {
+        "expired_frac_end": 0.028462998102466792,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.0017159492084761307,
+        "kl_max": 0.0189327634871006,
+        "nll_delta": -0.007792987237462512,
+        "top1_agree": 0.98125,
+        "acc_delta": 0.0,
+        "expired_frac_mean": 0.019857952573831727,
+        "masked_steps": 160.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:15:05.900049",
+      "end_time": "2026-10-22T01:15:05.900054",
+      "duration_seconds": 4.128000000491738e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0007",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "rel_0.3",
+        "theta": 0.0005859375,
+        "theta_rel_uniform": 0.3,
+        "arm": "mass"
+      },
+      "config_hash": "acb1366b10f4",
+      "metrics": {
+        "expired_frac_end": 0.6299810246679317,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.04585669564237378,
+        "kl_max": 0.8278577923774719,
+        "nll_delta": 0.07191981782834773,
+        "top1_agree": 0.93125,
+        "acc_delta": 0.0125,
+        "expired_frac_mean": 0.6154005850242554,
+        "masked_steps": 160.0
+      },
+      "metadata": {
+        "new_per_read": [
+          0,
+          0,
+          298,
+          20,
+          10,
+          4,
+          0,
+          5
+        ]
+      },
+      "start_time": "2026-10-22T01:15:53.953800",
+      "end_time": "2026-10-22T01:15:53.953819",
+      "duration_seconds": 7.383998308796436e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0008",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "rel_0.3",
+        "theta": 0.0005859375,
+        "theta_rel_uniform": 0.3,
+        "arm": "random_nosink"
+      },
+      "config_hash": "d8beaad4e800",
+      "metrics": {
+        "expired_frac_end": 0.6299810246679317,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.12004787921696333,
+        "kl_max": 0.9072187542915344,
+        "nll_delta": 0.20199839216584223,
+        "top1_agree": 0.8875,
+        "acc_delta": 0.0125,
+        "expired_frac_mean": 0.6154005850242554,
+        "masked_steps": 160.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:15:53.953878",
+      "end_time": "2026-10-22T01:15:53.953885",
+      "duration_seconds": 4.80900052934885e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0009",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "rel_0.3",
+        "theta": 0.0005859375,
+        "theta_rel_uniform": 0.3,
+        "arm": "oldest"
+      },
+      "config_hash": "09dece13d634",
+      "metrics": {
+        "expired_frac_end": 0.6299810246679317,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.06756297623693967,
+        "kl_max": 0.9557238221168518,
+        "nll_delta": 0.0837424214278144,
+        "top1_agree": 0.89375,
+        "acc_delta": 0.025,
+        "expired_frac_mean": 0.6154005850242554,
+        "masked_steps": 160.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:15:53.953920",
+      "end_time": "2026-10-22T01:15:53.953926",
+      "duration_seconds": 4.368994268588722e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0010",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "rel_1",
+        "theta": 0.001953125,
+        "theta_rel_uniform": 1.0,
+        "arm": "mass"
+      },
+      "config_hash": "c7276de8aecf",
+      "metrics": {
+        "expired_frac_end": 0.9146110056925996,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.12236673723014065,
+        "kl_max": 1.115641474723816,
+        "nll_delta": 0.15064602546735842,
+        "top1_agree": 0.85,
+        "acc_delta": 0.00625,
+        "expired_frac_mean": 0.9148382207973302,
+        "masked_steps": 160.0
+      },
+      "metadata": {
+        "new_per_read": [
+          0,
+          0,
+          475,
+          2,
+          1,
+          0,
+          4,
+          1
+        ]
+      },
+      "start_time": "2026-10-22T01:16:41.729554",
+      "end_time": "2026-10-22T01:16:41.729573",
+      "duration_seconds": 7.84399890108034e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0011",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "rel_1",
+        "theta": 0.001953125,
+        "theta_rel_uniform": 1.0,
+        "arm": "random_nosink"
+      },
+      "config_hash": "79cd9e9e023a",
+      "metrics": {
+        "expired_frac_end": 0.9146110056925996,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.2725112647180595,
+        "kl_max": 2.4595580101013184,
+        "nll_delta": 0.4170495890743041,
+        "top1_agree": 0.78125,
+        "acc_delta": 0.00625,
+        "expired_frac_mean": 0.9148382207973302,
+        "masked_steps": 160.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:16:41.729616",
+      "end_time": "2026-10-22T01:16:41.729621",
+      "duration_seconds": 4.80900052934885e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0012",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "rel_1",
+        "theta": 0.001953125,
+        "theta_rel_uniform": 1.0,
+        "arm": "oldest"
+      },
+      "config_hash": "b07c682c2fa3",
+      "metrics": {
+        "expired_frac_end": 0.9146110056925996,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.1336336980541546,
+        "kl_max": 1.1639032363891602,
+        "nll_delta": 0.19342285913917295,
+        "top1_agree": 0.83125,
+        "acc_delta": -0.00625,
+        "expired_frac_mean": 0.9148382207973302,
+        "masked_steps": 160.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:16:41.729646",
+      "end_time": "2026-10-22T01:16:41.729651",
+      "duration_seconds": 3.8479993236251175e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0013",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "literal_sum_heads_layers",
+        "theta": 2.9761904761904763e-06,
+        "theta_rel_uniform": 0.0015238095238095239,
+        "arm": "mass"
+      },
+      "config_hash": "c966c1adc783",
+      "metrics": {
+        "expired_frac_end": 0.0,
+        "any_expiry": 0.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.0,
+        "kl_max": 0.0,
+        "nll_delta": 0.0,
+        "top1_agree": 1.0,
+        "acc_delta": 0.0,
+        "expired_frac_mean": 0.0,
+        "masked_steps": 0.0
+      },
+      "metadata": {
+        "new_per_read": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "start_time": "2026-10-22T01:16:57.626313",
+      "end_time": "2026-10-22T01:16:57.626329",
+      "duration_seconds": 7.4740019044838846e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0014",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "literal_sum_heads",
+        "theta": 8.333333333333333e-05,
+        "theta_rel_uniform": 0.042666666666666665,
+        "arm": "mass"
+      },
+      "config_hash": "b9dd457f9cec",
+      "metrics": {
+        "expired_frac_end": 0.0,
+        "any_expiry": 0.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.0,
+        "kl_max": 0.0,
+        "nll_delta": 0.0,
+        "top1_agree": 1.0,
+        "acc_delta": 0.0,
+        "expired_frac_mean": 0.0,
+        "masked_steps": 0.0
+      },
+      "metadata": {
+        "new_per_read": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "start_time": "2026-10-22T01:17:14.748469",
+      "end_time": "2026-10-22T01:17:14.748486",
+      "duration_seconds": 7.533999450970441e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0015",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "literal_as_normalised",
+        "theta": 0.001,
+        "theta_rel_uniform": 0.512,
+        "arm": "mass"
+      },
+      "config_hash": "0e8acea5439f",
+      "metrics": {
+        "expired_frac_end": 0.8311195445920304,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.0926316426316589,
+        "kl_max": 0.9629501104354858,
+        "nll_delta": 0.09267351113230689,
+        "top1_agree": 0.8625,
+        "acc_delta": 0.0125,
+        "expired_frac_mean": 0.830619277459356,
+        "masked_steps": 160.0
+      },
+      "metadata": {
+        "new_per_read": [
+          0,
+          0,
+          430,
+          3,
+          0,
+          3,
+          2,
+          4
+        ]
+      },
+      "start_time": "2026-10-22T01:18:04.216374",
+      "end_time": "2026-10-22T01:18:04.216397",
+      "duration_seconds": 8.746996172703803e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0016",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "literal_as_normalised",
+        "theta": 0.001,
+        "theta_rel_uniform": 0.512,
+        "arm": "random_nosink"
+      },
+      "config_hash": "bfe1ef148f5f",
+      "metrics": {
+        "expired_frac_end": 0.8311195445920304,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.20738345694298915,
+        "kl_max": 1.487944483757019,
+        "nll_delta": 0.34259614752118067,
+        "top1_agree": 0.8375,
+        "acc_delta": 0.0125,
+        "expired_frac_mean": 0.830619277459356,
+        "masked_steps": 160.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:18:04.216442",
+      "end_time": "2026-10-22T01:18:04.216448",
+      "duration_seconds": 4.688998160418123e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0017",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "B",
+        "theta_name": "literal_as_normalised",
+        "theta": 0.001,
+        "theta_rel_uniform": 0.512,
+        "arm": "oldest"
+      },
+      "config_hash": "7500259cee7f",
+      "metrics": {
+        "expired_frac_end": 0.8311195445920304,
+        "any_expiry": 1.0,
+        "max_expired_mass": 0.0,
+        "kl_mean": 0.10477962362756443,
+        "kl_max": 0.9742406010627747,
+        "nll_delta": 0.15627900209419748,
+        "top1_agree": 0.8625,
+        "acc_delta": 0.00625,
+        "expired_frac_mean": 0.830619277459356,
+        "masked_steps": 160.0
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:18:04.216474",
+      "end_time": "2026-10-22T01:18:04.216482",
+      "duration_seconds": 6.9130037445575e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0018",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "C",
+        "theta_name": "rel_0.03",
+        "theta": 5.859375e-05,
+        "arm": "mass",
+        "passage_depth": 0.75
+      },
+      "config_hash": "1900d6afba9f",
+      "metrics": {
+        "copy_nll": 0.3172465517152523,
+        "copy_nll_delta": -0.00514871549003143,
+        "copy_acc": 0.96,
+        "copy_acc_delta": 0.0,
+        "passage_blocks_expired": 0.0,
+        "all_blocks_expired_at_copy_start": 0.0019193857965451055,
+        "kl_before_copy": 0.000392484513065483,
+        "copy_nll_full": 0.3223952672052837,
+        "copy_acc_full": 0.96
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:18:54.900236",
+      "end_time": "2026-10-22T01:18:54.900253",
+      "duration_seconds": 6.943002517800778e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0019",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "C",
+        "theta_name": "rel_0.03",
+        "theta": 5.859375e-05,
+        "arm": "oldest",
+        "passage_depth": 0.75
+      },
+      "config_hash": "fb705f1dd946",
+      "metrics": {
+        "copy_nll": 0.32189501208624277,
+        "copy_nll_delta": -0.0005002551190409488,
+        "copy_acc": 0.95,
+        "copy_acc_delta": -0.010000000000000009,
+        "passage_blocks_expired": 0.0,
+        "all_blocks_expired_at_copy_start": 0.0019193857965451055,
+        "kl_before_copy": 0.00033991241650710435,
+        "copy_nll_full": 0.3223952672052837,
+        "copy_acc_full": 0.96
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:18:54.900620",
+      "end_time": "2026-10-22T01:18:54.900627",
+      "duration_seconds": 4.66799974674359e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0020",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "C",
+        "theta_name": "rel_0.1",
+        "theta": 0.0001953125,
+        "arm": "mass",
+        "passage_depth": 0.75
+      },
+      "config_hash": "3341947cb17d",
+      "metrics": {
+        "copy_nll": 0.3170205529265695,
+        "copy_nll_delta": -0.005374714278714221,
+        "copy_acc": 0.96,
+        "copy_acc_delta": 0.0,
+        "passage_blocks_expired": 0.0,
+        "all_blocks_expired_at_copy_start": 0.3550863723608445,
+        "kl_before_copy": 0.0006378865874694384,
+        "copy_nll_full": 0.3223952672052837,
+        "copy_acc_full": 0.96
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:19:27.232349",
+      "end_time": "2026-10-22T01:19:27.232371",
+      "duration_seconds": 8.03500006441027e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0021",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "C",
+        "theta_name": "rel_0.1",
+        "theta": 0.0001953125,
+        "arm": "oldest",
+        "passage_depth": 0.75
+      },
+      "config_hash": "778f46142e79",
+      "metrics": {
+        "copy_nll": 0.3142774402466239,
+        "copy_nll_delta": -0.008117826958659813,
+        "copy_acc": 0.96,
+        "copy_acc_delta": 0.0,
+        "passage_blocks_expired": 0.0,
+        "all_blocks_expired_at_copy_start": 0.3550863723608445,
+        "kl_before_copy": 0.001096723783211928,
+        "copy_nll_full": 0.3223952672052837,
+        "copy_acc_full": 0.96
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:19:27.232793",
+      "end_time": "2026-10-22T01:19:27.232802",
+      "duration_seconds": 5.7110009947791696e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0022",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "C",
+        "theta_name": "rel_0.3",
+        "theta": 0.0005859375,
+        "arm": "mass",
+        "passage_depth": 0.75
+      },
+      "config_hash": "b773fc1ecb9d",
+      "metrics": {
+        "copy_nll": 0.3566984264204075,
+        "copy_nll_delta": 0.03430315921512378,
+        "copy_acc": 0.94,
+        "copy_acc_delta": -0.020000000000000018,
+        "passage_blocks_expired": 0.0,
+        "all_blocks_expired_at_copy_start": 0.7178502879078695,
+        "kl_before_copy": 0.002999851269305509,
+        "copy_nll_full": 0.3223952672052837,
+        "copy_acc_full": 0.96
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:19:59.921110",
+      "end_time": "2026-10-22T01:19:59.921129",
+      "duration_seconds": 6.5019994508475065e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0023",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "C",
+        "theta_name": "rel_0.3",
+        "theta": 0.0005859375,
+        "arm": "oldest",
+        "passage_depth": 0.75
+      },
+      "config_hash": "358597733ed1",
+      "metrics": {
+        "copy_nll": 0.36626409296766727,
+        "copy_nll_delta": 0.043868825762383545,
+        "copy_acc": 0.94,
+        "copy_acc_delta": -0.020000000000000018,
+        "passage_blocks_expired": 0.0,
+        "all_blocks_expired_at_copy_start": 0.7178502879078695,
+        "kl_before_copy": 0.005533695699887176,
+        "copy_nll_full": 0.3223952672052837,
+        "copy_acc_full": 0.96
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:19:59.921489",
+      "end_time": "2026-10-22T01:19:59.921497",
+      "duration_seconds": 4.478002665564418e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0024",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "C",
+        "theta_name": "literal_sum_heads",
+        "theta": 8.333333333333333e-05,
+        "arm": "mass",
+        "passage_depth": 0.75
+      },
+      "config_hash": "e917dc155c5c",
+      "metrics": {
+        "copy_nll": 0.32086161791943596,
+        "copy_nll_delta": -0.0015336492858477602,
+        "copy_acc": 0.95,
+        "copy_acc_delta": -0.010000000000000009,
+        "passage_blocks_expired": 0.0,
+        "all_blocks_expired_at_copy_start": 0.028790786948176585,
+        "kl_before_copy": 0.00039988978519147624,
+        "copy_nll_full": 0.3223952672052837,
+        "copy_acc_full": 0.96
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:20:34.885326",
+      "end_time": "2026-10-22T01:20:34.885343",
+      "duration_seconds": 6.713002221658826e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "block_expiry_q15b_n8192_w2_t0025",
+      "config": {
+        "model": "/home/dilbersha/models/Qwen2.5-1.5B",
+        "n_ctx": 8192,
+        "window": 2,
+        "part": "C",
+        "theta_name": "literal_sum_heads",
+        "theta": 8.333333333333333e-05,
+        "arm": "oldest",
+        "passage_depth": 0.75
+      },
+      "config_hash": "71b7d1ef4603",
+      "metrics": {
+        "copy_nll": 0.31091706060069557,
+        "copy_nll_delta": -0.011478206604588148,
+        "copy_acc": 0.96,
+        "copy_acc_delta": 0.0,
+        "passage_blocks_expired": 0.0,
+        "all_blocks_expired_at_copy_start": 0.028790786948176585,
+        "kl_before_copy": 0.000460843791984189,
+        "copy_nll_full": 0.3223952672052837,
+        "copy_acc_full": 0.96
+      },
+      "metadata": {},
+      "start_time": "2026-10-22T01:20:34.885723",
+      "end_time": "2026-10-22T01:20:34.885731",
+      "duration_seconds": 4.698995326180011e-06,
+      "status": "completed",
+      "error": null
+    }
+  ]
+}
