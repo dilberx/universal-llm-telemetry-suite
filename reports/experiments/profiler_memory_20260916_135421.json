@@ -1,0 +1,272 @@
+{
+  "experiment": "profiler_memory",
+  "description": "Peak GPU memory and fidelity for three ways of computing per-key attention mass on Qwen/Qwen2.5-0.5B: keeping every layer's attention, reducing each layer in a hook, and chunked prefill. Attention in float32.",
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_vram_mb": 10239.375,
+    "gpu_driver": "576.88",
+    "cuda_version": "12.8",
+    "cpu_name": "x86_64",
+    "cpu_cores": 16,
+    "ram_gb": 15.6,
+    "python_version": "3.10.12",
+    "torch_version": "2.10.0+cu128",
+    "os_info": "Linux 6.18.33.2-microsoft-standard-WSL2"
+  },
+  "timestamp": "2026-09-16T13:54:21.609650",
+  "total_duration_seconds": 6.976305961608887,
+  "seed": 42,
+  "num_trials": 12,
+  "trials": [
+    {
+      "trial_id": "profiler_memory_t0001",
+      "config": {
+        "seq_len": 256,
+        "method": "reference"
+      },
+      "config_hash": "cf456e28ac76",
+      "metrics": {
+        "peak_mb": 263.06494140625,
+        "max_abs_error": 0.0,
+        "predicted_attn_mb": 84.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:18.382215",
+      "end_time": "2026-09-16T13:54:18.382227",
+      "duration_seconds": 4.618000275513623e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0002",
+      "config": {
+        "seq_len": 256,
+        "method": "one_shot_hook"
+      },
+      "config_hash": "b162dbb1a14b",
+      "metrics": {
+        "peak_mb": 149.25,
+        "max_abs_error": 0.0,
+        "reduction_vs_reference": 1.7625791719011725,
+        "predicted_attn_mb": 3.5
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:18.382256",
+      "end_time": "2026-09-16T13:54:18.382260",
+      "duration_seconds": 3.976999778387835e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0003",
+      "config": {
+        "seq_len": 256,
+        "method": "chunked",
+        "chunk_size": 128
+      },
+      "config_hash": "354bb4c0f3d0",
+      "metrics": {
+        "peak_mb": 154.8125,
+        "max_rel_error": 1.4373955688902352e-05,
+        "max_curve_error": 1.1205425092253307e-06,
+        "reduction_vs_reference": 1.699248713161082,
+        "predicted_attn_mb": 1.75
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:18.513400",
+      "end_time": "2026-09-16T13:54:18.513413",
+      "duration_seconds": 5.32000012753997e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0004",
+      "config": {
+        "seq_len": 256,
+        "method": "chunked",
+        "chunk_size": 64
+      },
+      "config_hash": "c159dc48ab38",
+      "metrics": {
+        "peak_mb": 82.21875,
+        "max_rel_error": 1.5389345959380116e-05,
+        "max_curve_error": 1.216350513089104e-06,
+        "reduction_vs_reference": 3.199573593690612,
+        "predicted_attn_mb": 0.875
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:18.741738",
+      "end_time": "2026-09-16T13:54:18.741752",
+      "duration_seconds": 5.450000116979936e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0005",
+      "config": {
+        "seq_len": 512,
+        "method": "reference"
+      },
+      "config_hash": "83c8cf912f3b",
+      "metrics": {
+        "peak_mb": 716.75439453125,
+        "max_abs_error": 0.0,
+        "predicted_attn_mb": 336.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:19.017385",
+      "end_time": "2026-09-16T13:54:19.017398",
+      "duration_seconds": 4.899000032310141e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0006",
+      "config": {
+        "seq_len": 512,
+        "method": "one_shot_hook"
+      },
+      "config_hash": "455cb5353abb",
+      "metrics": {
+        "peak_mb": 298.5,
+        "max_abs_error": 0.0,
+        "reduction_vs_reference": 2.4011872513609713,
+        "predicted_attn_mb": 14.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:19.017424",
+      "end_time": "2026-09-16T13:54:19.017428",
+      "duration_seconds": 3.5769999158219434e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0007",
+      "config": {
+        "seq_len": 512,
+        "method": "chunked",
+        "chunk_size": 128
+      },
+      "config_hash": "d01fa083a641",
+      "metrics": {
+        "peak_mb": 160.8125,
+        "max_rel_error": 9.448400706224327e-06,
+        "max_curve_error": 3.7994950433106744e-07,
+        "reduction_vs_reference": 4.457081349591916,
+        "predicted_attn_mb": 3.5
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:19.302697",
+      "end_time": "2026-09-16T13:54:19.302710",
+      "duration_seconds": 5.609999789157882e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0008",
+      "config": {
+        "seq_len": 512,
+        "method": "chunked",
+        "chunk_size": 64
+      },
+      "config_hash": "edf2ecffa66d",
+      "metrics": {
+        "peak_mb": 88.21875,
+        "max_rel_error": 9.04175164562553e-06,
+        "max_curve_error": 3.9768345769242153e-07,
+        "reduction_vs_reference": 8.12473986007793,
+        "predicted_attn_mb": 1.75
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:19.713835",
+      "end_time": "2026-09-16T13:54:19.713849",
+      "duration_seconds": 5.5109999266278464e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0009",
+      "config": {
+        "seq_len": 1024,
+        "method": "reference"
+      },
+      "config_hash": "063caa3e4160",
+      "metrics": {
+        "peak_mb": 2152.00830078125,
+        "max_abs_error": 0.0,
+        "predicted_attn_mb": 1344.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:20.097896",
+      "end_time": "2026-09-16T13:54:20.097910",
+      "duration_seconds": 5.249999958323315e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0010",
+      "config": {
+        "seq_len": 1024,
+        "method": "one_shot_hook"
+      },
+      "config_hash": "c2d45afa0413",
+      "metrics": {
+        "peak_mb": 597.5,
+        "max_abs_error": 0.0,
+        "reduction_vs_reference": 3.6016875326882847,
+        "predicted_attn_mb": 56.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:20.097937",
+      "end_time": "2026-09-16T13:54:20.097941",
+      "duration_seconds": 3.717000254255254e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0011",
+      "config": {
+        "seq_len": 1024,
+        "method": "chunked",
+        "chunk_size": 128
+      },
+      "config_hash": "e5a26d12db80",
+      "metrics": {
+        "peak_mb": 172.8125,
+        "max_rel_error": 1.9105650927440917e-05,
+        "max_curve_error": 9.18274485478543e-07,
+        "reduction_vs_reference": 12.45285092676311,
+        "predicted_attn_mb": 7.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:20.664882",
+      "end_time": "2026-09-16T13:54:20.664897",
+      "duration_seconds": 5.80100004299311e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "profiler_memory_t0012",
+      "config": {
+        "seq_len": 1024,
+        "method": "chunked",
+        "chunk_size": 64
+      },
+      "config_hash": "69f62e106690",
+      "metrics": {
+        "peak_mb": 100.21875,
+        "max_rel_error": 2.334663871850747e-05,
+        "max_curve_error": 9.258133276124347e-07,
+        "reduction_vs_reference": 21.4731105784222,
+        "predicted_attn_mb": 3.5
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T13:54:21.609471",
+      "end_time": "2026-09-16T13:54:21.609485",
+      "duration_seconds": 5.689999852620531e-06,
+      "status": "completed",
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+trial_id,status,duration_s,cfg_chunk_size,cfg_method,cfg_seq_len,metric_max_abs_error,metric_max_curve_error,metric_max_rel_error,metric_peak_mb,metric_predicted_attn_mb,metric_reduction_vs_reference
+profiler_memory_t0001,completed,0.0000,,reference,256,0.0,,,263.06494140625,84.0,
+profiler_memory_t0002,completed,0.0000,,one_shot_hook,256,0.0,,,149.25,3.5,1.7625791719011725
+profiler_memory_t0003,completed,0.0000,128,chunked,256,,1.1205425092253307e-06,1.4373955688902352e-05,154.8125,1.75,1.699248713161082
+profiler_memory_t0004,completed,0.0000,64,chunked,256,,1.216350513089104e-06,1.5389345959380116e-05,82.21875,0.875,3.199573593690612
+profiler_memory_t0005,completed,0.0000,,reference,512,0.0,,,716.75439453125,336.0,
+profiler_memory_t0006,completed,0.0000,,one_shot_hook,512,0.0,,,298.5,14.0,2.4011872513609713
+profiler_memory_t0007,completed,0.0000,128,chunked,512,,3.7994950433106744e-07,9.448400706224327e-06,160.8125,3.5,4.457081349591916
+profiler_memory_t0008,completed,0.0000,64,chunked,512,,3.9768345769242153e-07,9.04175164562553e-06,88.21875,1.75,8.12473986007793
+profiler_memory_t0009,completed,0.0000,,reference,1024,0.0,,,2152.00830078125,1344.0,
+profiler_memory_t0010,completed,0.0000,,one_shot_hook,1024,0.0,,,597.5,56.0,3.6016875326882847
+profiler_memory_t0011,completed,0.0000,128,chunked,1024,,9.18274485478543e-07,1.9105650927440917e-05,172.8125,7.0,12.45285092676311
+profiler_memory_t0012,completed,0.0000,64,chunked,1024,,9.258133276124347e-07,2.334663871850747e-05,100.21875,3.5,21.4731105784222

@@ -1,0 +1,92 @@
+{
+  "experiment": "e2e_kv_cache_qwen2.5_0.5b",
+  "description": "End-to-end greedy generation on Qwen/Qwen2.5-0.5B with physically pruned KV caches compared against a full-cache baseline.",
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_vram_mb": 10239.375,
+    "gpu_driver": "576.88",
+    "cuda_version": "12.8",
+    "cpu_name": "x86_64",
+    "cpu_cores": 16,
+    "ram_gb": 15.6,
+    "python_version": "3.10.12",
+    "torch_version": "2.10.0+cu128",
+    "os_info": "Linux 6.18.33.2-microsoft-standard-WSL2"
+  },
+  "timestamp": "2026-09-16T21:07:04.957862",
+  "total_duration_seconds": 8.651190280914307,
+  "seed": 42,
+  "num_trials": 2,
+  "trials": [
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0001",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "full",
+        "budget_frac": 1.0,
+        "max_new_tokens": 32
+      },
+      "config_hash": "211604c5d5a9",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 2.0011992449999525,
+        "tokens_per_second": 15.990411789307245,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 1039.5,
+        "max_cache_tokens": 1055.0,
+        "final_cache_tokens": 1055.0,
+        "token_match_rate": 1.0,
+        "exact_token_match": 1.0,
+        "first_mismatch_index": -1.0,
+        "text_similarity": 1.0
+      },
+      "metadata": {
+        "generated_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:03.019678",
+      "end_time": "2026-09-16T21:07:03.019953",
+      "duration_seconds": 0.0002626189998409245,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0002",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "h2o",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "065e9c31a41a",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7656263729995771,
+        "tokens_per_second": 18.123879711671968,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 334.5,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 317.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.06320541760722348
+      },
+      "metadata": {
+        "generated_text": " was a character character character character character character character character character character character character character character character character character character character character character character character character character character character character character character",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:04.882539",
+      "end_time": "2026-09-16T21:07:04.882559",
+      "duration_seconds": 7.815000572009012e-06,
+      "status": "completed",
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,455 @@
+{
+  "experiment": "scale_validation",
+  "description": "H2O over window retention ratio across three model scales on identical prompts, measured with single-pass retention curves. Adds Mistral-7B as a third scale point to the 0.5B and 2.7B results. bfloat16, eager attention.",
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_vram_mb": 10239.375,
+    "gpu_driver": "576.88",
+    "cuda_version": "12.8",
+    "cpu_name": "x86_64",
+    "cpu_cores": 16,
+    "ram_gb": 15.6,
+    "python_version": "3.10.12",
+    "torch_version": "2.10.0+cu128",
+    "os_info": "Linux 6.18.33.2-microsoft-standard-WSL2"
+  },
+  "timestamp": "2026-09-16T14:02:32.330407",
+  "total_duration_seconds": 61.46884059906006,
+  "seed": 42,
+  "num_trials": 21,
+  "trials": [
+    {
+      "trial_id": "scale_validation_t0001",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "check": "exactness"
+      },
+      "config_hash": "57e9a39b8d99",
+      "metrics": {
+        "max_abs_error": 0.0,
+        "n_layers": 24.0,
+        "params_b": 0.5
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:36.359710",
+      "end_time": "2026-09-16T14:01:36.359729",
+      "duration_seconds": 7.524000011471799e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0002",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "params_b": 0.5,
+        "budget_frac": 0.1
+      },
+      "config_hash": "2c1d119cb1c0",
+      "metrics": {
+        "h2o_over_window_median": 36.5846526043448,
+        "h2o_over_window_mean": 68.01373879732695,
+        "h2o_over_window_max": 554.0458705850333,
+        "n_observations": 168.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:36.978431",
+      "end_time": "2026-09-16T14:01:36.978472",
+      "duration_seconds": 3.285100001448882e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0003",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "params_b": 0.5,
+        "budget_frac": 0.2
+      },
+      "config_hash": "0391cfaa0713",
+      "metrics": {
+        "h2o_over_window_median": 16.055772127822312,
+        "h2o_over_window_mean": 24.96885147459896,
+        "h2o_over_window_max": 184.90014054915585,
+        "n_observations": 168.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:36.978528",
+      "end_time": "2026-09-16T14:01:36.978548",
+      "duration_seconds": 1.8725000245467527e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0004",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "params_b": 0.5,
+        "budget_frac": 0.3
+      },
+      "config_hash": "8bb826f8c3c3",
+      "metrics": {
+        "h2o_over_window_median": 9.683660627571024,
+        "h2o_over_window_mean": 14.128853316520571,
+        "h2o_over_window_max": 88.34704087741682,
+        "n_observations": 168.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:36.978572",
+      "end_time": "2026-09-16T14:01:36.978588",
+      "duration_seconds": 1.5198000255622901e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0005",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "params_b": 0.5,
+        "budget_frac": 0.5
+      },
+      "config_hash": "cd6957570b61",
+      "metrics": {
+        "h2o_over_window_median": 5.365677172163778,
+        "h2o_over_window_mean": 6.930141505892141,
+        "h2o_over_window_max": 41.66066911295729,
+        "n_observations": 168.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:36.978607",
+      "end_time": "2026-09-16T14:01:36.978622",
+      "duration_seconds": 1.4698000086355023e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0006",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "params_b": 0.5,
+        "budget_frac": 0.75
+      },
+      "config_hash": "0b38a1554f04",
+      "metrics": {
+        "h2o_over_window_median": 3.301691320777908,
+        "h2o_over_window_mean": 3.9257999155127767,
+        "h2o_over_window_max": 21.922168493578965,
+        "n_observations": 168.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:36.978640",
+      "end_time": "2026-09-16T14:01:36.978655",
+      "duration_seconds": 1.4357000054587843e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0007",
+      "config": {
+        "model": "Qwen/Qwen2.5-0.5B",
+        "params_b": 0.5,
+        "check": "knee"
+      },
+      "config_hash": "5c85c3288965",
+      "metrics": {
+        "knee_frac_mean": 0.12150662388757623,
+        "knee_frac_min": 0.019230769230769232,
+        "knee_frac_max": 0.4090909090909091
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:36.978671",
+      "end_time": "2026-09-16T14:01:36.978678",
+      "duration_seconds": 6.391999704646878e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0008",
+      "config": {
+        "model": "microsoft/phi-2",
+        "check": "exactness"
+      },
+      "config_hash": "d88a43e60f5c",
+      "metrics": {
+        "max_abs_error": 0.0,
+        "n_layers": 32.0,
+        "params_b": 2.7
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:42.309378",
+      "end_time": "2026-09-16T14:01:42.309392",
+      "duration_seconds": 5.140000212122686e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0009",
+      "config": {
+        "model": "microsoft/phi-2",
+        "params_b": 2.7,
+        "budget_frac": 0.1
+      },
+      "config_hash": "d2cb25e164a7",
+      "metrics": {
+        "h2o_over_window_median": 206.94591851297943,
+        "h2o_over_window_mean": 215.9870536458474,
+        "h2o_over_window_max": 553.2758988770316,
+        "n_observations": 224.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:42.743732",
+      "end_time": "2026-09-16T14:01:42.743856",
+      "duration_seconds": 0.00011147899977004272,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0010",
+      "config": {
+        "model": "microsoft/phi-2",
+        "params_b": 2.7,
+        "budget_frac": 0.2
+      },
+      "config_hash": "cfee66f230af",
+      "metrics": {
+        "h2o_over_window_median": 65.11708888420969,
+        "h2o_over_window_mean": 68.53611833649639,
+        "h2o_over_window_max": 216.65729071214858,
+        "n_observations": 224.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:42.743911",
+      "end_time": "2026-09-16T14:01:42.743942",
+      "duration_seconds": 3.013600007761852e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0011",
+      "config": {
+        "model": "microsoft/phi-2",
+        "params_b": 2.7,
+        "budget_frac": 0.3
+      },
+      "config_hash": "81da00d9ec28",
+      "metrics": {
+        "h2o_over_window_median": 35.41248758398798,
+        "h2o_over_window_mean": 38.95345805382325,
+        "h2o_over_window_max": 119.43303832652357,
+        "n_observations": 224.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:42.743974",
+      "end_time": "2026-09-16T14:01:42.744003",
+      "duration_seconds": 2.7781999961007386e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0012",
+      "config": {
+        "model": "microsoft/phi-2",
+        "params_b": 2.7,
+        "budget_frac": 0.5
+      },
+      "config_hash": "ba01f9fe0c36",
+      "metrics": {
+        "h2o_over_window_median": 16.632546191818555,
+        "h2o_over_window_mean": 16.991310214747237,
+        "h2o_over_window_max": 51.319208203340054,
+        "n_observations": 224.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:42.744050",
+      "end_time": "2026-09-16T14:01:42.744079",
+      "duration_seconds": 2.8874000236100983e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0013",
+      "config": {
+        "model": "microsoft/phi-2",
+        "params_b": 2.7,
+        "budget_frac": 0.75
+      },
+      "config_hash": "7cdb690d6de1",
+      "metrics": {
+        "h2o_over_window_median": 8.418796785629741,
+        "h2o_over_window_mean": 8.633124783377324,
+        "h2o_over_window_max": 22.845803211476333,
+        "n_observations": 224.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:42.744112",
+      "end_time": "2026-09-16T14:01:42.744138",
+      "duration_seconds": 2.6578999950288562e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0014",
+      "config": {
+        "model": "microsoft/phi-2",
+        "params_b": 2.7,
+        "check": "knee"
+      },
+      "config_hash": "ec85f50037da",
+      "metrics": {
+        "knee_frac_mean": 0.07622321494716848,
+        "knee_frac_min": 0.016574585635359115,
+        "knee_frac_max": 0.41304347826086957
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:01:42.744167",
+      "end_time": "2026-09-16T14:01:42.744182",
+      "duration_seconds": 1.3855000361218117e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0015",
+      "config": {
+        "model": "mistralai/Mistral-7B-Instruct-v0.2",
+        "check": "exactness"
+      },
+      "config_hash": "3fe68eb0e692",
+      "metrics": {
+        "max_abs_error": 0.0,
+        "n_layers": 32.0,
+        "params_b": 7.2
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:02:25.165791",
+      "end_time": "2026-09-16T14:02:25.165808",
+      "duration_seconds": 6.262000169954263e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0016",
+      "config": {
+        "model": "mistralai/Mistral-7B-Instruct-v0.2",
+        "params_b": 7.2,
+        "budget_frac": 0.1
+      },
+      "config_hash": "d8a93deb4f92",
+      "metrics": {
+        "h2o_over_window_median": 119.38382130636656,
+        "h2o_over_window_mean": 146.66474068694518,
+        "h2o_over_window_max": 835.102070808614,
+        "n_observations": 256.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:02:32.088092",
+      "end_time": "2026-09-16T14:02:32.088153",
+      "duration_seconds": 5.104499996377854e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0017",
+      "config": {
+        "model": "mistralai/Mistral-7B-Instruct-v0.2",
+        "params_b": 7.2,
+        "budget_frac": 0.2
+      },
+      "config_hash": "25e69be55d79",
+      "metrics": {
+        "h2o_over_window_median": 39.46487105598718,
+        "h2o_over_window_mean": 59.36287780985752,
+        "h2o_over_window_max": 689.4285868427584,
+        "n_observations": 256.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:02:32.088190",
+      "end_time": "2026-09-16T14:02:32.088216",
+      "duration_seconds": 2.5658000140538206e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0018",
+      "config": {
+        "model": "mistralai/Mistral-7B-Instruct-v0.2",
+        "params_b": 7.2,
+        "budget_frac": 0.3
+      },
+      "config_hash": "cea265d0fb9a",
+      "metrics": {
+        "h2o_over_window_median": 23.699584640549745,
+        "h2o_over_window_mean": 29.16785701118743,
+        "h2o_over_window_max": 308.8695348297732,
+        "n_observations": 256.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:02:32.088238",
+      "end_time": "2026-09-16T14:02:32.088260",
+      "duration_seconds": 2.148000021406915e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0019",
+      "config": {
+        "model": "mistralai/Mistral-7B-Instruct-v0.2",
+        "params_b": 7.2,
+        "budget_frac": 0.5
+      },
+      "config_hash": "1943d7a614f7",
+      "metrics": {
+        "h2o_over_window_median": 10.90555292030867,
+        "h2o_over_window_mean": 12.511648917194911,
+        "h2o_over_window_max": 46.82752477545876,
+        "n_observations": 256.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:02:32.088278",
+      "end_time": "2026-09-16T14:02:32.088299",
+      "duration_seconds": 2.0027000118716387e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0020",
+      "config": {
+        "model": "mistralai/Mistral-7B-Instruct-v0.2",
+        "params_b": 7.2,
+        "budget_frac": 0.75
+      },
+      "config_hash": "02f513cfe3c8",
+      "metrics": {
+        "h2o_over_window_median": 6.210773892175485,
+        "h2o_over_window_mean": 7.0201590529527795,
+        "h2o_over_window_max": 27.653122484034174,
+        "n_observations": 256.0
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:02:32.088317",
+      "end_time": "2026-09-16T14:02:32.088336",
+      "duration_seconds": 1.9336000150360633e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "scale_validation_t0021",
+      "config": {
+        "model": "mistralai/Mistral-7B-Instruct-v0.2",
+        "params_b": 7.2,
+        "check": "knee"
+      },
+      "config_hash": "05d9713d93b1",
+      "metrics": {
+        "knee_frac_mean": 0.054884740365005937,
+        "knee_frac_min": 0.005780346820809248,
+        "knee_frac_max": 0.12716763005780346
+      },
+      "metadata": {},
+      "start_time": "2026-09-16T14:02:32.088353",
+      "end_time": "2026-09-16T14:02:32.088362",
+      "duration_seconds": 9.597999905963661e-06,
+      "status": "completed",
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,1107 @@
+{
+  "experiment": "e2e_kv_cache_qwen2.5_0.5b",
+  "description": "End-to-end greedy generation on Qwen/Qwen2.5-0.5B with physically pruned KV caches compared against a full-cache baseline.",
+  "hardware": {
+    "gpu_name": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_vram_mb": 10239.375,
+    "gpu_driver": "576.88",
+    "cuda_version": "12.8",
+    "cpu_name": "x86_64",
+    "cpu_cores": 16,
+    "ram_gb": 15.6,
+    "python_version": "3.10.12",
+    "torch_version": "2.10.0+cu128",
+    "os_info": "Linux 6.18.33.2-microsoft-standard-WSL2"
+  },
+  "timestamp": "2026-09-16T21:08:16.561766",
+  "total_duration_seconds": 58.285168409347534,
+  "seed": 42,
+  "num_trials": 31,
+  "trials": [
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0001",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "full",
+        "budget_frac": 1.0,
+        "max_new_tokens": 32
+      },
+      "config_hash": "211604c5d5a9",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.9105132479999156,
+        "tokens_per_second": 16.74942585899379,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 1039.5,
+        "max_cache_tokens": 1055.0,
+        "final_cache_tokens": 1055.0,
+        "token_match_rate": 1.0,
+        "exact_token_match": 1.0,
+        "first_mismatch_index": -1.0,
+        "text_similarity": 1.0
+      },
+      "metadata": {
+        "generated_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:24.395892",
+      "end_time": "2026-09-16T21:07:24.396152",
+      "duration_seconds": 0.00024774199937382946,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0002",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "window",
+        "budget_frac": 0.1,
+        "max_new_tokens": 32
+      },
+      "config_hash": "c97215ac22e8",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7287373139997726,
+        "tokens_per_second": 18.510620289650443,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 133.1875,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 106.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.1792452830188679
+      },
+      "metadata": {
+        "generated_text": " was \" Something I Ate . \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" \" at",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:26.219145",
+      "end_time": "2026-09-16T21:07:26.219166",
+      "duration_seconds": 7.97500069893431e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0003",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "h2o",
+        "budget_frac": 0.1,
+        "max_new_tokens": 32
+      },
+      "config_hash": "c1ace272171f",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.6522044459998142,
+        "tokens_per_second": 19.368063121652924,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 133.1875,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 106.0,
+        "token_match_rate": 0.0625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.1477832512315271
+      },
+      "metadata": {
+        "generated_text": " was a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:27.971891",
+      "end_time": "2026-09-16T21:07:27.971908",
+      "duration_seconds": 7.934999302960932e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0004",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "hybrid",
+        "budget_frac": 0.1,
+        "max_new_tokens": 32
+      },
+      "config_hash": "db0e378a9b1d",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 2.018060859999423,
+        "tokens_per_second": 15.856806221398669,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 133.1875,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 106.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.32432432432432434
+      },
+      "metadata": {
+        "generated_text": " was a play by Craig S. Wright . It was based on the play of the same name by Craig S. Wright . It was written by Craig S.",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:30.109970",
+      "end_time": "2026-09-16T21:07:30.109995",
+      "duration_seconds": 9.927999599312898e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0005",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "snapkv",
+        "budget_frac": 0.1,
+        "max_new_tokens": 32
+      },
+      "config_hash": "5fa0341e6e82",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.9294596039999306,
+        "tokens_per_second": 16.5849546337541,
+        "peak_memory_mb": 2044.7021484375,
+        "avg_cache_tokens": 133.1875,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 106.0,
+        "token_match_rate": 0.15625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 3.0,
+        "text_similarity": 0.42066420664206644
+      },
+      "metadata": {
+        "generated_text": " was performed at the Theatre Royal @ London, and was directed by Olaf Bismarck . Bismarck was nominated for an Olivier Award for Best",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:32.143866",
+      "end_time": "2026-09-16T21:07:32.143887",
+      "duration_seconds": 7.834999451006297e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0006",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "adaptive",
+        "budget_frac": 0.1,
+        "max_new_tokens": 32
+      },
+      "config_hash": "d6f4cfaa985c",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 18.0,
+        "wall_time_s": 1.0839283559998876,
+        "tokens_per_second": 16.606263597002776,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 122.05555555555556,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 77.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.23645320197044334
+      },
+      "metadata": {
+        "generated_text": " was a member of the cast of the film The Last of the Mohicans . =",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:33.343824",
+      "end_time": "2026-09-16T21:07:33.343855",
+      "duration_seconds": 1.5899000572972e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0007",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "window",
+        "budget_frac": 0.2,
+        "max_new_tokens": 32
+      },
+      "config_hash": "1a560a0463b3",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.5926248559999294,
+        "tokens_per_second": 20.092616211184776,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 233.875,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 211.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.184
+      },
+      "metadata": {
+        "generated_text": " was part of a series which featured different playwrights , titled Burn / Chat / @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:35.048044",
+      "end_time": "2026-09-16T21:07:35.048066",
+      "duration_seconds": 9.157000022241846e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0008",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "h2o",
+        "budget_frac": 0.2,
+        "max_new_tokens": 32
+      },
+      "config_hash": "b6c24a2e7832",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7986610989992187,
+        "tokens_per_second": 17.79101133493403,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 233.875,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 211.0,
+        "token_match_rate": 0.0625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.26851851851851855
+      },
+      "metadata": {
+        "generated_text": " was directed by the play . . . . . . . . . . . . . . . . . . . . . . . . . . .",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:36.953282",
+      "end_time": "2026-09-16T21:07:36.953302",
+      "duration_seconds": 7.633999302925076e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0009",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "hybrid",
+        "budget_frac": 0.2,
+        "max_new_tokens": 32
+      },
+      "config_hash": "c9bc32849e0c",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.557509600999765,
+        "tokens_per_second": 20.54561973772695,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 233.875,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 211.0,
+        "token_match_rate": 0.125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 3.0,
+        "text_similarity": 0.41237113402061853
+      },
+      "metadata": {
+        "generated_text": " was performed at the Royal Albert Hall in London . He played the role of \" Teddy \" in the 2006 production of Citizenship by filmmaker filmmaker filmmaker",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:38.600272",
+      "end_time": "2026-09-16T21:07:38.600296",
+      "duration_seconds": 9.8489999800222e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0010",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "snapkv",
+        "budget_frac": 0.2,
+        "max_new_tokens": 32
+      },
+      "config_hash": "6ed7f08849d1",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.8049671359995045,
+        "tokens_per_second": 17.728854648802194,
+        "peak_memory_mb": 2044.7021484375,
+        "avg_cache_tokens": 233.875,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 211.0,
+        "token_match_rate": 0.375,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 6.0,
+        "text_similarity": 0.5766423357664233
+      },
+      "metadata": {
+        "generated_text": " was performed at Bush Theatre in New York City . He also played the role of \" John \" in the 2007 production of the play Citizen directed",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:40.504826",
+      "end_time": "2026-09-16T21:07:40.504847",
+      "duration_seconds": 7.814000127837062e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0011",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "adaptive",
+        "budget_frac": 0.2,
+        "max_new_tokens": 32
+      },
+      "config_hash": "4f57bef6c3d5",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.6043355529991459,
+        "tokens_per_second": 19.94595204237616,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 163.75,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 151.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.291497975708502
+      },
+      "metadata": {
+        "generated_text": " was a guest @ starring role on the television series The Bill in 2000 . This role was reprised in 2001 at the",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:42.206800",
+      "end_time": "2026-09-16T21:07:42.206824",
+      "duration_seconds": 9.868000233836938e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0012",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "window",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "820aa7a70306",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.5667419579995112,
+        "tokens_per_second": 20.424550345775565,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 334.5,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 317.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.184
+      },
+      "metadata": {
+        "generated_text": " was part of a series which featured different playwrights , titled Burn / Chat / @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:43.866340",
+      "end_time": "2026-09-16T21:07:43.866360",
+      "duration_seconds": 7.754000762361102e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0013",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "h2o",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "065e9c31a41a",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.6195242629992208,
+        "tokens_per_second": 19.758888910215354,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 334.5,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 317.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.06320541760722348
+      },
+      "metadata": {
+        "generated_text": " was a character character character character character character character character character character character character character character character character character character character character character character character character character character character character character character",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:45.575526",
+      "end_time": "2026-09-16T21:07:45.575548",
+      "duration_seconds": 9.407000106875785e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0014",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "hybrid",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "141ca5dcc0c2",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.5058959879997929,
+        "tokens_per_second": 21.249807592956017,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 334.5,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 317.0,
+        "token_match_rate": 0.125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 3.0,
+        "text_similarity": 0.42953020134228187
+      },
+      "metadata": {
+        "generated_text": " was performed at the National Theatre , London . He starred alongside actors , including , David Tennant , who played the character of \" John \" . He appeared on",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:47.184378",
+      "end_time": "2026-09-16T21:07:47.184399",
+      "duration_seconds": 7.994999577931594e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0015",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "snapkv",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "46c7f590006a",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.5579200259999197,
+        "tokens_per_second": 20.54020711330252,
+        "peak_memory_mb": 2044.7021484375,
+        "avg_cache_tokens": 334.5,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 317.0,
+        "token_match_rate": 0.15625,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 4.0,
+        "text_similarity": 0.5527272727272727
+      },
+      "metadata": {
+        "generated_text": " was performed at Bushnell Theatre in London . He played the role of \" John \" in the 2008 production of the Philip Ridley play Mercury Fur",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:48.831261",
+      "end_time": "2026-09-16T21:07:48.831280",
+      "duration_seconds": 7.323999852815177e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0016",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "adaptive",
+        "budget_frac": 0.3,
+        "max_new_tokens": 32
+      },
+      "config_hash": "8ff7536a11f3",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.5104803360000005,
+        "tokens_per_second": 21.185313861643007,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 221.875,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 211.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.1
+      },
+      "metadata": {
+        "generated_text": " was directed by Stephen Chbosky and starred alongside actors such as John Cusack , Michael Caine , and Robert De Niro . The play was performed",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:50.441079",
+      "end_time": "2026-09-16T21:07:50.441108",
+      "duration_seconds": 1.18629995995434e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0017",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "window",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "741d2a01ef4a",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.5155628369993792,
+        "tokens_per_second": 21.114268058562264,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 536.0,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 528.0,
+        "token_match_rate": 0.09375,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 3.0,
+        "text_similarity": 0.31746031746031744
+      },
+      "metadata": {
+        "generated_text": " was performed at the National . A review of Boulter ' performance in The Independent @ @ @ @ @ @ @ @ @ @ @ @ @ @ @",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:52.058859",
+      "end_time": "2026-09-16T21:07:52.058882",
+      "duration_seconds": 1.1741999514924828e-05,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0018",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "h2o",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "acb1e114dafc",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.5301634639999975,
+        "tokens_per_second": 20.912798372762644,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 536.0,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 528.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.24390243902439024
+      },
+      "metadata": {
+        "generated_text": " was a character in the episode \" The Long Firm . He was also starred in episode The Long Firm He portrayed the character \" Teddy 's Story in episode ",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:53.682826",
+      "end_time": "2026-09-16T21:07:53.682846",
+      "duration_seconds": 8.144999810610898e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0019",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "hybrid",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "6efff0d5d021",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.6270369829999254,
+        "tokens_per_second": 19.667653737654142,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 536.0,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 528.0,
+        "token_match_rate": 0.09375,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 3.0,
+        "text_similarity": 0.40789473684210525
+      },
+      "metadata": {
+        "generated_text": " was performed at the Royal Court Theatre . He appeared in two films in 2008 , Day of the Dead by filmmaker filmmaker filmmaker filmmaker filmmaker filmmaker filmmaker",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:55.406198",
+      "end_time": "2026-09-16T21:07:55.406220",
+      "duration_seconds": 8.595999133831356e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0020",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "snapkv",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "4bb0d94cecf0",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.5418269080000755,
+        "tokens_per_second": 20.754599516950726,
+        "peak_memory_mb": 2044.7021484375,
+        "avg_cache_tokens": 536.0,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 528.0,
+        "token_match_rate": 0.1875,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 5.0,
+        "text_similarity": 0.35658914728682173
+      },
+      "metadata": {
+        "generated_text": " was performed at Bush Theatre , and was filmed by the BBC . He played the role of \" Teddy \" in the 2008 film , Citizen ,",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:57.041656",
+      "end_time": "2026-09-16T21:07:57.041677",
+      "duration_seconds": 7.243999789352529e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0021",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "adaptive",
+        "budget_frac": 0.5,
+        "max_new_tokens": 32
+      },
+      "config_hash": "29c3bfca73b5",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.537856510999518,
+        "tokens_per_second": 20.80818318947185,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 339.09375,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 332.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.0966183574879227
+      },
+      "metadata": {
+        "generated_text": " was a guest @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:07:58.684153",
+      "end_time": "2026-09-16T21:07:58.684177",
+      "duration_seconds": 9.907999810820911e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0022",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "window",
+        "budget_frac": 0.75,
+        "max_new_tokens": 32
+      },
+      "config_hash": "ec3c232d9b57",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.3890521319999607,
+        "tokens_per_second": 23.037292310927395,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 787.5,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 791.0,
+        "token_match_rate": 0.375,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 12.0,
+        "text_similarity": 0.6416666666666667
+      },
+      "metadata": {
+        "generated_text": " was performed at Bush Theatre in the London Borough of Hammers @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:08:00.167403",
+      "end_time": "2026-09-16T21:08:00.167423",
+      "duration_seconds": 7.564000043203123e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0023",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "h2o",
+        "budget_frac": 0.75,
+        "max_new_tokens": 32
+      },
+      "config_hash": "38a048c84239",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.5969241659995532,
+        "tokens_per_second": 20.038521979514556,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 787.5,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 791.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.28776978417266186
+      },
+      "metadata": {
+        "generated_text": " was directed by Josie B. and starred alongside Ben Whishaw , Shane Zaza , Harry Kent , Fraser Ayres , Sophie Stanton and Dominic and Dominic",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:08:01.860535",
+      "end_time": "2026-09-16T21:08:01.860554",
+      "duration_seconds": 8.165000508597586e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0024",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "hybrid",
+        "budget_frac": 0.75,
+        "max_new_tokens": 32
+      },
+      "config_hash": "292535e530b2",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.6926970490003441,
+        "tokens_per_second": 18.904741411877712,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 787.5,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 791.0,
+        "token_match_rate": 0.3125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 10.0,
+        "text_similarity": 0.8357142857142857
+      },
+      "metadata": {
+        "generated_text": " was performed at Bush Theatre in the London Borough of Southwark . He appeared on a 2008 episode of the television series , Doctors , followed",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:08:03.651918",
+      "end_time": "2026-09-16T21:08:03.651938",
+      "duration_seconds": 7.594000635435805e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0025",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "snapkv",
+        "budget_frac": 0.75,
+        "max_new_tokens": 32
+      },
+      "config_hash": "2d5057b19683",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.6999335319997044,
+        "tokens_per_second": 18.824265418399644,
+        "peak_memory_mb": 2044.7021484375,
+        "avg_cache_tokens": 787.5,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 791.0,
+        "token_match_rate": 0.1875,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 6.0,
+        "text_similarity": 0.6827586206896552
+      },
+      "metadata": {
+        "generated_text": " was performed at Bush Theatre in London . He appeared on a 2006 episode of the television series , Doctors , followed by an appearance on the television",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:08:05.448736",
+      "end_time": "2026-09-16T21:08:05.448758",
+      "duration_seconds": 8.846000127959996e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0026",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "adaptive",
+        "budget_frac": 0.75,
+        "max_new_tokens": 32
+      },
+      "config_hash": "13b30a32f080",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.83091117100048,
+        "tokens_per_second": 17.47763654886325,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 485.375,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 483.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.2727272727272727
+      },
+      "metadata": {
+        "generated_text": " was a guest @-@ starring role on the television series The Bill in 2000 . This was followed by a starring role in the play Her",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:08:07.378360",
+      "end_time": "2026-09-16T21:08:07.378380",
+      "duration_seconds": 7.754999387543648e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0027",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "window",
+        "budget_frac": 0.9,
+        "max_new_tokens": 32
+      },
+      "config_hash": "39439149f071",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.8155957620001573,
+        "tokens_per_second": 17.62506867979637,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 938.40625,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 949.0,
+        "token_match_rate": 0.375,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 12.0,
+        "text_similarity": 0.6416666666666667
+      },
+      "metadata": {
+        "generated_text": " was performed at Bush Theatre in the London Borough of Hammers @ @ @ @ @ @ @ @ @ @ @ @ @ @ = = = = = =",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:08:09.308628",
+      "end_time": "2026-09-16T21:08:09.308650",
+      "duration_seconds": 8.366000656678807e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0028",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "h2o",
+        "budget_frac": 0.9,
+        "max_new_tokens": 32
+      },
+      "config_hash": "5528110a453d",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7737644099997851,
+        "tokens_per_second": 18.040727291401613,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 938.40625,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 949.0,
+        "token_match_rate": 0.59375,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 3.0,
+        "text_similarity": 0.7087719298245614
+      },
+      "metadata": {
+        "generated_text": " was performed at the Drum Theatre in Plymouth and the Menier Chocolate Factory in London . He appeared on a 2006 episode of the television series ,",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:08:11.190012",
+      "end_time": "2026-09-16T21:08:11.190034",
+      "duration_seconds": 7.914999514468946e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0029",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "hybrid",
+        "budget_frac": 0.9,
+        "max_new_tokens": 32
+      },
+      "config_hash": "c59614cb54f7",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7606497879996823,
+        "tokens_per_second": 18.175107973264797,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 938.40625,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 949.0,
+        "token_match_rate": 0.3125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 10.0,
+        "text_similarity": 0.47770700636942676
+      },
+      "metadata": {
+        "generated_text": " was performed at Bush Theatre in the London Borough of the Borough of the London Borough of the London Borough of the London Borough of the London Borough of the London Borough",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:08:13.054034",
+      "end_time": "2026-09-16T21:08:13.054056",
+      "duration_seconds": 8.335000529768877e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0030",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "snapkv",
+        "budget_frac": 0.9,
+        "max_new_tokens": 32
+      },
+      "config_hash": "7f3d1f5683b3",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.7106197829998564,
+        "tokens_per_second": 18.706670130917505,
+        "peak_memory_mb": 2044.7021484375,
+        "avg_cache_tokens": 938.40625,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 949.0,
+        "token_match_rate": 0.3125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 10.0,
+        "text_similarity": 0.47770700636942676
+      },
+      "metadata": {
+        "generated_text": " was performed at Bush Theatre in the London Borough of the Borough of the London Borough of the London Borough of the London Borough of the London Borough of the London Borough",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:08:14.865732",
+      "end_time": "2026-09-16T21:08:14.865753",
+      "duration_seconds": 8.104999324132223e-06,
+      "status": "completed",
+      "error": null
+    },
+    {
+      "trial_id": "e2e_kv_cache_qwen2.5_0.5b_t0031",
+      "config": {
+        "experiment": "e2e_kv_cache",
+        "model": "Qwen/Qwen2.5-0.5B",
+        "prompt": "wikitext_1024tok",
+        "policy": "adaptive",
+        "budget_frac": 0.9,
+        "max_new_tokens": 32
+      },
+      "config_hash": "056b07aae170",
+      "metrics": {
+        "prompt_tokens": 1024.0,
+        "new_tokens": 32.0,
+        "wall_time_s": 1.5230626860002303,
+        "tokens_per_second": 21.01029740544452,
+        "peak_memory_mb": 2040.6943359375,
+        "avg_cache_tokens": 572.5625,
+        "max_cache_tokens": 1024.0,
+        "final_cache_tokens": 573.0,
+        "token_match_rate": 0.03125,
+        "exact_token_match": 0.0,
+        "first_mismatch_index": 1.0,
+        "text_similarity": 0.2727272727272727
+      },
+      "metadata": {
+        "generated_text": " was a guest @-@ starring role on the television series The Bill in 2000 . This was followed by a starring role in the play Her",
+        "baseline_text": " was performed at Bush Theatre in the London Borough of Hammersmith and Fulham . He appeared on a 2006 episode of the television series ,"
+      },
+      "start_time": "2026-09-16T21:08:16.486332",
+      "end_time": "2026-09-16T21:08:16.486352",
+      "duration_seconds": 7.593999725941103e-06,
+      "status": "completed",
+      "error": null
+    }
+  ]
+}
