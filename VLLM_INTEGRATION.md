@@ -2,6 +2,8 @@
 
 This document provides a technical integration blueprint showing how to port **Speculative Early-Exit Routing (SEER)** and **Step-by-Step Entropy-guided KV Pruning (SDE-KV)** into high-performance serving frameworks like **vLLM** and **TensorRT-LLM**.
 
+> **Status.** This is an untested design sketch. The thresholds quoted below ($\tau = 0.85$, $\eta = 2.0$) are the original hand-set values and are known to be unreachable: no prompt in the benchmark reaches a mean top-probability of 0.85, so this rule escalates everything. Do not port these constants. The [Technical Report](TECHNICAL_REPORT.md) has the corrected measurement and a workable operating point. SDE-KV has not been benchmarked against the 2026 methods covering the same ground. Neither technique has been run inside vLLM. Treat this as a description of where the hooks would go, not as a validated integration.
+
 ---
 
 ## 1. Integrating SEER in vLLM

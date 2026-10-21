@@ -9,3 +9,12 @@ benchmark_config.json
 dist/
 build/
 *.tex
+
+# Private notes (kept outside the repo; symlink allowed, never committed)
+private-notes/
+private-notes
+llm-inference-benchmark-private-notes/
+*_private_notes.md
+claims_ledger.md
+novelty_acquisition_plan.md
+content_agent_handoff_*.md
