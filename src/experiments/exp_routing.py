@@ -1,26 +1,39 @@
 """
 Experiment 1A: Prompt Complexity Routing
 
-THE commercially valuable experiment.
-
 Question: Can you predict which prompts need a big model vs a small one?
-If yes, you can route 60-80% of traffic to a cheap model and save money.
+If yes, you can route a share of traffic to a cheap model and save money.
 
-Method:
-1. Run diverse prompts through Qwen2.5-0.5B
-2. Measure per-prompt: entropy, confidence, generation speed
-3. Classify: which prompts does the small model handle confidently?
-4. Build features that predict "small model is good enough"
+Design note (rewritten 2026-09-16)
+----------------------------------
+The previous version of this experiment was invalid. Three defects:
 
-Commercial value: every company running LLMs pays per-token.
-A router that sends easy prompts to a small model = direct cost savings.
+1. Both models loaded in fp16. Phi-2 produces non-finite logits in fp16, so
+   argmax returned token 0 ("!") on every step and both models emitted
+   "!!!!!!!!!!!!!!!!!!!!". Fixed by loading in bfloat16 with an explicit
+   finite-logit guard that fails loudly instead of degrading silently.
+
+2. The quality metric was tautological. On abort the code set
+   routed_text = large_text and then scored SequenceMatcher(routed_text,
+   large_text), which is 1.0 by construction. Every aborted trial scored
+   perfect quality while measuring nothing.
+
+3. Policy and measurement were fused. The loop broke at step K when the
+   hand-set thresholds fired, so the small model's actual output was never
+   observed on aborted prompts and the thresholds could not be re-examined
+   without a rerun.
+
+This version separates measurement from policy. Every prompt is generated to
+completion on both models, the trajectory signals are recorded per step, and
+the routing rule is applied afterwards. Thresholds can then be swept offline
+against a real quality target rather than asserted up front.
 """
 
 from __future__ import annotations
 
 import gc
-import math
 import time
+from difflib import SequenceMatcher
 
 import torch
 import torch.nn.functional as F
@@ -59,174 +72,226 @@ ROUTING_PROMPTS = {
     "ambiguous": "What's the best programming language? Justify your answer considering different use cases.",
 }
 
+EASY = ["greeting", "simple_math", "yes_no", "definition", "format", "list", "complete", "emoji"]
+MEDIUM = ["explain_simple", "code_easy", "summarize", "rewrite", "translate_common", "classify"]
+
+# SEER evaluation window and the thresholds from the original design.
+# Kept so the original rule can be scored, not because they are calibrated.
+K = 3
+TAU = 0.85
+ETA = 2.0
+MAX_TOKENS = 20
+
+# Relative cost weight of a small-model token against a large-model token.
+# Qwen2.5-0.5B against Phi-2 2.7B is roughly 5x on parameter count. The
+# measured wall-clock ratio is recorded per run and used for the real number.
+DTYPE = torch.bfloat16
+
+
+def _difficulty(name: str) -> str:
+    if name in MEDIUM:
+        return "medium"
+    if name in EASY:
+        return "easy"
+    return "hard"
+
+
+def _assert_finite(logits: torch.Tensor, model_name: str, prompt_name: str, step: int) -> None:
+    """Fail loudly on non-finite logits instead of silently emitting token 0."""
+    if not torch.isfinite(logits).all():
+        n_nan = int(torch.isnan(logits).sum())
+        n_inf = int(torch.isinf(logits).sum())
+        raise RuntimeError(
+            f"Non-finite logits from {model_name} on prompt '{prompt_name}' at step {step}: "
+            f"{n_nan} NaN, {n_inf} Inf. This is the fp16 failure that invalidated the "
+            f"2026-07-01 run. Check the model dtype."
+        )
+
+
+@torch.no_grad()
+def _generate_with_trajectory(model, tokenizer, prompt_text, prompt_name, model_name, max_tokens=MAX_TOKENS):
+    """Greedy generation that records per-step top probability and entropy.
+
+    Always runs to completion or EOS. The routing rule is applied afterwards,
+    so the small model's real output is observed even on prompts it would fail.
+    """
+    inputs = tokenizer(prompt_text, return_tensors="pt").to("cuda")
+    input_len = inputs["input_ids"].shape[1]
+    eos_id = tokenizer.eos_token_id
+
+    gen_tokens: list[int] = []
+    probs_seq: list[float] = []
+    entropy_seq: list[float] = []
+    past = None
+    next_input = inputs["input_ids"]
+
+    torch.cuda.synchronize()
+    t0 = time.perf_counter()
+
+    for step in range(max_tokens):
+        outputs = model(input_ids=next_input, past_key_values=past, use_cache=True)
+        past = outputs.past_key_values
+
+        logits = outputs.logits[0, -1].float()
+        _assert_finite(logits, model_name, prompt_name, step)
+
+        probs = F.softmax(logits, dim=-1)
+        log_probs = F.log_softmax(logits, dim=-1)
+        probs_seq.append(probs.max().item())
+        entropy_seq.append(-(probs * log_probs).sum().item())
+
+        next_token = int(logits.argmax().item())
+        gen_tokens.append(next_token)
+        if eos_id is not None and next_token == eos_id:
+            break
+        next_input = torch.tensor([[next_token]], device="cuda")
+
+    torch.cuda.synchronize()
+    elapsed = time.perf_counter() - t0
+
+    return {
+        "text": tokenizer.decode(gen_tokens, skip_special_tokens=True),
+        "tokens": gen_tokens,
+        "probs": probs_seq,
+        "entropies": entropy_seq,
+        "input_len": input_len,
+        "wall_time_s": elapsed,
+        "n_generated": len(gen_tokens),
+    }
+
 
 @torch.no_grad()
 def run_routing_experiment():
-    """Test the Speculative Early-Exit Routing (SEER) framework."""
+    """Measure SEER trajectory signals against real small-model quality."""
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     runner = ExperimentRunner(
         name="prompt_routing",
         description=(
-            "Measures SEER (Speculative Early-Exit Routing) on Qwen2.5-0.5B vs Phi-2 2.7B. "
-            "Evaluates live trajectory stability to decide whether to abort and route."
+            "SEER (Speculative Early-Exit Routing) on Qwen2.5-0.5B vs Phi-2 2.7B. "
+            "Both models generate to completion in bfloat16; trajectory signals are "
+            "recorded per step and the routing rule is scored afterwards against "
+            "measured small-model quality. Replaces the invalid 2026-07-01 fp16 run."
         ),
     )
 
-    # 1. Run generation and SEER evaluation on the small model
+    # ---- Small model pass -------------------------------------------------
     small_model_name = "Qwen/Qwen2.5-0.5B"
-    print(f"Loading small model: {small_model_name}...")
+    print(f"Loading small model: {small_model_name} ({DTYPE})...")
     tokenizer = AutoTokenizer.from_pretrained(small_model_name, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(
         small_model_name,
-        torch_dtype=torch.float16,
+        torch_dtype=DTYPE,
         device_map="cuda",
         trust_remote_code=True,
         attn_implementation="eager",
     )
     model.eval()
-    print(f"  Loaded small model ({torch.cuda.memory_allocated()/1024**3:.1f} GB)")
+    print(f"  Loaded ({torch.cuda.memory_allocated()/1024**3:.1f} GB)")
 
     small_results = {}
-    K = 3  # Early-exit evaluation window
-    max_tokens = 20
-
     for prompt_name, prompt_text in ROUTING_PROMPTS.items():
-        print(f"  Small model generation: {prompt_name}")
-        inputs = tokenizer(prompt_text, return_tensors="pt").to("cuda")
-        input_len = inputs["input_ids"].shape[1]
+        print(f"  small: {prompt_name}")
+        res = _generate_with_trajectory(model, tokenizer, prompt_text, prompt_name, small_model_name)
+        res["prompt_text"] = prompt_text
+        small_results[prompt_name] = res
 
-        # SEER step-by-step generation loop
-        gen_tokens = []
-        gen_probs = []
-        gen_entropies = []
-        aborted = False
-        curr_inputs = inputs["input_ids"]
-        curr_past_key_values = None
-
-        for step in range(max_tokens):
-            if curr_past_key_values is None:
-                outputs = model(input_ids=curr_inputs, use_cache=True, output_attentions=True)
-            else:
-                outputs = model(input_ids=next_input_id, past_key_values=curr_past_key_values, use_cache=True, output_attentions=True)
-
-            curr_past_key_values = outputs.past_key_values
-            logits = outputs.logits[0, -1].float()
-            probs = F.softmax(logits, dim=-1)
-            log_probs = F.log_softmax(logits, dim=-1)
-
-            top_prob = probs.max().item()
-            entropy = -(probs * log_probs).sum().item()
-
-            gen_probs.append(top_prob)
-            gen_entropies.append(entropy)
-
-            next_token = logits.argmax().item()
-            gen_tokens.append(next_token)
-            next_input_id = torch.tensor([[next_token]], device="cuda")
-
-            # Check stability at step K
-            if step == K - 1:
-                avg_k_prob = sum(gen_probs) / K
-                avg_k_entropy = sum(gen_entropies) / K
-                # Stable generation requires high probability and low entropy
-                is_stable = (avg_k_prob >= 0.85) and (avg_k_entropy <= 2.0)
-                if not is_stable:
-                    aborted = True
-                    break
-
-        small_text = tokenizer.decode(gen_tokens, skip_special_tokens=True)
-        small_results[prompt_name] = {
-            "aborted": aborted,
-            "tokens": gen_tokens,
-            "text": small_text,
-            "probs": gen_probs,
-            "entropies": gen_entropies,
-            "input_len": input_len,
-            "prompt_text": prompt_text,
-        }
-
-    # Delete small model to free up VRAM
     del model
     gc.collect()
     torch.cuda.empty_cache()
     print("  Freed small model VRAM.")
 
-    # 2. Run routed/comparison generation on the large model
+    # ---- Large model pass -------------------------------------------------
     large_model_name = "microsoft/phi-2"
-    print(f"\nLoading large model: {large_model_name}...")
+    print(f"\nLoading large model: {large_model_name} ({DTYPE})...")
     large_tokenizer = AutoTokenizer.from_pretrained(large_model_name, trust_remote_code=True)
-    # Phi-2 uses different tokenizer settings, make sure pad token is set
     if large_tokenizer.pad_token is None:
         large_tokenizer.pad_token = large_tokenizer.eos_token
 
     large_model = AutoModelForCausalLM.from_pretrained(
         large_model_name,
-        torch_dtype=torch.float16,
+        torch_dtype=DTYPE,
         device_map="cuda",
         trust_remote_code=True,
         attn_implementation="eager",
     )
     large_model.eval()
-    print(f"  Loaded large model ({torch.cuda.memory_allocated()/1024**3:.1f} GB)")
+    print(f"  Loaded ({torch.cuda.memory_allocated()/1024**3:.1f} GB)")
 
+    large_results = {}
     for prompt_name, s_res in small_results.items():
-        print(f"  Large model generation/routing: {prompt_name}")
-        prompt_text = s_res["prompt_text"]
-        inputs = large_tokenizer(prompt_text, return_tensors="pt").to("cuda")
-        input_len_l = inputs["input_ids"].shape[1]
-
-        # Standalone large model baseline
-        large_gen = large_model.generate(
-            **inputs,
-            max_new_tokens=max_tokens,
-            do_sample=False,
+        print(f"  large: {prompt_name}")
+        large_results[prompt_name] = _generate_with_trajectory(
+            large_model, large_tokenizer, s_res["prompt_text"], prompt_name, large_model_name
         )
-        large_tokens = large_gen[0][input_len_l:].tolist()
-        large_text = large_tokenizer.decode(large_tokens, skip_special_tokens=True)
-
-        # Routed path
-        if s_res["aborted"]:
-            # Route: we abort small and run large model to completion (cost = K small tokens + large model run)
-            routed_text = large_text
-            routed_tokens = large_tokens
-            tokens_saved = (max_tokens - K) / max_tokens * 0.05  # Weighted: small model is 20x cheaper
-        else:
-            # Local: small model completed locally (cost = small model run)
-            routed_text = s_res["text"]
-            routed_tokens = s_res["tokens"]
-            tokens_saved = 1.0  # Saved large model execution entirely
-
-        # Evaluate quality (comparison vs standalone large model output)
-        from difflib import SequenceMatcher
-        quality_score = SequenceMatcher(None, routed_text, large_text).ratio()
-
-        expected_difficulty = "easy"
-        if prompt_name in ["explain_simple", "code_easy", "summarize", "rewrite", "translate_common", "classify"]:
-            expected_difficulty = "medium"
-        elif prompt_name not in ["greeting", "simple_math", "yes_no", "definition", "format", "list", "complete", "emoji"]:
-            expected_difficulty = "hard"
-
-        config = {
-            "prompt": prompt_name,
-            "expected_difficulty": expected_difficulty,
-            "input_len": s_res["input_len"],
-        }
-
-        with runner.trial(config) as trial:
-            trial.record("seer_aborted", float(s_res["aborted"]))
-            trial.record("tokens_saved_ratio", tokens_saved)
-            trial.record("quality_retained", quality_score)
-            trial.record("avg_small_prob", sum(s_res["probs"]) / len(s_res["probs"]))
-            trial.record("avg_small_entropy", sum(s_res["entropies"]) / len(s_res["entropies"]))
-            trial.record("difficulty_label", ["easy", "medium", "hard"].index(expected_difficulty))
-            trial.record_meta("routed_text", routed_text)
-            trial.record_meta("large_baseline_text", large_text)
 
     del large_model
     gc.collect()
     torch.cuda.empty_cache()
     print("  Freed large model VRAM.")
+
+    # ---- Scoring ----------------------------------------------------------
+    # Measured per-token cost ratio, used for the honest savings number.
+    small_tok_s = sum(r["wall_time_s"] for r in small_results.values()) / max(
+        1, sum(r["n_generated"] for r in small_results.values()))
+    large_tok_s = sum(r["wall_time_s"] for r in large_results.values()) / max(
+        1, sum(r["n_generated"] for r in large_results.values()))
+    cost_ratio = small_tok_s / large_tok_s if large_tok_s > 0 else 1.0
+    print(f"\nMeasured cost: small {small_tok_s*1000:.1f} ms/tok, "
+          f"large {large_tok_s*1000:.1f} ms/tok, ratio {cost_ratio:.3f}")
+
+    for prompt_name, s_res in small_results.items():
+        l_res = large_results[prompt_name]
+
+        # The measurement that was missing: how good is the small model here,
+        # independent of any routing decision.
+        small_quality = SequenceMatcher(None, s_res["text"], l_res["text"]).ratio()
+
+        n_k = min(K, len(s_res["probs"]))
+        avg_k_prob = sum(s_res["probs"][:n_k]) / n_k
+        avg_k_entropy = sum(s_res["entropies"][:n_k]) / n_k
+
+        # The original SEER rule, applied after the fact.
+        would_abort = not (avg_k_prob >= TAU and avg_k_entropy <= ETA)
+
+        # Routed quality is 1.0 on abort by definition, because escalating
+        # runs the large model. Reported for completeness; small_quality and
+        # the cost column are the informative pair.
+        routed_quality = 1.0 if would_abort else small_quality
+
+        # Cost relative to always calling the large model.
+        n_small, n_large = s_res["n_generated"], l_res["n_generated"]
+        cost_large_only = n_large
+        if would_abort:
+            cost_routed = n_k * cost_ratio + n_large
+        else:
+            cost_routed = n_small * cost_ratio
+        savings = 1.0 - (cost_routed / cost_large_only) if cost_large_only else 0.0
+
+        config = {
+            "prompt": prompt_name,
+            "expected_difficulty": _difficulty(prompt_name),
+            "input_len": s_res["input_len"],
+        }
+
+        with runner.trial(config) as trial:
+            trial.record("seer_aborted", float(would_abort))
+            trial.record("small_quality", small_quality)
+            trial.record("routed_quality", routed_quality)
+            trial.record("cost_vs_large_only", cost_routed / cost_large_only if cost_large_only else 0.0)
+            trial.record("savings_vs_large_only", savings)
+            trial.record("avg_k_prob", avg_k_prob)
+            trial.record("avg_k_entropy", avg_k_entropy)
+            trial.record("avg_small_prob", sum(s_res["probs"]) / len(s_res["probs"]))
+            trial.record("avg_small_entropy", sum(s_res["entropies"]) / len(s_res["entropies"]))
+            trial.record("small_tokens", float(n_small))
+            trial.record("large_tokens", float(n_large))
+            trial.record("difficulty_label", ["easy", "medium", "hard"].index(_difficulty(prompt_name)))
+            trial.record_meta("small_text", s_res["text"])
+            trial.record_meta("large_text", l_res["text"])
+            # Raw per-step signals so thresholds can be swept without a rerun.
+            trial.record_meta("step_probs", s_res["probs"])
+            trial.record_meta("step_entropies", s_res["entropies"])
 
     runner.save()
     runner.to_csv()

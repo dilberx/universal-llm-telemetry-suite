@@ -332,6 +332,22 @@ def main():
     opt_parser.add_argument("--params", type=float, default=0.5, help="Model size in billions (default: 0.5)")
     opt_parser.add_argument("--priority", choices=["speed", "quality", "balanced"], default="balanced")
 
+    # profile
+    prof_parser = subparsers.add_parser(
+        "profile", help="Measure per-layer KV cache retention curves for a model")
+    prof_parser.add_argument("--model", "-m", required=True,
+                             help="HF model id or local directory")
+    prof_parser.add_argument("--tokens", "-t", type=int, default=1024,
+                             help="Calibration sequence length (default: 1024)")
+    prof_parser.add_argument("--windows", "-w", type=int, default=1,
+                             help="Calibration windows to average (default: 1)")
+    prof_parser.add_argument("--chunk", type=int, default=128,
+                             help="Prefill chunk size; lower uses less memory (default: 128)")
+    prof_parser.add_argument("--text-file", default=None,
+                             help="Calibration text file (default: wikitext-2 if cached)")
+    prof_parser.add_argument("--out", default="reports/profiles",
+                             help="Output directory (default: reports/profiles)")
+
     # charts
     subparsers.add_parser("charts", help="Generate charts from existing data")
 
@@ -416,6 +432,19 @@ def main():
     elif args.command == "optimize":
         from llm_bench.optimizer import run_optimize
         run_optimize(vram_gb=args.vram, model_params_b=args.params, priority=args.priority)
+
+    elif args.command == "profile":
+        from src.kv_profiler.profile import print_summary, profile_model, write_profile
+        text = None
+        if args.text_file:
+            text = Path(args.text_file).read_text()
+        profile = profile_model(
+            args.model, tokens=args.tokens, chunk=args.chunk,
+            windows=args.windows, text=text,
+        )
+        print_summary(profile)
+        path = write_profile(profile, args.out)
+        print(f"\nProfile written to {path}")
 
     elif args.command == "charts":
         from src.experiments.visualize import generate_all_charts

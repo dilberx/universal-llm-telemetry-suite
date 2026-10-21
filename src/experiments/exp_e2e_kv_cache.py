@@ -32,7 +32,16 @@ def _select_prompts(
     prompt_set: str,
     tokenizer,
     long_context_tokens: tuple[int, ...],
+    long_windows: int = 1,
 ) -> dict[str, str]:
+    """Prompts for an end-to-end run.
+
+    `long_windows` takes that many non-overlapping windows at each requested
+    length instead of one. Greedy similarity over a few dozen generated tokens
+    is high variance, because a single early token flip changes the whole
+    continuation, so a single long prompt gives cells that are not comparable
+    to the five-prompt default set.
+    """
     if prompt_set == "default":
         return E2E_PROMPTS
     if prompt_set != "long":
@@ -43,20 +52,28 @@ def _select_prompts(
     clean_text = " ".join(raw_text.split())
     max_target = max(long_context_tokens)
     # Bound tokenization so long-prompt setup does not tokenize the entire
-    # WikiText fixture and trigger max-length warnings before we slice.
-    sample_text = clean_text[:max(20_000, max_target * 12)]
+    # WikiText fixture and trigger max-length warnings before we slice. The
+    # bound has to cover every window, not just one, or asking for several
+    # windows fails after the model has already loaded.
+    needed_chars = max_target * long_windows * 12
+    sample_text = clean_text[:max(20_000, needed_chars)]
     token_ids = tokenizer(sample_text, add_special_tokens=False)["input_ids"]
 
     prompts: dict[str, str] = {}
     for target_len in long_context_tokens:
-        if target_len >= len(token_ids):
+        if target_len * long_windows > len(token_ids):
             raise ValueError(
-                f"Requested {target_len} tokens, but only {len(token_ids)} tokens are available"
+                f"Requested {long_windows} windows of {target_len} tokens, but only "
+                f"{len(token_ids)} tokens are available"
             )
-        prompts[f"wikitext_{target_len}tok"] = tokenizer.decode(
-            token_ids[:target_len],
-            skip_special_tokens=True,
-        )
+        for w in range(long_windows):
+            lo = w * target_len
+            name = (f"wikitext_{target_len}tok" if long_windows == 1
+                    else f"wikitext_{target_len}tok_w{w}")
+            prompts[name] = tokenizer.decode(
+                token_ids[lo:lo + target_len],
+                skip_special_tokens=True,
+            )
     return prompts
 
 
@@ -530,6 +547,7 @@ def run_e2e_kv_cache_experiment(
     policies: tuple[str, ...] = ("window", "h2o"),
     prompt_set: str = "default",
     long_context_tokens: tuple[int, ...] = (256, 512, 768),
+    long_windows: int = 1,
 ) -> ExperimentRunner:
     short_name = model_name.split("/")[-1].lower().replace("-", "_")
     runner = ExperimentRunner(
@@ -541,7 +559,7 @@ def run_e2e_kv_cache_experiment(
     )
 
     model, tokenizer = load_model(model_name)
-    prompts = _select_prompts(prompt_set, tokenizer, long_context_tokens)
+    prompts = _select_prompts(prompt_set, tokenizer, long_context_tokens, long_windows)
     baselines: dict[str, dict[str, Any]] = {}
 
     try:
@@ -634,6 +652,7 @@ def run_e2e_kv_logprob_experiment(
     policies: tuple[str, ...] = ("window", "h2o", "hybrid"),
     prompt_set: str = "default",
     long_context_tokens: tuple[int, ...] = (256, 512, 768),
+    long_windows: int = 1,
 ) -> ExperimentRunner:
     short_name = model_name.split("/")[-1].lower().replace("-", "_")
     runner = ExperimentRunner(
@@ -645,7 +664,7 @@ def run_e2e_kv_logprob_experiment(
     )
 
     model, tokenizer = load_model(model_name)
-    prompts = _select_prompts(prompt_set, tokenizer, long_context_tokens)
+    prompts = _select_prompts(prompt_set, tokenizer, long_context_tokens, long_windows)
 
     try:
         for prompt_name, prompt_text in prompts.items():
