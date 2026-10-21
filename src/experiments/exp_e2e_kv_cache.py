@@ -653,18 +653,43 @@ def run_e2e_kv_logprob_experiment(
     prompt_set: str = "default",
     long_context_tokens: tuple[int, ...] = (256, 512, 768),
     long_windows: int = 1,
+    dtype: torch.dtype | None = None,
+    offload: bool = False,
+    only_prompt_suffix: str | None = None,
+    tag: str | None = None,
 ) -> ExperimentRunner:
-    short_name = model_name.split("/")[-1].lower().replace("-", "_")
+    """Score full-cache greedy targets under each pruned cache.
+
+    `offload` loads through `load_for_profiling` with a CUDA memory cap, so a model
+    larger than the card runs split across GPU and CPU. `only_prompt_suffix` keeps
+    the prompts whose name ends with it (e.g. "_w2"), so each window can be its own
+    result file and an interrupted run loses at most one window.
+    """
+    short_name = model_name.rstrip("/").split("/")[-1].lower().replace("-", "_")
     runner = ExperimentRunner(
-        name=f"e2e_kv_logprob_{short_name}",
+        name=f"e2e_kv_logprob_{short_name}" + (f"_{tag}" if tag else ""),
         description=(
             f"Fixed-target logprob replay on {model_name}: full-cache greedy target "
             "tokens are scored under physically pruned KV caches."
         ),
     )
 
-    model, tokenizer = load_model(model_name)
+    if offload:
+        from transformers import AutoTokenizer
+
+        from src.kv_profiler.loading import limit_gpu_memory, load_for_profiling
+
+        limit_gpu_memory()
+        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        # output_attentions keeps every layer's weights on the GPU, so leave room.
+        model = load_for_profiling(model_name, dtype=dtype or torch.bfloat16, headroom_gib=3.5)
+    else:
+        model, tokenizer = load_model(model_name)
     prompts = _select_prompts(prompt_set, tokenizer, long_context_tokens, long_windows)
+    if only_prompt_suffix:
+        prompts = {k: v for k, v in prompts.items() if k.endswith(only_prompt_suffix)}
+        if not prompts:
+            raise ValueError(f"no prompt name ends with {only_prompt_suffix!r}")
 
     try:
         for prompt_name, prompt_text in prompts.items():

@@ -113,16 +113,19 @@ def unwrap_causal_lm(model):
     return model
 
 
-def load_for_profiling(src: str, dtype=torch.bfloat16, attempts: int = 4):
+def load_for_profiling(src: str, dtype=torch.bfloat16, attempts: int = 4,
+                       headroom_gib: float = HEADROOM_GIB):
     """Load a causal LM with eager attention, retrying with more offload on OOM.
 
     Eager attention is required: the profiler reads the attention weights the
-    module returns, and the fused kernels never materialise them.
+    module returns, and the fused kernels never materialise them. Raise
+    `headroom_gib` when the caller keeps every layer's attention weights
+    (`output_attentions=True`), since those sit on the GPU next to the weights.
     """
     from transformers import AutoModel, AutoModelForCausalLM
 
     kwargs = dict(torch_dtype=dtype, trust_remote_code=True, attn_implementation="eager")
-    placement = placement_for(estimate_weight_gib(src))
+    placement = placement_for(estimate_weight_gib(src), headroom_gib)
 
     def _from_pretrained(**extra):
         # Multimodal checkpoints are not causal-LM classes, so fall back to
@@ -144,7 +147,7 @@ def load_for_profiling(src: str, dtype=torch.bfloat16, attempts: int = 4):
             gc.collect()
             torch.cuda.empty_cache()
             free_gib = torch.cuda.mem_get_info()[0] / 1024 ** 3
-            budget = max(0.5, (free_gib - HEADROOM_GIB) / (2 ** attempt))
+            budget = max(0.5, (free_gib - headroom_gib) / (2 ** attempt))
             placement = {0: f"{budget:.1f}GiB", "cpu": "11GiB"}
             print(f"  OOM on attempt {attempt + 1}, retrying with {budget:.1f} GiB on GPU")
     raise RuntimeError(f"could not fit {src} after {attempts} attempts")

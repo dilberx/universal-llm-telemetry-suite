@@ -1,0 +1,42 @@
+
+=== Qwen2.5-7B, 1024 tokens: median NLL increase over 5 windows (lower is better) ===
+policy         10%     20%     30%     50%     75%     90%    mean
+snapkv       0.104   0.051   0.047   0.014   0.028   0.008   0.042
+hybrid       0.647   0.159   0.249   0.081   0.004   0.007   0.191
+adaptive     1.142   1.093   1.114   0.811   0.774   0.728   0.944
+window       1.988   1.271   1.176   1.114   0.795   0.764   1.185
+h2o          5.896   5.187   4.249   2.445   1.254   0.847   3.313
+
+proxy          10%     20%     30%     50%     75%     90%    mean   (retention, higher = proxy says better)
+h2o          0.624   0.703   0.767   0.863   0.948   0.985   0.815
+window       0.032   0.075   0.119   0.213   0.338   0.427   0.200
+hybrid       0.525   0.568   0.608   0.690   0.822   0.917   0.688
+
+ranking by NLL:   hybrid > window > h2o
+ranking by proxy: h2o > hybrid > window
+pooled r(proxy, NLL increase) = +0.056  (n=18)
+  within h2o     r = -0.995  (n=6)
+  within window  r = -0.854  (n=6)
+  within hybrid  r = -0.767  (n=6)
+budgets where the proxy's best policy is the NLL-best policy: 0 of 6
+
+=== Qwen2.5-0.5B, 1024 tokens (e2e_kv_logprob_qwen2.5_0.5b_20260916_213111.json): median NLL increase over 5 windows (lower is better) ===
+policy         10%     20%     30%     50%     75%     90%    mean
+hybrid       0.264   0.075   0.030   0.026  -0.001   0.002   0.066
+snapkv       0.312   0.174   0.041   0.024   0.008   0.004   0.094
+adaptive     0.786   0.577   0.521   0.480   0.439   0.397   0.533
+h2o          3.831   3.300   2.900   1.914   1.124   0.587   2.276
+window       3.907   4.417   4.623   3.089   3.010   3.343   3.731
+
+proxy          10%     20%     30%     50%     75%     90%    mean   (retention, higher = proxy says better)
+h2o          0.515   0.630   0.715   0.834   0.938   0.981   0.769
+window       0.037   0.079   0.131   0.252   0.430   0.549   0.246
+hybrid       0.391   0.445   0.503   0.620   0.780   0.899   0.606
+
+ranking by NLL:   hybrid > h2o > window
+ranking by proxy: h2o > hybrid > window
+pooled r(proxy, NLL increase) = -0.602  (n=18)
+  within h2o     r = -0.990  (n=6)
+  within window  r = -0.718  (n=6)
+  within hybrid  r = -0.707  (n=6)
+budgets where the proxy's best policy is the NLL-best policy: 0 of 6
