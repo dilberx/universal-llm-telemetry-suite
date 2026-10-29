@@ -178,11 +178,14 @@ class SnapKVPolicy(EvictionPolicy):
     """
     Attention-variance-based selection: keep tokens whose attention
     scores have high variance across heads. High-variance tokens
-    are "informative" — different heads disagree on them, so they
+    are "informative" because different heads disagree on them, so they
     carry more discriminative signal.
 
-    Reference: Li et al., "SnapKV: LLM Knows What You are Looking for
-    Before Generation" (2024)
+    This is a simplified selector inspired by Li et al., "SnapKV: LLM Knows
+    What You are Looking for Before Generation" (2024). It is not that
+    algorithm: SnapKV sums observation-window attention per key and pools it
+    before selecting. Results under the name "snapkv" in this repo are for
+    this variance scorer.
     """
 
     def __init__(self, observation_window: int = 16):

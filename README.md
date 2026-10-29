@@ -136,7 +136,7 @@ Attention-mass retention is useful as a diagnostic: it explains *why* window evi
 *Both charts are medians over five 1024-token wikitext windows. Greedy similarity is for the 0.5B only; the 7B was scored on NLL. The full tables are in [the proxy audit](#does-the-proxy-predict-quality-within-a-policy-yes-across-policies-it-inverts).*
 
 Key findings from E2E validation:
-- **SnapKV and hybrid** are the two best policies at both scales. On the 7B, SnapKV adds 0.10 nats at a 10% budget against 0.65 for hybrid; on the 0.5B the two are within 0.1 of each other at every budget. Both reproduce the full-cache greedy output exactly at a 90% budget on the 0.5B.
+- **The `snapkv` scorer and hybrid** are the two best policies at both scales. (`snapkv` here is a simplified selector that ranks keys by the variance across heads of the last 16 queries' attention. It is not the published SnapKV, which sums observation-window attention and pools it, so these results do not speak for SnapKV itself.) On the 7B, `snapkv` adds 0.10 nats at a 10% budget against 0.65 for hybrid; on the 0.5B the two are within 0.1 of each other at every budget. Both reproduce the full-cache greedy output exactly at a 90% budget on the 0.5B.
 - **SDE-KV (adaptive)** sits in the middle at both scales and flattens early: on the 7B it still adds 0.73 nats at a 90% budget. Its step-by-step budget expansion avoids the worst failures but does not close the gap to the sink-based policies.
 - **H2O and window** are the two worst. Which of them is worse depends on the model: window on the 0.5B, H2O on the 7B, where H2O adds 5.9 nats at a 10% budget.
 
@@ -158,7 +158,7 @@ NLL under a pruned cache at 1024 tokens, lower is better:
 
 ![The proxy inverts the ranking](reports/charts/corrected_proxy_inversion.png)
 
-Now put that next to what the proxy says. At every budget the proxy ranks the policies **h2o > sink > window** by retained attention mass, without exception. On NLL the order is **hybrid and snapkv first, h2o a distant fourth, window last**.
+Now put that next to what the proxy says. At every budget the proxy ranks the policies **h2o > sink > window** by retained attention mass, without exception. That ordering is true by construction: H2O keeps the keys with the most mass, so no other keep set of the same size can retain more. It is not a finding about the proxy. What the audit measures is that the policy that maximises the proxy is far worse in quality than the sink-based policies (and worst of all five on the 7B), so maximising retained mass is not the same as preserving output quality. On NLL the order is **hybrid and snapkv first, h2o a distant fourth, window last**.
 
 | Budget | proxy: h2o | proxy: sink | quality: h2o NLL | quality: hybrid NLL |
 |---|---|---|---|---|
@@ -170,7 +170,7 @@ H2O retains more attention mass than the sink-based policies at every budget and
 
 **The proxy is not useless, and the failure is specific.** Within the policies it can score exactly, retention predicts NLL strongly: r = -0.91 at 1024 tokens and -0.80 on short prompts, pooled across h2o and window over six budgets (see the 7B paragraph below for why the per-policy figures are the safer ones), each scored against retention computed on its own condition's prompts. Sweep a budget for a fixed policy and the proxy tells you what will happen. Compare two policies and it can tell you the opposite of the truth.
 
-**The inversion is not a long-context artifact.** With retention recomputed on each condition's own prompts, the proxy orders the policies h2o > sink > window at every budget at *both* lengths, while NLL puts the sink-based policy first at every budget at both lengths. Six budgets, two lengths, twelve opportunities to agree, zero agreements. This is a property of what the metric measures, not of the regime it is measured in.
+**The inversion is not a long-context artifact.** With retention recomputed on each condition's own prompts, the proxy orders the policies h2o > sink > window at every budget at *both* lengths, while NLL puts the sink-based policy first at every budget at both lengths. Six budgets, two lengths, twelve opportunities to agree, zero agreements. Because H2O always tops the proxy, this count can only fail through H2O, so read it as a statement about H2O and the sink policy, not as a test of many policies. This is a property of what the metric measures, not of the regime it is measured in.
 
 Length does change how good a within-policy predictor it is: r improves from -0.80 at short prompts to -0.91 at 1024 tokens. Short prompts also flatter the proxy in absolute terms, with h2o reading 0.635 at a 10% budget on the short set against 0.515 at 1024 tokens, which is the same short-prompt inflation seen throughout this repo.
 
@@ -201,7 +201,7 @@ For deeper mathematical details, see the [Technical Report](TECHNICAL_REPORT.md)
 
 | Experiment | Trials | What I measured | What stood out |
 |---|---|---|---|
-| KV Cache Eviction | 72 | 6 policies (H2O, Window, SnapKV, etc.) | H2O wins on attention-mass proxy |
+| KV Cache Eviction | 72 | 6 policies (H2O, Window, a variance-based `snapkv` scorer, etc.) | H2O wins on attention-mass proxy |
 | Token Confidence | 300 | Skip rates at thresholds | 70% skip rate at temp=0.3 |
 | Head Pruning | 39 | Progressive head removal | Cliff at 5%, then plateau to 80% |
 | Quantization Sensitivity | 216 | Simulated per-layer noise on synthetic weights | Pattern is built into the generator, not measured (see below) |
@@ -219,7 +219,7 @@ For deeper mathematical details, see the [Technical Report](TECHNICAL_REPORT.md)
 | Long-Context Sampling | 36 | Sampling error on real 1k-4k attention | Query sampling works, key sampling does not |
 | Scale Validation | 21 | 0.5B vs 2.7B vs 7B, same method | Gap is not monotone in parameters |
 | Family Scaling | 85 | Qwen2.5 0.5B-7B at fixed token length | Scale is real but the weakest of three effects |
-| E2E KV Cache (greedy) | 105 | Greedy generation under dynamic caches | SnapKV/Adaptive maintain similarity |
+| E2E KV Cache (greedy) | 105 | Greedy generation under dynamic caches | `snapkv` scorer and adaptive maintain similarity |
 | E2E KV Cache (logprob) | 105 | Distribution distortion under dynamic caches | Adaptive budget prevents perplexity spikes |
 | E2E at 1024 tokens | 620 | Proxy vs quality, matched n=5 both lengths | Proxy inverts the policy ranking |
 | Block Expiry | 330 | vLLM RFC 39076's decode-time expiry rule, 2K to 32K | Cheap on ordinary text, unsafe for dormant content in some windows |
@@ -370,7 +370,7 @@ At sequence length 4096, mean absolute error on the H2O curve:
 
 Query sampling at a quarter of the rows gives 0.014 mean error and moves the knee by 2% of sequence length. Key sampling is roughly ten times worse at the same nominal rate, and it cannot save attention work in the first place.
 
-Key sampling fails for a structural reason rather than a sample-size one. Its error barely moves between 1k and 4k tokens, so it is bias, not variance: taking the top `b * r` of a subsample estimates an extreme order statistic of the mass distribution, and extreme order statistics of a subsample systematically understate the true extremes. That biases the Lorenz curve down no matter how long the sequence is.
+Key sampling fails for a structural reason rather than a sample-size one. Its error barely moves between 1k and 4k tokens (mean signed error +0.053 at rate 0.5 on the 0.5B at both lengths, +0.10 at rate 0.25), so it is bias, not variance. The sign is upward, and the cause is the sampler: the hash sends key 0 to 0, so the attention-sink key is in every sample, and the sink holds a large share of the mass. A sample that always contains the sink retains more mass than the full set does at the same budget fraction. Dropping the sink from the sample flips the error to about -0.12 to -0.15, which is worse, so no choice of sampled keys rescues the curve. An earlier version of this paragraph attributed the bias to subsampling understating extreme order statistics. That explanation was not tested and the sign was wrong.
 
 It does not help that real attention here is less concentrated than the power-law framing suggests. At 4096 tokens the single largest key holds 0.001 of layer 0's mass and it takes 35% of keys to hold half of it. Mass that spread is exactly the regime where subsampling keys distorts the curve.
 
@@ -574,7 +574,7 @@ This repo also includes the cross-platform inference telemetry suite that starte
 
 ![Efficiency frontier](docs/assets/efficiency_frontier.png)
 
-M1 Pro gets 2.42 tokens/joule vs 0.90 on the 3080. The 3080 is faster in raw throughput, but it burns 10× more power per token.
+M1 Pro gets 2.42 tokens/joule vs 0.90 on the 3080. The 3080 is faster in raw throughput, but it spends about 2.7 times as much energy per token (2.42 against 0.90 tokens per joule).
 
 > **Power note:** Apple numbers are whole-SoC power from `powermetrics`. NVIDIA numbers are GPU board power from `pynvml`. Not directly comparable, but they're what each vendor's API gives you.
 

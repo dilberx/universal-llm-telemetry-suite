@@ -138,6 +138,8 @@ def _keep_indices(
     elif policy == "hybrid":
         keep = _hybrid_keep_indices(positions, importance, budget, sink_tokens)
     elif policy == "snapkv":
+        # Simplified selector (variance across heads of the last 16 queries), not the
+        # published SnapKV, which sums observation-window attention and pools it.
         if raw_attentions is not None:
             total_var = torch.zeros(seq_len, device=importance.device)
             obs_window = 16
