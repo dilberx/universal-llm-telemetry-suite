@@ -1,0 +1,56 @@
+### Qwen2.5-0.5B
+reports/experiments/hindsight_retention_qwen2.5-0.5b_20261029_144211.json
+pq {'tau': -0.582, 'ci': [-0.673202614379085, -0.29411764705882354], 'best_agree': 0}
+norm {'tau': -0.386, 'ci': [-0.5947712418300654, -0.0718954248366013], 'best_agree': 6}
+hs {'tau': -0.765, 'ci': [-0.8431372549019608, -0.477124183006536], 'best_agree': 6}
+hsA {'tau': -0.791, 'ci': [-0.8562091503267973, -0.5032679738562091], 'best_agree': 6}
+hsB {'tau': -0.725, 'ci': [-0.803921568627451, -0.42483660130718953], 'best_agree': 6}
+split_half_tau 0.9084967320261438
+
+### Mistral-7B-Instruct-v0.2 (log)
+Kendall tau-b between retention and NLL increase over 18 policy-budget cells (20 windows; negative = retention predicts quality):
+measure     tau   95% CI over windows        agree(best policy, of 6)   per-window tau
+pq       -0.425   [-0.477, -0.386]                   0/6      [-0.37, -0.36, -0.27, -0.42, -0.28, -0.35, -0.31, -0.36, -0.39, -0.45, -0.58, -0.57, -0.45, -0.27, -0.53, -0.27, -0.69, -0.4, -0.48, -0.29]
+norm     -0.739   [-0.804, -0.699]                   6/6      [-0.73, -0.69, -0.61, -0.75, -0.63, -0.75, -0.63, -0.7, -0.71, -0.7, -0.8, -0.82, -0.76, -0.59, -0.79, -0.62, -0.73, -0.73, -0.8, -0.63]
+hs       -0.569   [-0.621, -0.529]                   6/6      [-0.58, -0.56, -0.42, -0.54, -0.44, -0.53, -0.49, -0.52, -0.56, -0.59, -0.7, -0.65, -0.62, -0.41, -0.66, -0.46, -0.76, -0.58, -0.58, -0.46]
+hsA      -0.595   [-0.647, -0.556]                   6/6      [-0.59, -0.58, -0.45, -0.57, -0.46, -0.57, -0.53, -0.54, -0.58, -0.59, -0.74, -0.67, -0.63, -0.41, -0.66, -0.5, -0.79, -0.59, -0.62, -0.46]
+hsB      -0.556   [-0.595, -0.516]                   6/6      [-0.57, -0.54, -0.41, -0.5, -0.44, -0.5, -0.45, -0.5, -0.53, -0.56, -0.65, -0.63, -0.58, -0.41, -0.66, -0.46, -0.71, -0.56, -0.54, -0.45]
+split-half tau between hsA and hsB retention (noise floor of the hindsight signal): +0.961
+
+Median retention by policy under pq and hs (rows: policy, columns: budget):
+  measure pq
+    h2o         0.702   0.763   0.811   0.886   0.957   0.987
+    window      0.020   0.047   0.076   0.145   0.247   0.327
+    hybrid      0.681   0.736   0.782   0.863   0.944   0.982
+    h2o_norm    0.633   0.685   0.739   0.835   0.933   0.978
+  measure hs
+    h2o         0.702   0.739   0.774   0.821   0.883   0.938
+    window      0.129   0.176   0.202   0.250   0.288   0.319
+    hybrid      0.766   0.814   0.853   0.917   0.967   0.990
+    h2o_norm    0.786   0.842   0.878   0.928   0.972   0.991
+
+saved reports/experiments/hindsight_retention_mistral-7b-instruct-v0.2_20261029_145424.json
+
+### Qwen2.5-7B (log)
+Kendall tau-b between retention and NLL increase over 18 policy-budget cells (5 windows; negative = retention predicts quality):
+measure     tau   95% CI over windows        agree(best policy, of 6)   per-window tau
+pq       -0.307   [-0.359, -0.216]                   0/6      [-0.35, -0.22, -0.22, -0.32, -0.33]
+norm     -0.725   [-0.817, -0.621]                   6/6      [-0.8, -0.63, -0.76, -0.62, -0.73]
+hs       -0.490   [-0.529, -0.399]                   6/6      [-0.5, -0.41, -0.4, -0.46, -0.5]
+hsA      -0.503   [-0.529, -0.425]                   6/6      [-0.52, -0.42, -0.42, -0.5, -0.53]
+hsB      -0.464   [-0.516, -0.346]                   6/6      [-0.49, -0.41, -0.35, -0.42, -0.49]
+split-half tau between hsA and hsB retention (noise floor of the hindsight signal): +0.961
+
+Median retention by policy under pq and hs (rows: policy, columns: budget):
+  measure pq
+    h2o         0.562   0.642   0.709   0.822   0.929   0.978
+    window      0.032   0.076   0.122   0.220   0.366   0.469
+    hybrid      0.537   0.610   0.675   0.790   0.913   0.971
+    h2o_norm    0.481   0.539   0.611   0.751   0.896   0.964
+  measure hs
+    h2o         0.575   0.613   0.644   0.712   0.822   0.897
+    window      0.195   0.269   0.312   0.360   0.418   0.448
+    hybrid      0.666   0.741   0.820   0.902   0.964   0.988
+    h2o_norm    0.744   0.817   0.861   0.919   0.970   0.990
+
+saved reports/experiments/hindsight_retention_qwen2.5-7b_20261029_145801.json
