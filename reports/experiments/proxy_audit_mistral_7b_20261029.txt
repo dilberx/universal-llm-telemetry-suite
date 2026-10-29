@@ -1,0 +1,23 @@
+windows with results: 20
+
+Median NLL increase over windows (95% CI of the budget-mean):
+policy         10%     20%     30%     50%     75%     90%    mean   95% CI of mean
+snapkv       0.245   0.145   0.057   0.015   0.003   0.003   0.078   [0.024, 0.169]
+hybrid       0.288   0.141   0.072   0.034   0.005   0.001   0.090   [0.063, 0.155]
+adaptive     1.148   0.925   0.794   0.721   0.728   0.656   0.829   [0.702, 0.986]
+window       2.700   1.995   1.710   1.395   1.121   1.030   1.659   [1.283, 2.161]
+h2o          4.452   3.852   3.026   2.020   0.908   0.537   2.466   [2.267, 2.624]
+
+Proxy retention (median over layers, then windows):
+h2o          0.720   0.781   0.828   0.902   0.964   0.990
+window       0.019   0.045   0.076   0.143   0.249   0.333
+hybrid       0.615   0.645   0.673   0.741   0.847   0.928
+
+pooled r (h2o, window, hybrid): -0.170  95% CI (-0.343, -0.034)
+pooled r (h2o, window only):    +0.107  95% CI (-0.141, 0.283)
+budgets where proxy's top policy is the NLL-best (of 6): 0  CI (0, 0)
+  within h2o     r = -0.997  95% CI [-0.999, -0.988]
+  within window  r = -0.882  95% CI [-0.967, -0.691]
+  within hybrid  r = -0.800  95% CI [-0.920, -0.725]
+
+ranking by mean NLL: snapkv > hybrid > adaptive > window > h2o
