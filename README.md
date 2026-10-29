@@ -26,11 +26,7 @@ On the original 43-token prompts the same comparison read 87%/94% for H2O and 16
 
 ![Confidence by task type](reports/charts/real_token_confidence_by_task.png)
 
-**Optimizations stack multiplicatively.** I tested 108 combinations of KV cache eviction + head pruning + quantization. The combined quality is just the product of individual quality losses. No cancellation, no synergy. You can predict exactly what stacking will cost you.
-
-![Stacking Pareto](reports/charts/stacking_pareto.png)
-
-The sweet spot on my 3080: H2O at 50% budget + INT4 quantization → 0.86 quality at 2.35× speed. Skip head pruning unless you really need the extra margin.
+**Stacking is not measured here.** An earlier version of this README said optimizations stack multiplicatively and gave a "sweet spot" of H2O at 50% plus INT4 for 0.86 quality at 2.35x speed. Both are withdrawn. The stacking experiment defines combined quality as the product of the three component scores, so multiplicative composition holds by construction. Its quantization is Gaussian noise added to logits rather than a quantized model, and its speedups are hardcoded formulas. Whether eviction, head pruning and quantization compose on a real model has not been tested here. The script and its charts are kept in the repo as a modelling sketch, not as evidence.
 
 **At 90% cache eviction, window attention is basically dead.** On 1024 tokens, H2O retains 51% of attention mass on Qwen2.5-0.5B and 74% on Phi-2, while window retains 3.9% and 1.7%. If you're doing aggressive KV cache compression on a VRAM-limited GPU, window eviction is not an option. (On the original short prompts the same comparison read 62% against 2%.)
 
@@ -208,13 +204,13 @@ For deeper mathematical details, see the [Technical Report](TECHNICAL_REPORT.md)
 | KV Cache Eviction | 72 | 6 policies (H2O, Window, SnapKV, etc.) | H2O wins on attention-mass proxy |
 | Token Confidence | 300 | Skip rates at thresholds | 70% skip rate at temp=0.3 |
 | Head Pruning | 39 | Progressive head removal | Cliff at 5%, then plateau to 80% |
-| Quantization Sensitivity | 216 | Per-layer sensitivity to INT2-8 | Every 4th layer is fragile |
+| Quantization Sensitivity | 216 | Simulated per-layer noise on synthetic weights | Pattern is built into the generator, not measured (see below) |
 | Self-Speculative Decoding | 62 | Early exit layer selection | 50% exit → 2× speedup |
 | PCIe Transfer | 36 | Pinned vs paged bandwidth | 24.4 vs 9.5 GB/s |
 | Reasoning Token Waste | 480 | CoT tokens removed | 80% removable for easy tasks |
 | Real Model Analysis (0.5B) | 976 | All above on Qwen2.5-0.5B | Where synthetic fails |
 | Real Model Analysis (2.7B) | 1,296 | Same on Phi-2 | H2O gap gets worse on bigger models |
-| Optimization Stacking | 108 | 108 combos of KV+prune+quant | Perfect multiplicative composition |
+| Optimization Stacking | 108 | Modelled combinations of KV, pruning and noise-simulated quantization | Withdrawn: composition and speed are defined by formula, not measured |
 | Speculative Routing (SEER) | 22 | Live-trajectory early exit | Signal predicts quality (AUC 0.92), but saves nothing here |
 | Entropy → Quality | 20 | Does low entropy mean correct answer? | Confident and wrong is common |
 | Difficulty Label Validation | 66 | Are the easy/hard labels real? | They encode prompt length, not difficulty |
@@ -483,7 +479,7 @@ Reproduce with `python -m src.experiments.exp_block_expiry --lengths 8192:2`, th
 ### Quantization sensitivity heatmap
 ![Quant sensitivity](reports/charts/quant_sensitivity_24L_1024H.png)
 
-Red = layers that break when quantized. There's a clear periodic pattern: every 4th layer has weight outliers that resist compression. Later layers (L17+) are safe to compress to INT4.
+**This chart is not a measurement of any real model.** It comes from a synthetic transformer whose weights are random, with outliers planted in every 4th layer by the generator (`i % 4 == 0` in `exp_quantization_sensitivity.py`), and quantization is simulated as noise. The periodic pattern in the heatmap is the pattern the generator was told to produce, so it says nothing about which layers of a real model are sensitive. Per-layer quantization sensitivity of a real model has not been measured here.
 
 ### PCIe bandwidth: pinned vs paged
 ![Transfer bandwidth](reports/charts/transfer_bandwidth.png)
@@ -532,7 +528,7 @@ python -m llm_bench optimize --params 7 --priority speed   # 7B model, maximize 
 python -m llm_bench optimize --vram 24 --params 13         # simulate a 4090 + 13B model
 ```
 
-Right now this is a transparent lookup table seeded from the experiments, not a dynamic optimizer that re-reads every JSON file. Treat it as a sketch of the product direction: it considers VRAM pressure and model size, then cites the benchmark evidence behind each recommendation.
+Right now this is a transparent lookup table seeded from the experiments, not a dynamic optimizer that re-reads every JSON file. Its expected-quality and speedup figures are modelled from unmeasured per-technique constants, not measured. Treat it as a sketch of the product direction: it considers VRAM pressure and model size, then cites the benchmark evidence behind each recommendation.
 
 ## Setup
 
@@ -631,7 +627,7 @@ src/
     runner.py          # experiment framework (config hashing, JSON/CSV output)
     exp_real_model.py  # real model experiments on Qwen2.5-0.5B and Phi-2
     exp_e2e_kv_cache.py # end-to-end KV cache generation + logprob replay
-    exp_stacking.py    # optimization stacking (108 combos)
+    exp_stacking.py    # stacking model (108 combos; modelled, not measured)
     visualize.py       # chart generation
     visualize_real.py  # charts for real model findings
 llm_bench/             # CLI (python -m llm_bench)

@@ -66,9 +66,9 @@ def get_recommendations(vram_gb: float, model_params_b: float = 0.5,
             "quality_cost": 0.001,
             "speedup": 2.0,
             "memory_savings_pct": 50,
-            "evidence": "216 trials: INT4 retains 0.999 cosine similarity. "
-                        "Layers L0,L4,L8,L12 are fragile — keep at FP16 if quality matters.",
-            "risk": "Low — only fragile layers (every 4th) need monitoring",
+            "evidence": "Simulated, not measured on a real quantized model: the 0.999 "
+                        "figure is cosine similarity of logits after adding Gaussian noise.",
+            "risk": "Unmeasured. Check task quality on your own model before relying on INT4.",
         })
         quality *= 0.999
         speedup *= 2.0
@@ -80,8 +80,8 @@ def get_recommendations(vram_gb: float, model_params_b: float = 0.5,
             "quality_cost": 0.0,
             "speedup": 1.5,
             "memory_savings_pct": 25,
-            "evidence": "216 trials: INT8 is lossless on all layers tested.",
-            "risk": "None measurable",
+            "evidence": "Simulated noise only; no real INT8 model was evaluated here.",
+            "risk": "Unmeasured. Check task quality on your own model.",
         })
         quality *= 1.0
         speedup *= 1.5
