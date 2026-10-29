@@ -1,0 +1,32 @@
+
+=== Mistral-7B-Instruct-v0.2: 20 paired windows. Mean NLL increase over budgets, 95% CI ===
+  snapkv      0.078  [0.024, 0.169]
+  hybrid      0.090  [0.063, 0.155]
+  adaptive    0.829  [0.702, 0.986]
+  window      1.659  [1.283, 2.161]
+  sink_h2o    2.465  [2.265, 2.633]
+  h2o         2.466  [2.263, 2.626]
+  policy        10%     20%     30%     50%     75%     90%
+  h2o         4.452   3.852   3.026   2.020   0.908   0.537
+  sink_h2o    4.463   3.836   3.026   2.020   0.908   0.537
+  hybrid      0.288   0.141   0.072   0.034   0.005   0.001
+  window      2.700   1.995   1.710   1.395   1.121   1.030
+  h2o minus sink_h2o (mean over budgets): +0.001  [-0.017, +0.011]
+  sink_h2o minus hybrid:                  +2.375  [+2.164, +2.550]
+  window minus sink_h2o:                  -0.807  [-1.238, -0.241]
+
+=== Qwen2.5-7B: 5 paired windows. Mean NLL increase over budgets, 95% CI ===
+  snapkv      0.042  [0.007, 0.537]
+  hybrid      0.191  [0.072, 0.717]
+  adaptive    0.944  [0.812, 1.653]
+  window      1.185  [0.622, 1.717]
+  h2o         3.313  [2.911, 3.762]
+  sink_h2o    3.313  [2.913, 3.762]
+  policy        10%     20%     30%     50%     75%     90%
+  h2o         5.896   5.187   4.249   2.445   1.254   0.847
+  sink_h2o    5.896   5.187   4.249   2.445   1.254   0.847
+  hybrid      0.647   0.159   0.249   0.081   0.004   0.007
+  window      1.988   1.271   1.176   1.114   0.795   0.764
+  h2o minus sink_h2o (mean over budgets): +0.000  [-0.002, +0.027]
+  sink_h2o minus hybrid:                  +3.122  [+2.837, +3.689]
+  window minus sink_h2o:                  -2.128  [-3.140, -1.526]
