@@ -116,6 +116,61 @@ def _slice_cache(cache: DynamicCache, keep_idx: torch.Tensor) -> DynamicCache:
     return DynamicCache.from_legacy_cache(tuple(legacy))
 
 
+SNAPKV_WINDOW = 32
+SNAPKV_KERNEL = 7
+
+
+def _snapkv_compress(
+    cache: DynamicCache,
+    attentions: tuple[torch.Tensor, ...] | list[torch.Tensor],
+    budget: int,
+    window: int = SNAPKV_WINDOW,
+    kernel: int = SNAPKV_KERNEL,
+) -> DynamicCache:
+    """SnapKV (Li et al. 2024): compress the prefill cache once, per layer and per KV head.
+
+    The last `window` queries vote on the earlier keys: their attention is summed
+    over the window, average-pooled along the key axis (`kernel`) so that neighbours
+    of a voted key survive together, and averaged over the query heads that share a
+    KV head. Each KV head keeps its own top `budget - window` earlier keys plus the
+    `window` observation keys. Different heads therefore keep different positions,
+    which the shared-index `_slice_cache` cannot express. Keys keep the rotary
+    positions they were computed with.
+    """
+    legacy = cache.to_legacy_cache()
+    n = int(legacy[0][0].shape[2])
+    if budget >= n:
+        return cache
+    window = min(window, budget - 1)
+    n_select = budget - window
+    prefix = n - window
+    out = []
+    for (key, value), attn in zip(legacy, attentions):
+        n_kv = key.shape[1]
+        n_q = attn.shape[1]
+        votes = attn.detach().float()[0, :, -window:, :prefix].sum(dim=1)            # [Hq, prefix]
+        votes = F.avg_pool1d(votes.unsqueeze(1), kernel_size=kernel, stride=1,
+                             padding=kernel // 2).squeeze(1)
+        votes = votes.view(n_kv, n_q // n_kv, prefix).mean(dim=1)                    # [Hkv, prefix]
+        top = votes.topk(n_select, dim=-1).indices.to(key.device)                    # [Hkv, n_select]
+        tail = torch.arange(prefix, n, device=key.device).unsqueeze(0).expand(n_kv, -1)
+        idx = torch.cat([top, tail], dim=-1).sort(dim=-1).values.unsqueeze(0).unsqueeze(-1)
+        idx = idx.expand(1, n_kv, budget, key.shape[-1])
+        out.append((key.gather(2, idx).contiguous(), value.gather(2, idx).contiguous()))
+    return DynamicCache.from_legacy_cache(tuple(out))
+
+
+def _snapkv_prefill_budget(prompt_tokens: int, budget_frac: float, n_decode: int) -> int:
+    """Prefill budget that gives SnapKV the same average cache as the per-step policies.
+
+    SnapKV compresses once and then the cache grows by one per decoded token; the
+    other policies re-prune every step to int(positions_seen * frac). Matching the
+    mean cache length over the decode steps keeps the comparison at equal memory.
+    """
+    others = [int((prompt_tokens + j) * budget_frac) for j in range(n_decode)]
+    return max(2, round(sum(others) / len(others)) - (n_decode - 1) // 2)
+
+
 def _keep_indices(
     policy: str,
     importance: torch.Tensor,
@@ -432,6 +487,10 @@ def score_fixed_targets_with_cache_policy(
     importance = _attention_importance(outputs.attentions).to(device)
     positions = torch.arange(prompt_tokens, device=device)
     logits = outputs.logits[:, -1, :]
+    if policy == "snapkv_real":
+        cache = _snapkv_compress(
+            cache, outputs.attentions,
+            _snapkv_prefill_budget(prompt_tokens, budget_frac, max(len(target_tokens) - 1, 1)))
     cache_lengths = [_cache_seq_len(cache)]
     total_positions_seen = prompt_tokens
 
@@ -448,16 +507,17 @@ def score_fixed_targets_with_cache_policy(
         if idx == len(target_tokens) - 1:
             break
 
-        cache, positions, importance = _prune_state(
-            policy=policy,
-            budget_frac=budget_frac,
-            min_keep=min_keep,
-            cache=cache,
-            positions=positions,
-            importance=importance,
-            total_positions_seen=total_positions_seen,
-            raw_attentions=outputs.attentions,
-        )
+        if policy != "snapkv_real":      # SnapKV compresses once, at prefill
+            cache, positions, importance = _prune_state(
+                policy=policy,
+                budget_frac=budget_frac,
+                min_keep=min_keep,
+                cache=cache,
+                positions=positions,
+                importance=importance,
+                total_positions_seen=total_positions_seen,
+                raw_attentions=outputs.attentions,
+            )
 
         position_id = torch.tensor([[total_positions_seen]], device=device)
         cache_position = torch.tensor([total_positions_seen], device=device)
@@ -471,22 +531,23 @@ def score_fixed_targets_with_cache_policy(
         )
         cache = outputs.past_key_values
         logits = outputs.logits[:, -1, :]
-        step_importance = _attention_importance(outputs.attentions).to(device)
+        if policy != "snapkv_real":      # SnapKV keeps no running importance
+            step_importance = _attention_importance(outputs.attentions).to(device)
 
-        positions = torch.cat([
-            positions,
-            torch.tensor([total_positions_seen], device=device),
-        ])
-        importance = torch.cat([
-            importance,
-            torch.zeros(1, device=device, dtype=importance.dtype),
-        ])
-        if step_importance.numel() != importance.numel():
-            raise RuntimeError(
-                f"Attention/cache length mismatch: attention={step_importance.numel()} "
-                f"importance={importance.numel()}"
-            )
-        importance = importance + step_importance
+            positions = torch.cat([
+                positions,
+                torch.tensor([total_positions_seen], device=device),
+            ])
+            importance = torch.cat([
+                importance,
+                torch.zeros(1, device=device, dtype=importance.dtype),
+            ])
+            if step_importance.numel() != importance.numel():
+                raise RuntimeError(
+                    f"Attention/cache length mismatch: attention={step_importance.numel()} "
+                    f"importance={importance.numel()}"
+                )
+            importance = importance + step_importance
 
         total_positions_seen += 1
         cache_lengths.append(_cache_seq_len(cache))
@@ -801,7 +862,7 @@ if __name__ == "__main__":
         "--policies",
         nargs="+",
         default=["window", "h2o"],
-        choices=["window", "h2o", "sink_h2o", "hybrid", "snapkv", "pyramid", "adaptive"],
+        choices=["window", "h2o", "sink_h2o", "hybrid", "snapkv", "snapkv_real", "pyramid", "adaptive"],
     )
     args = parser.parse_args()
 

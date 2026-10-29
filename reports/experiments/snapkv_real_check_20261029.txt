@@ -1,0 +1,57 @@
+
+=== Qwen2.5-0.5B: 5 paired windows. Mean NLL increase over budgets, 95% CI ===
+  snapkv_real    0.056  [-0.010, 0.781]
+  hybrid         0.066  [-0.018, 0.983]
+  snapkv         0.094  [-0.007, 1.037]
+  adaptive       0.533  [0.429, 1.422]
+  h2o            2.276  [2.029, 3.308]
+  window         3.731  [2.409, 4.762]
+  policy           10%     20%     30%     50%     75%     90%
+  snapkv_real    0.203   0.069   0.030   0.016   0.014   0.004
+  snapkv         0.312   0.174   0.041   0.024   0.008   0.004
+  hybrid         0.264   0.075   0.030   0.026  -0.001   0.002
+  window         3.907   4.417   4.623   3.089   3.010   3.343
+  h2o            3.831   3.300   2.900   1.914   1.124   0.587
+  snapkv_real minus hybrid                    -0.010  [-0.202, +0.020]
+  snapkv_real minus snapkv (variance scorer)  -0.038  [-0.256, +0.043]
+  window minus snapkv_real                    +3.675  [+2.335, +4.772]
+  h2o minus snapkv_real                       +2.220  [+1.981, +2.527]
+  ranking by mean NLL: snapkv_real > hybrid > snapkv > adaptive > h2o > window
+
+=== Qwen2.5-7B: 5 paired windows. Mean NLL increase over budgets, 95% CI ===
+  snapkv         0.042  [0.007, 0.537]
+  snapkv_real    0.055  [0.008, 0.486]
+  hybrid         0.191  [0.073, 0.717]
+  adaptive       0.944  [0.812, 1.653]
+  window         1.185  [0.622, 1.717]
+  h2o            3.313  [2.911, 3.762]
+  policy           10%     20%     30%     50%     75%     90%
+  snapkv_real    0.149   0.065   0.090   0.026  -0.006   0.005
+  snapkv         0.104   0.051   0.047   0.014   0.028   0.008
+  hybrid         0.647   0.159   0.249   0.081   0.004   0.007
+  window         1.988   1.271   1.176   1.114   0.795   0.764
+  h2o            5.896   5.187   4.249   2.445   1.254   0.847
+  snapkv_real minus hybrid                    -0.136  [-0.230, -0.009]
+  snapkv_real minus snapkv (variance scorer)  +0.013  [-0.051, +0.161]
+  window minus snapkv_real                    +1.130  [+0.613, +1.331]
+  h2o minus snapkv_real                       +3.258  [+2.855, +3.753]
+  ranking by mean NLL: snapkv > snapkv_real > hybrid > adaptive > window > h2o
+
+=== Mistral-7B-Instruct-v0.2: 20 paired windows. Mean NLL increase over budgets, 95% CI ===
+  snapkv_real    0.061  [0.022, 0.142]
+  snapkv         0.078  [0.022, 0.172]
+  hybrid         0.090  [0.063, 0.159]
+  adaptive       0.829  [0.700, 0.985]
+  window         1.659  [1.289, 2.172]
+  h2o            2.466  [2.272, 2.640]
+  policy           10%     20%     30%     50%     75%     90%
+  snapkv_real    0.209   0.072   0.054   0.021   0.006   0.002
+  snapkv         0.245   0.145   0.057   0.015   0.003   0.003
+  hybrid         0.288   0.141   0.072   0.034   0.005   0.001
+  window         2.700   1.995   1.710   1.395   1.121   1.030
+  h2o            4.452   3.852   3.026   2.020   0.908   0.537
+  snapkv_real minus hybrid                    -0.029  [-0.073, +0.015]
+  snapkv_real minus snapkv (variance scorer)  -0.017  [-0.058, +0.020]
+  window minus snapkv_real                    +1.598  [+1.238, +2.090]
+  h2o minus snapkv_real                       +2.405  [+2.185, +2.581]
+  ranking by mean NLL: snapkv_real > snapkv > hybrid > adaptive > window > h2o
