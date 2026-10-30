@@ -168,12 +168,14 @@ def analyse(ret: dict[int, dict], nll: dict[int, dict], windows: list[int], B: i
 def run(model_name="Qwen/Qwen2.5-0.5B", logprob_glob=None, n_windows=5, offload=False, out_dir="reports/experiments"):
     logprob_glob = logprob_glob or "reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_2026091*.json"
     files = []
-    for f in sorted(glob.glob(logprob_glob)):
-        d = json.load(open(f))
-        pt = [t["metrics"].get("prompt_tokens", 0) for t in d["trials"]]
-        if pt and median(pt) >= 1000:
-            files.append(f)
-    files = files[-1:] if "0.5b_2026091" in logprob_glob else files
+    for pattern in logprob_glob.split(","):                 # several globs may be given, comma-separated
+        found = []
+        for f in sorted(glob.glob(pattern)):
+            d = json.load(open(f))
+            pt = [t["metrics"].get("prompt_tokens", 0) for t in d["trials"]]
+            if pt and median(pt) >= 1000:
+                found.append(f)
+        files += found[-1:] if "0.5b_2026091" in pattern else found
     nll, targets = load_nll(files, n_windows)
     windows = sorted(set(nll) & set(targets))
     print(f"replay results: {len(files)} file(s), windows {windows}", flush=True)

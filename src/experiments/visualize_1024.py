@@ -5,7 +5,7 @@ README links stay valid:
 
   real_extreme_compression.png       per-layer retention at a 10% budget, from the
                                      1024-token profiler pass (0.5B and 7B)
-  e2e_kv_logprob_distortion.png      median NLL increase over five 1024-token
+  e2e_kv_logprob_distortion.png      median NLL increase over 20 1024-token
                                      windows, 0.5B and 7B side by side
   e2e_kv_cache_greedy_similarity.png greedy similarity on the same five windows (0.5B)
 
@@ -83,13 +83,24 @@ def _long5(prefix):
     return None
 
 
-def _trials_7b():
+def _per_window(short, n_windows=20):
     trials = []
-    for w in range(5):
-        fs = sorted(glob.glob(f"{EXP}/e2e_kv_logprob_qwen2.5_7b_long1024_w{w}_*.json"))
+    for w in range(n_windows):
+        fs = sorted(glob.glob(f"{EXP}/e2e_kv_logprob_{short}_long1024_w{w}_*.json"))
         if fs:
             trials += json.load(open(fs[-1]))["trials"]
-    return trials or None
+    return trials
+
+
+def _trials_7b():
+    return _per_window("qwen2.5_7b") or None
+
+
+def _trials_05b():
+    """Windows 0-4 from the original single-file run, windows 5-19 from per-window files."""
+    old = _long5("e2e_kv_logprob") or []
+    return old + [t for t in _per_window("qwen2.5_0.5b")
+                  if int(t["config"]["prompt"].rsplit("_w", 1)[1]) >= 5] or None
 
 
 def _policy_lines(ax, cells, order):
@@ -131,7 +142,7 @@ def _save(fig, name, out_dir):
 
 
 def chart_logprob(out_dir=OUT_DIR):
-    panels = [("Qwen2.5-0.5B", _long5("e2e_kv_logprob")), ("Qwen2.5-7B", _trials_7b())]
+    panels = [("Qwen2.5-0.5B", _trials_05b()), ("Qwen2.5-7B", _trials_7b())]
     panels = [(n, t) for n, t in panels if t]
     if not panels:
         return None
@@ -145,7 +156,7 @@ def chart_logprob(out_dir=OUT_DIR):
         ax.title.set_fontsize(11.5)
         _budget_axis(ax)
     _legend(fig, E2E_ORDER)
-    fig.suptitle("Fixed-target NLL at 1024 tokens, median of five wikitext windows (lower is better)",
+    fig.suptitle("Fixed-target NLL at 1024 tokens, median of 20 wikitext windows (lower is better)",
                  color=INK_2, fontsize=10, x=0.01, ha="left", y=0.995)
     fig.tight_layout(rect=(0, 0.06, 1, 1))
     for ax, labels in zip(axes, pending):

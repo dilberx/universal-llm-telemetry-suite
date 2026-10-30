@@ -1,0 +1,20 @@
+=== Qwen2.5-7B: 20 windows (0..19). Mean NLL increase over budgets, 95% CI over windows ===
+  snapkv_real    0.141  [0.053, 0.300]
+  snapkv         0.160  [0.042, 0.310]
+  hybrid         0.170  [0.105, 0.289]
+  window         0.682  [0.514, 0.829]
+  adaptive       0.886  [0.753, 0.995]
+  h2o            2.811  [2.474, 3.090]
+  policy           10%     20%     30%     50%     75%     90%
+  snapkv_real    0.349   0.249   0.193   0.035   0.017   0.004
+  snapkv         0.537   0.198   0.136   0.063   0.019   0.008
+  hybrid         0.498   0.233   0.167   0.086   0.029   0.005
+  window         1.225   1.134   0.670   0.468   0.307   0.284
+  h2o            5.197   4.606   3.420   2.184   1.032   0.428
+  snapkv_real minus hybrid                -0.029  [-0.105, +0.049]
+  snapkv_real minus snapkv (variance)     -0.019  [-0.104, +0.042]
+  hybrid minus snapkv (variance)          +0.009  [-0.047, +0.081]
+  window minus h2o                        -2.129  [-2.415, -1.824]
+  window minus snapkv_real                +0.541  [+0.357, +0.724]
+  h2o minus snapkv_real                   +2.670  [+2.306, +2.994]
+  best policy per budget (median NLL): 10%:snapkv_real, 20%:snapkv, 30%:snapkv, 50%:snapkv_real, 75%:snapkv_real, 90%:snapkv_real

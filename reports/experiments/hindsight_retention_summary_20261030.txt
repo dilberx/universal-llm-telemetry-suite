@@ -1,0 +1,7 @@
+Hindsight tau-b, 20 windows (2026-10-30). Negative = retention predicts quality. Intervals resample windows.
+--- Qwen2.5-0.5B
+reports/experiments/hindsight_retention_qwen2.5-0.5b_20261030_062616.json
+pq -0.556 [-0.608,-0.373] 0/6; norm -0.569 [-0.608,-0.438] 6/6; hs -0.765 [-0.804,-0.582] 6/6; split-half +0.869
+--- Qwen2.5-7B
+pq -0.307 [-0.320,-0.216] 0/6; norm -0.778 [-0.843,-0.699] 6/6; hs -0.477 [-0.490,-0.386] 6/6; split-half +0.935
+--- Mistral-7B-Instruct (unchanged, already 20 windows): pq -0.43, hs -0.57, norm -0.74
