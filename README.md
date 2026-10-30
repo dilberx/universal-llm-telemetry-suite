@@ -204,6 +204,22 @@ The retention values in the tables above come from the 1024-token profile and ar
 
 Reproduce with `python -m src.experiments.exp_e2e_kv_cache` variants, or see `reports/experiments/e2e_kv_logprob_qwen2.5_0.5b_20260916_213111.json`.
 
+### Does the NLL ranking survive a downstream task? Not for hybrid.
+
+The NLL audit scores a fixed continuation. A user cares whether the model can still retrieve a fact, so `exp_needle_task.py` inserts a random passphrase (two words and four digits) at depth 0.1 to 0.9 of a wikitext window, ends the prompt with the question and the start of the answer, and teacher-forces the answer tokens through the same replay. "Exact" means every answer token is the argmax under the pruned cache, so greedy decoding would print the passphrase.
+
+| Exact retrieval, budget 10 / 20 / 30 / 50% | Qwen2.5-0.5B (2048 tokens, 100 samples; full cache 99/100) | Mistral-7B-Instruct (1280 tokens, 40 samples; full cache 33/40) |
+|---|---|---|
+| h2o | 0.00 / 0.00 / 0.00 / 0.01 | 0.00 / 0.00 / 0.00 / 0.00 |
+| hybrid | 0.00 / 0.00 / 0.00 / 0.19 | 0.00 / 0.00 / 0.00 / 0.15 |
+| window | 0.00 / 0.18 / 0.19 / 0.38 | 0.00 / 0.15 / 0.15 / 0.33 |
+| snapkv (variance scorer) | 0.20 / 0.84 / 0.98 / 0.99 | 0.75 / 0.83 / 0.83 / 0.83 |
+| snapkv_real | 0.34 / 0.86 / 0.96 / 0.99 | 0.45 / 0.78 / 0.80 / 0.83 |
+
+On NLL, hybrid is tied with both SnapKV variants. On this task it is not: it retrieves nothing below a 50% budget on either model, and what it and window do retrieve comes from the recent window covering a needle near the end: only depth 0.9 for hybrid, and depth 0.9 plus (at a 50% budget) 0.7 for window. Neither retrieves a needle at depth 0.5 or earlier at any budget. Both SnapKV variants reach the full-cache ceiling at a 50% budget. H2O retrieves essentially nothing at any budget. On Mistral the variance scorer is ahead of the published SnapKV at a 10% budget (0.75 against 0.45), with wide window-level intervals; elsewhere they are close. Results: `reports/experiments/needle_*`.
+
+Limits. Eight windows or fewer on Mistral and one needle per prompt, over wikitext. The question comes last and the answer prefix repeats the needle sentence, which favours SnapKV, whose scores come from the final queries. A question-agnostic variant would test that and has not been run. Prefill needs the full attention tensor, which caps context at about 2K tokens on the 0.5B and 1.3K on a 7B, so this says nothing about 4K and beyond. Llama-family models were not run.
+
 ### Why the proxy question matters
 
 Two 2026 results make the gap between the proxy and real quality concrete:
