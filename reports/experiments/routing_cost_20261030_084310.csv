@@ -1,0 +1,13 @@
+trial_id,status,duration_s,cfg_batch_size,cfg_model,cfg_part,cfg_threshold,metric_cost_ratio,metric_decode_ms_per_seq_token,metric_kept_local,metric_prefill_ms,metric_savings_vs_large_only
+routing_cost_t0001,completed,0.0000,1,Qwen/Qwen2.5-0.5B,latency,,,38.1378076316124,,61.47731499913789,
+routing_cost_t0002,completed,0.0000,4,Qwen/Qwen2.5-0.5B,latency,,,11.26540175001585,,46.34813899974688,
+routing_cost_t0003,completed,0.0000,16,Qwen/Qwen2.5-0.5B,latency,,,2.720843720399707,,36.95162099938898,
+routing_cost_t0004,completed,0.0000,32,Qwen/Qwen2.5-0.5B,latency,,,1.3147096480266602,,58.02963099995395,
+routing_cost_t0005,completed,0.0000,1,microsoft/phi-2,latency,,,48.84900684211109,,33.360818999426556,
+routing_cost_t0006,completed,0.0000,4,microsoft/phi-2,latency,,,11.848710684190385,,60.975659000177984,
+routing_cost_t0007,completed,0.0000,16,microsoft/phi-2,latency,,,3.4979304835563823,,79.36624099966139,
+routing_cost_t0008,completed,0.0000,32,microsoft/phi-2,latency,,,1.5119442483517942,,152.4206640006014,
+routing_cost_t0009,completed,0.0000,1,,savings,0.55,0.7807284138832291,,9.0,,0.03336096432721325
+routing_cost_t0010,completed,0.0000,4,,savings,0.55,0.9507702610248693,,9.0,,-0.06707584098996366
+routing_cost_t0011,completed,0.0000,16,,savings,0.55,0.7778438517261204,,9.0,,0.035064757909022304
+routing_cost_t0012,completed,0.0000,32,,savings,0.55,0.869549025673305,,9.0,,-0.01910175966967187

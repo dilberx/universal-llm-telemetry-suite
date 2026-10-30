@@ -1,0 +1,48 @@
+=== Qwen2.5-0.5B: 20 windows (0..19). Mean NLL increase over budgets, 95% CI over windows ===
+  snapkv_real    0.076  [0.039, 0.270]
+  snapkv         0.109  [0.046, 0.319]
+  hybrid         0.178  [0.078, 0.258]
+  adaptive       0.791  [0.597, 1.076]
+  h2o            2.313  [2.170, 2.611]
+  sink_h2o       2.313  [2.172, 2.631]
+  window         3.003  [2.308, 3.493]
+  policy           10%     20%     30%     50%     75%     90%
+  sink_h2o       4.047   3.488   2.721   1.942   1.116   0.562
+  hybrid         0.503   0.279   0.172   0.096   0.014   0.002
+  window         3.817   3.206   3.078   2.815   2.589   2.510
+  h2o            4.047   3.488   2.721   1.942   1.116   0.562
+  h2o minus sink_h2o          +0.000  [-0.006, +0.006]
+  sink_h2o minus hybrid       +2.135  [+1.971, +2.446]
+  window minus sink_h2o       +0.690  [-0.057, +1.175]
+=== Qwen2.5-7B: 20 windows (0..19). Mean NLL increase over budgets, 95% CI over windows ===
+  snapkv_real    0.141  [0.053, 0.300]
+  snapkv         0.160  [0.042, 0.310]
+  hybrid         0.170  [0.105, 0.289]
+  window         0.682  [0.514, 0.829]
+  adaptive       0.886  [0.753, 0.995]
+  h2o            2.811  [2.474, 3.090]
+  sink_h2o       2.811  [2.473, 3.086]
+  policy           10%     20%     30%     50%     75%     90%
+  sink_h2o       5.197   4.606   3.420   2.184   1.032   0.428
+  hybrid         0.498   0.233   0.167   0.086   0.029   0.005
+  window         1.225   1.134   0.670   0.468   0.307   0.284
+  h2o            5.197   4.606   3.420   2.184   1.032   0.428
+  h2o minus sink_h2o          +0.000  [-0.003, +0.000]
+  sink_h2o minus hybrid       +2.641  [+2.298, +2.937]
+  window minus sink_h2o       -2.129  [-2.415, -1.824]
+=== Mistral-7B-Instruct-v0.2: 20 windows (0..19). Mean NLL increase over budgets, 95% CI over windows ===
+  snapkv_real    0.061  [0.019, 0.148]
+  snapkv         0.078  [0.023, 0.164]
+  hybrid         0.090  [0.060, 0.152]
+  adaptive       0.829  [0.711, 1.001]
+  window         1.659  [1.295, 2.167]
+  sink_h2o       2.465  [2.257, 2.631]
+  h2o            2.466  [2.264, 2.636]
+  policy           10%     20%     30%     50%     75%     90%
+  sink_h2o       4.463   3.836   3.026   2.020   0.908   0.537
+  hybrid         0.288   0.141   0.072   0.034   0.005   0.001
+  window         2.700   1.995   1.710   1.395   1.121   1.030
+  h2o            4.452   3.852   3.026   2.020   0.908   0.537
+  h2o minus sink_h2o          +0.001  [-0.018, +0.011]
+  sink_h2o minus hybrid       +2.375  [+2.173, +2.554]
+  window minus sink_h2o       -0.807  [-1.235, -0.236]
