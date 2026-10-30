@@ -220,6 +220,18 @@ On NLL, hybrid is tied with both SnapKV variants. On this task it is not: it ret
 
 Limits. Eight windows or fewer on Mistral and one needle per prompt, over wikitext. The question comes last and the answer prefix repeats the needle sentence, which favours SnapKV, whose scores come from the final queries. A question-agnostic variant would test that and has not been run. Prefill needs the full attention tensor, which caps context at about 2K tokens on the 0.5B and 1.3K on a 7B, so this says nothing about 4K and beyond. Llama-family models were not run.
 
+**Question-agnostic variant.** To test whether SnapKV wins only because the question comes last, `--agnostic` puts the question before the document and ends the prompt on a bare `Answer:`, so the last queries carry neither the question nor the needle's wording. On the 0.5B (2048 tokens, 100 samples) the full cache now retrieves only 39 of 100, so the table below also gives retrieval conditional on the full cache succeeding.
+
+| 0.5B, agnostic | exact at 10 / 20 / 30 / 50% | at 50%, given full cache ok |
+|---|---|---|
+| h2o | 0.00 / 0.00 / 0.00 / 0.00 | 0.00 |
+| hybrid | 0.00 / 0.00 / 0.00 / 0.04 | 0.10 |
+| window | 0.00 / 0.03 / 0.04 / 0.20 | 0.51 |
+| snapkv (variance scorer) | 0.00 / 0.02 / 0.05 / 0.24 | 0.62 |
+| snapkv_real | 0.02 / 0.13 / 0.27 / 0.33 | 0.85 |
+
+The ordering holds: H2O and hybrid retrieve almost nothing and the published SnapKV is ahead at every budget, but the advantage is smaller than in the question-last format and no policy reaches the full-cache ceiling below a 50% budget. The two SnapKV variants swap places: the variance scorer led at small budgets in the first format and trails here, so neither should be called better. Window and the variance scorer are not separated at 50%. The conditional figures rest on 39 samples. On Mistral-7B-Instruct the full cache retrieved 0 of 40 in this format, so it gives no comparison; the cause (probably that the instruction-tuned model does not answer a bare `Answer:` with the code) was not tested. Results: `reports/experiments/needle_*agnostic*`.
+
 ### Why the proxy question matters
 
 Two 2026 results make the gap between the proxy and real quality concrete:

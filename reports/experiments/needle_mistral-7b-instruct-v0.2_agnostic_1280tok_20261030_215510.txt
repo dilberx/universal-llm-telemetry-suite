@@ -1,0 +1,22 @@
+full cache: 0 of 40 needles retrieved exactly
+policy       budget   exact   95% CI over windows     exact | full ok     nll
+h2o             10%   0.000   [0.000, 0.000]               nan    6.74
+h2o             20%   0.000   [0.000, 0.000]               nan    6.08
+h2o             30%   0.000   [0.000, 0.000]               nan    4.94
+h2o             50%   0.000   [0.000, 0.000]               nan    3.61
+hybrid          10%   0.000   [0.000, 0.000]               nan    5.13
+hybrid          20%   0.000   [0.000, 0.000]               nan    4.94
+hybrid          30%   0.000   [0.000, 0.000]               nan    4.75
+hybrid          50%   0.000   [0.000, 0.000]               nan    3.22
+snapkv          10%   0.000   [0.000, 0.000]               nan    4.92
+snapkv          20%   0.000   [0.000, 0.000]               nan    4.03
+snapkv          30%   0.000   [0.000, 0.000]               nan    3.32
+snapkv          50%   0.000   [0.000, 0.000]               nan    1.43
+snapkv_real     10%   0.000   [0.000, 0.000]               nan    3.21
+snapkv_real     20%   0.000   [0.000, 0.000]               nan    2.04
+snapkv_real     30%   0.000   [0.000, 0.000]               nan    1.53
+snapkv_real     50%   0.000   [0.000, 0.000]               nan    0.96
+window          10%   0.000   [0.000, 0.000]               nan    6.95
+window          20%   0.000   [0.000, 0.000]               nan    5.54
+window          30%   0.000   [0.000, 0.000]               nan    5.27
+window          50%   0.000   [0.000, 0.000]               nan    3.02
