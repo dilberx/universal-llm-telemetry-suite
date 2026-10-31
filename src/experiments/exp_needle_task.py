@@ -26,7 +26,11 @@ import time
 
 import torch
 
-from src.experiments.exp_e2e_kv_cache import _select_prompts, score_fixed_targets_with_cache_policy
+import torch.nn.functional as F
+
+from src.experiments.exp_e2e_kv_cache import (
+    SNAPKV_WINDOW, _attention_importance, _cache_seq_len, _prune_state, _select_prompts,
+    _snapkv_compress, score_fixed_targets_with_cache_policy)
 
 ADJECTIVES = ["amber", "cobalt", "crimson", "ivory", "jade", "scarlet", "silver", "violet", "golden", "copper"]
 NOUNS = ["falcon", "harbor", "lantern", "meadow", "orchard", "pillar", "quartz", "river", "summit", "willow"]
@@ -54,6 +58,88 @@ def build_sample(tokenizer, haystack: str, depth: float, rng: random.Random, agn
     if full_ids[:len(prompt_ids)] != prompt_ids:          # answer merged into the prompt's last token
         return None
     return {"prompt": text, "code": code, "targets": full_ids[len(prompt_ids):], "prompt_tokens": len(prompt_ids)}
+
+
+def boundary_split(tokenizer, sample):
+    """Token ids of the document, the question tail, or None if the document's last token merges with the question."""
+    doc_text = sample["prompt"][:-len(QUESTION)]
+    full = tokenizer(sample["prompt"])["input_ids"]
+    doc = tokenizer(doc_text)["input_ids"]
+    if full[:len(doc)] != doc:
+        return None
+    return {"doc": doc, "question": full[len(doc):]}
+
+
+def _scoring_cache_lengths(n, n_feed, n_targets, frac, min_keep):
+    """Cache length each target is scored at for a per-step policy (mirrors `score_split`)."""
+    cache, seen, lens = n, n, []
+    if n_feed == 0:
+        cache = min(cache, max(min_keep, int(seen * frac)))
+    for k in range(n_feed + n_targets):
+        if k >= n_feed:
+            lens.append(cache)
+        if k == n_feed + n_targets - 1:
+            break
+        cache = min(cache, max(min_keep, int(seen * frac))) + 1
+        seen += 1
+    return lens
+
+
+def _matched_snapkv_budget(n, n_feed, n_targets, frac, min_keep):
+    """Prefill budget that gives SnapKV the same mean cache over the scored targets as the per-step policies."""
+    lens = _scoring_cache_lengths(n, n_feed, n_targets, frac, min_keep)
+    return max(2, round(sum(lens) / len(lens) - n_feed - (n_targets - 1) / 2))
+
+
+@torch.no_grad()
+def score_split(model, ids_prefill, ids_feed, targets, policy, budget_frac, min_keep=4):
+    """Teacher-forced target scoring where `ids_prefill` is prefilled and `ids_feed` is appended token by token.
+
+    With ids_feed empty this is the question-in-prefill replay with every policy pruned before the first
+    target is scored. With the question as ids_feed, the prefill, SnapKV's observation window and the
+    accumulated importance see only the document: the pruned cache is built before the question arrives.
+    """
+    device = model.device
+    n, n_feed = len(ids_prefill), len(ids_feed)
+    ids = torch.tensor([ids_prefill], device=device)
+    out = model(input_ids=ids, attention_mask=torch.ones_like(ids), use_cache=True, output_attentions=True)
+    cache = out.past_key_values
+    importance = _attention_importance(out.attentions).to(device)
+    positions = torch.arange(n, device=device)
+    logits = out.logits[:, -1, :]
+    seen = n
+    if policy == "snapkv_real":
+        cache = _snapkv_compress(cache, out.attentions,
+                                 _matched_snapkv_budget(n, n_feed, len(targets), budget_frac, min_keep))
+    fed = list(ids_feed) + list(targets[:-1])
+    logprobs, top1, lens = [], 0, []
+    for k in range(len(fed) + 1):
+        if k == 0 and n_feed == 0 and policy != "snapkv_real":
+            cache, positions, importance = _prune_state(policy, budget_frac, min_keep, cache, positions,
+                                                        importance, seen, raw_attentions=out.attentions)
+        if k >= n_feed:
+            t = targets[k - n_feed]
+            logprobs.append(float(F.log_softmax(logits.float(), dim=-1)[0, t].item()))
+            top1 += int(int(logits.argmax(dim=-1).item()) == t)
+            lens.append(_cache_seq_len(cache))
+        if k == len(fed):
+            break
+        if policy != "snapkv_real":
+            cache, positions, importance = _prune_state(policy, budget_frac, min_keep, cache, positions,
+                                                        importance, seen, raw_attentions=out.attentions)
+        out = model(input_ids=torch.tensor([[fed[k]]], device=device), past_key_values=cache, use_cache=True,
+                    output_attentions=True, position_ids=torch.tensor([[seen]], device=device),
+                    cache_position=torch.tensor([seen], device=device))
+        cache, logits = out.past_key_values, out.logits[:, -1, :]
+        if policy != "snapkv_real":
+            positions = torch.cat([positions, torch.tensor([seen], device=device)])
+            importance = torch.cat([importance, torch.zeros(1, device=device, dtype=importance.dtype)])
+            importance = importance + _attention_importance(out.attentions).to(device)
+        seen += 1
+    nll = -sum(logprobs) / len(logprobs)
+    del out, cache
+    return {"prompt_tokens": n + n_feed, "scored_tokens": len(logprobs), "top1_match_rate": top1 / len(logprobs),
+            "nll": nll, "avg_cache_tokens": sum(lens) / len(lens)}
 
 
 def wilson(k: int, n: int, z: float = 1.96):
@@ -91,7 +177,7 @@ def summarise(records: list[dict], windows: list[int], seed: int = 0, B: int = 2
 
 
 def run(model_name="Qwen/Qwen2.5-0.5B", length=2048, n_windows=8, offload=False, headroom=3.5,
-        budgets=BUDGETS, policies=POLICIES, depths=DEPTHS, out_dir="reports/experiments", seed=0, agnostic=False):
+        budgets=BUDGETS, policies=POLICIES, depths=DEPTHS, out_dir="reports/experiments", seed=0, agnostic=False, mode="replay"):
     if offload:
         from transformers import AutoTokenizer
         from src.kv_profiler.loading import limit_gpu_memory, load_for_profiling
@@ -106,7 +192,7 @@ def run(model_name="Qwen/Qwen2.5-0.5B", length=2048, n_windows=8, offload=False,
     haystacks = _select_prompts("long", tokenizer, (hay_tokens,), long_windows=n_windows)
     rng = random.Random(seed)
     records, t0 = [], time.time()
-    short = model_name.rstrip("/").split("/")[-1].lower() + ("_agnostic" if agnostic else "")
+    short = model_name.rstrip("/").split("/")[-1].lower() + ("_agnostic" if agnostic else "") + ("" if mode == "replay" else "_" + mode)
     for name, text in haystacks.items():
         w = int(name.rsplit("_w", 1)[1])
         for depth in depths:
@@ -114,9 +200,18 @@ def run(model_name="Qwen/Qwen2.5-0.5B", length=2048, n_windows=8, offload=False,
             if sample is None:
                 print(f"  window {w} depth {depth}: tokenisation merged the answer, skipped", flush=True)
                 continue
+            split = boundary_split(tokenizer, sample) if mode != "replay" else None
+            if mode != "replay" and split is None:
+                print(f"  window {w} depth {depth}: document end merged with the question, skipped", flush=True)
+                continue
             for pol, bud in [("full", 1.0)] + [(p, b) for b in budgets for p in policies]:
-                r = score_fixed_targets_with_cache_policy(
-                    model, tokenizer, sample["prompt"], sample["targets"], pol, bud, len(sample["targets"]))
+                if mode == "replay":
+                    r = score_fixed_targets_with_cache_policy(
+                        model, tokenizer, sample["prompt"], sample["targets"], pol, bud, len(sample["targets"]))
+                elif mode == "prefill_q":
+                    r = score_split(model, split["doc"] + split["question"], [], sample["targets"], pol, bud)
+                else:
+                    r = score_split(model, split["doc"], split["question"], sample["targets"], pol, bud)
                 records.append({"window": w, "depth": depth, "policy": pol, "budget": bud, "code": sample["code"],
                                 "prompt_tokens": r["prompt_tokens"], "n_answer_tokens": r["scored_tokens"],
                                 "exact": int(r["top1_match_rate"] == 1.0), "nll": r["nll"],
@@ -146,5 +241,8 @@ if __name__ == "__main__":
     ap.add_argument("--offload", action="store_true")
     ap.add_argument("--headroom", type=float, default=3.5)
     ap.add_argument("--agnostic", action="store_true", help="question first, prompt ends on a bare 'Answer:'")
+    ap.add_argument("--mode", choices=("replay", "prefill_q", "boundary"), default="replay",
+                    help="replay: original scoring; prefill_q: question prefilled, every policy pruned before the first "
+                         "target; boundary: prune on the document alone, then append the question")
     a = ap.parse_args()
-    run(a.model, a.length, a.windows, a.offload, a.headroom, agnostic=a.agnostic)
+    run(a.model, a.length, a.windows, a.offload, a.headroom, agnostic=a.agnostic, mode=a.mode)

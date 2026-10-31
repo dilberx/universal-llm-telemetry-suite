@@ -228,7 +228,7 @@ The NLL audit scores a fixed continuation. A user cares whether the model can st
 
 On NLL, hybrid is tied with both SnapKV variants. On this task it is not: it retrieves nothing below a 50% budget on either model, and what it and window do retrieve comes from the recent window covering a needle near the end: only depth 0.9 for hybrid, and depth 0.9 plus (at a 50% budget) 0.7 for window. Neither retrieves a needle at depth 0.5 or earlier at any budget. Both SnapKV variants reach the full-cache ceiling at a 50% budget. H2O retrieves essentially nothing at any budget. On Mistral the variance scorer is ahead of the published SnapKV at a 10% budget (0.75 against 0.45), with wide window-level intervals; elsewhere they are close. Results: `reports/experiments/needle_*`.
 
-Limits. Eight windows or fewer on Mistral and one needle per prompt, over wikitext. The question comes last and the answer prefix repeats the needle sentence, which favours SnapKV, whose scores come from the final queries. A question-agnostic variant would test that and has not been run. Prefill needs the full attention tensor, which caps context at about 2K tokens on the 0.5B and 1.3K on a 7B, so this says nothing about 4K and beyond. Llama-family models were not run.
+Limits. Eight windows or fewer on Mistral and one needle per prompt, over wikitext. The question comes last and the answer prefix repeats the needle sentence, which favours SnapKV, whose scores come from the final queries. The two variants below and the document-boundary test examine that, and the boundary test shows a large part of the SnapKV advantage depends on it. Prefill needs the full attention tensor, which caps context at about 2K tokens on the 0.5B and 1.3K on a 7B, so this says nothing about 4K and beyond. Llama-family models were not run.
 
 **Question-agnostic variant.** To test whether SnapKV wins only because the question comes last, `--agnostic` puts the question before the document and ends the prompt on a bare `Answer:`, so the last queries carry neither the question nor the needle's wording. On the 0.5B (2048 tokens, 100 samples) the full cache now retrieves only 39 of 100, so the table below also gives retrieval conditional on the full cache succeeding.
 
@@ -241,6 +241,22 @@ Limits. Eight windows or fewer on Mistral and one needle per prompt, over wikite
 | snapkv_real | 0.02 / 0.13 / 0.27 / 0.33 | 0.85 |
 
 The ordering holds: H2O and hybrid retrieve almost nothing and the published SnapKV is ahead at every budget, but the advantage is smaller than in the question-last format and no policy reaches the full-cache ceiling below a 50% budget. The two SnapKV variants swap places: the variance scorer led at small budgets in the first format and trails here, so neither should be called better. Window and the variance scorer are not separated at 50%. The conditional figures rest on 39 samples. On Mistral-7B-Instruct the full cache retrieved 0 of 40 in this format, so it gives no comparison; the cause (probably that the instruction-tuned model does not answer a bare `Answer:` with the code) was not tested. Results: `reports/experiments/needle_*agnostic*`.
+
+**Document-boundary test.** SnapKV scores keys with the last 32 prompt queries, and in the question-last format those include the question. The agnostic variant removes the question text but not the answer cue, so `--mode boundary` tests it directly: it prefills the document only, prunes the cache (SnapKV's observation window is the last 32 document tokens), and then feeds the question and the teacher-forced answer through the pruned cache. `--mode prefill_q` is the paired control: the original format, but every policy pruned before the first answer token, so the question is visible to the scorer. Cache sizes are matched to the same mean over scored tokens. Qwen2.5-0.5B, 2048 tokens, 80 samples (16 windows x 5 depths); the full cache retrieves 79 of 80 in both modes. Four of the 20 requested windows (1, 3, 12, 14) were dropped because the last haystack token merges with the first question token under the tokenizer, which `--mode boundary` and `prefill_q` both skip. They are the same windows in both modes, but which ones is set by the text, not chosen.
+
+Exact retrieval (SnapKV intervals are over windows):
+
+| policy | 10% | 20% | 30% | 50% |
+|---|---|---|---|---|
+| snapkv_real, question visible (`prefill_q`) | 0.34 | 0.84 | 0.95 | 0.99 |
+| snapkv_real, `boundary` | 0.00 | 0.16 [0.06, 0.29] | 0.38 [0.24, 0.53] | 0.58 [0.41, 0.75] |
+| snapkv (variance), question visible | 0.19 | 0.84 | 0.98 | 0.99 |
+| snapkv (variance), `boundary` | 0.03 | 0.08 [0.01, 0.15] | 0.19 [0.10, 0.30] | 0.49 [0.33, 0.65] |
+| window (both modes) | 0.00 | 0.18 | 0.16 / 0.19 | 0.34 / 0.39 |
+| hybrid (both modes) | 0.00 | 0.00 | 0.00 | 0.19 |
+| h2o (both modes) | 0.00 | 0.00 | 0.00 | 0.01 |
+
+Most of SnapKV's near-ceiling retrieval in the question-last format depends on the question being visible when keys are scored: at a 50% budget the published SnapKV falls from 0.99 to 0.58, and at 10% from 0.34 to 0. A smaller advantage remains at 30% and 50% budgets (0.38 against window 0.16 and hybrid 0 at 30%; 0.58 against window 0.34 and hybrid 0.19 at 50%), though at 50% the intervals nearly touch. At 10% all policies are near zero. Window beats hybrid at 20% (0.18 against 0), which this repo has not explained. This is one 0.5B model and not run on Mistral, so it does not show the size of the effect on other models. It agrees in direction with the question-visibility effect reported by Trust the Mass (arXiv:2608.25230) on Llama-3.1-8B, whose measurement is not the same as this one. Results: `reports/experiments/needle_*boundary*` and `needle_*prefill_q*`.
 
 ### Why the proxy question matters
 
