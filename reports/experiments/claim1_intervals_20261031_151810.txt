@@ -1,0 +1,11 @@
+windows per model: qwen0.5b 20, qwen7b 20, mistral 20, vicuna 20; short prompts 7
+pooled median H2O/window ratio at a 10% budget, 1024 tokens (95% CI over windows):
+  qwen0.5b     15.0x  [14.4, 15.5]
+  qwen7b       17.4x  [17.1, 17.7]
+  mistral      36.1x  [35.6, 36.5]
+  vicuna       62.3x  [59.1, 65.0]
+  qwen0.5b short prompts 36.6x  [32.2, 47.9]
+effect sizes:
+  length (0.5B short / 1024)                 2.43x  [2.13, 3.18]
+  architecture (Vicuna MHA / Mistral GQA)    1.73x  [1.63, 1.81]
+  scale (Qwen 7B / 0.5B)                     1.16x  [1.12, 1.21]

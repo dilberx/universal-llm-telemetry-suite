@@ -106,6 +106,16 @@ Median H2O over window ratio at a 10% budget:
 
 ![What moves the measurement](reports/charts/corrected_effect_ranking.png)
 
+The table above uses four 1024-token windows and gives no intervals. Rerunning on 20 non-overlapping windows (`exp_claim1_intervals.py`, per-layer ratios kept; 95% intervals resample windows, or prompts for the short set) gives:
+
+| Effect | Size, 20 windows | 95% interval |
+|---|---|---|
+| Context length (0.5B, 7 short prompts vs 1024 tokens: 36.6x vs 15.0x) | 2.43x | [2.13, 3.18] |
+| Attention architecture (Vicuna-7B 62.3x vs Mistral-7B 36.1x) | 1.73x | [1.63, 1.81] |
+| Model scale (Qwen2.5 7.6B 17.4x vs 0.5B 15.0x) | 1.16x | [1.12, 1.21] |
+
+The order holds and the three intervals do not overlap: length, then architecture, then scale. The length effect is smaller than the 2.69x above because 20 windows put the 0.5B at 15.0x, not 13.6x. These intervals cover window-to-window variation only. The short-prompt set is seven prompts, so the length interval is the widest. The architecture figure is one matched pair of models and the scale figure is one family, so neither interval says the effect would repeat on another pair or family.
+
 An earlier version of this table put architecture first at 3.25x. That figure came from comparing Qwen2.5-0.5B against Phi-2, which differ by 5x in parameters as well as in attention design, so it charged the scale difference to architecture. With a matched-scale pair the architecture effect is 1.72x and **context length is the largest of the three**.
 
 Scale remains the weakest by a wide margin. The original cross-model numbers looked like a scale effect because they varied architecture and input length at once, and both move the measurement more than size does.
