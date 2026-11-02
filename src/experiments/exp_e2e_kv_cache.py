@@ -190,6 +190,8 @@ def _keep_indices(
         keep = torch.topk(importance, k=budget).indices
     elif policy == "sink_h2o":
         keep = _merge_sink_and_ranked(positions, importance, budget, sink_tokens)
+    elif policy == "protect_h2o":
+        keep = _protected_ranked_keep(positions, importance, budget)
     elif policy == "hybrid":
         keep = _hybrid_keep_indices(positions, importance, budget, sink_tokens)
     elif policy == "snapkv":
@@ -253,6 +255,35 @@ def _merge_sink_and_ranked(
     candidate_scores = importance.masked_fill(keep_mask, float("-inf"))
     fill = torch.topk(candidate_scores, k=remaining).indices
     return torch.cat([sink, fill])
+
+
+PROTECT_FRACTION = 0.1
+
+
+def _protected_ranked_keep(
+    positions: torch.Tensor,
+    importance: torch.Tensor,
+    budget: int,
+    fraction: float = PROTECT_FRACTION,
+    min_per_side: int = 4,
+) -> torch.Tensor:
+    """Reserve `fraction` of the budget at each end of the cache (at least `min_per_side`), fill the rest by importance.
+
+    Follows the protection scheme of arXiv:2605.18053 (10% prefix and suffix, minimum 4 per side).
+    """
+    n = int(importance.numel())
+    per_side = min(max(min_per_side, int(budget * fraction)), budget // 2)
+    pos = positions.to(importance.device)
+    prefix = torch.topk(pos, k=per_side, largest=False).indices
+    suffix = torch.topk(pos, k=per_side).indices
+    keep_mask = torch.zeros(n, dtype=torch.bool, device=importance.device)
+    keep_mask[prefix] = True
+    keep_mask[suffix] = True
+    remaining = budget - int(keep_mask.sum())
+    if remaining <= 0:
+        return torch.nonzero(keep_mask, as_tuple=False).flatten()
+    fill = torch.topk(importance.masked_fill(keep_mask, float("-inf")), k=remaining).indices
+    return torch.cat([torch.nonzero(keep_mask, as_tuple=False).flatten(), fill])
 
 
 def _hybrid_keep_indices(
@@ -862,7 +893,7 @@ if __name__ == "__main__":
         "--policies",
         nargs="+",
         default=["window", "h2o"],
-        choices=["window", "h2o", "sink_h2o", "hybrid", "snapkv", "snapkv_real", "pyramid", "adaptive"],
+        choices=["window", "h2o", "sink_h2o", "protect_h2o", "hybrid", "snapkv", "snapkv_real", "pyramid", "adaptive"],
     )
     args = parser.parse_args()
 
