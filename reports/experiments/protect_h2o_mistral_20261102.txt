@@ -1,0 +1,19 @@
+=== Mistral-7B-Instruct-v0.2: 20 windows (0..19). Mean NLL increase over budgets, 95% CI over windows ===
+  snapkv_real    0.061  [0.019, 0.148]
+  snapkv         0.078  [0.023, 0.164]
+  hybrid         0.090  [0.060, 0.152]
+  protect_h2o    0.181  [0.124, 0.243]
+  adaptive       0.829  [0.702, 1.001]
+  window         1.659  [1.292, 2.152]
+  sink_h2o       2.465  [2.261, 2.633]
+  h2o            2.466  [2.262, 2.629]
+  policy           10%     20%     30%     50%     75%     90%
+  protect_h2o    0.569   0.254   0.181   0.069   0.010   0.000
+  sink_h2o       4.463   3.836   3.026   2.020   0.908   0.537
+  hybrid         0.288   0.141   0.072   0.034   0.005   0.001
+  window         2.700   1.995   1.710   1.395   1.121   1.030
+  h2o            4.452   3.852   3.026   2.020   0.908   0.537
+  h2o minus protect_h2o       +2.285  [+2.093, +2.452]
+  sink_h2o minus protect_h2o  +2.285  [+2.073, +2.457]
+  protect_h2o minus hybrid    +0.090  [+0.040, +0.134]
+  window minus protect_h2o    +1.478  [+1.113, +1.973]
