@@ -226,7 +226,7 @@ The NLL audit scores a fixed continuation. A user cares whether the model can st
 | snapkv (variance scorer) | 0.20 / 0.84 / 0.98 / 0.99 | 0.75 / 0.83 / 0.83 / 0.83 |
 | snapkv_real | 0.34 / 0.86 / 0.96 / 0.99 | 0.45 / 0.78 / 0.80 / 0.83 |
 
-On NLL, hybrid is tied with both SnapKV variants. On this task it is not: it retrieves nothing below a 50% budget on either model, and what it and window do retrieve comes from the recent window covering a needle near the end: only depth 0.9 for hybrid, and depth 0.9 plus (at a 50% budget) 0.7 for window. Neither retrieves a needle at depth 0.5 or earlier at any budget. Both SnapKV variants reach the full-cache ceiling at a 50% budget. H2O retrieves essentially nothing at any budget. On Mistral the variance scorer is ahead of the published SnapKV at a 10% budget (0.75 against 0.45), with wide window-level intervals; elsewhere they are close. Results: `reports/experiments/needle_*`.
+On NLL, hybrid is tied with both SnapKV variants. On this task it is not: it retrieves nothing below a 50% budget on either model, and what it and window do retrieve comes from the recent window covering a needle near the end: only depth 0.9 for hybrid, and depth 0.9 plus (at a 50% budget) 0.7 for window. Neither retrieves a needle at depth 0.5 or earlier at any budget. In this question-last format both SnapKV variants reach the full-cache ceiling at a 50% budget, but the document-boundary test below shows that depends on the question being visible when keys are scored. H2O retrieves essentially nothing at any budget. On Mistral the variance scorer is ahead of the published SnapKV at a 10% budget (0.75 against 0.45), with wide window-level intervals; elsewhere they are close. Results: `reports/experiments/needle_*`.
 
 Limits. Eight windows or fewer on Mistral and one needle per prompt, over wikitext. The question comes last and the answer prefix repeats the needle sentence, which favours SnapKV, whose scores come from the final queries. The two variants below and the document-boundary test examine that, and the boundary test shows a large part of the SnapKV advantage depends on it. Prefill needs the full attention tensor, which caps context at about 2K tokens on the 0.5B and 1.3K on a 7B, so this says nothing about 4K and beyond. Llama-family models were not run.
 
@@ -256,7 +256,21 @@ Exact retrieval (SnapKV intervals are over windows):
 | hybrid (both modes) | 0.00 | 0.00 | 0.00 | 0.19 |
 | h2o (both modes) | 0.00 | 0.00 | 0.00 | 0.01 |
 
-Most of SnapKV's near-ceiling retrieval in the question-last format depends on the question being visible when keys are scored: at a 50% budget the published SnapKV falls from 0.99 to 0.58, and at 10% from 0.34 to 0. A smaller advantage remains at 30% and 50% budgets (0.38 against window 0.16 and hybrid 0 at 30%; 0.58 against window 0.34 and hybrid 0.19 at 50%), though at 50% the intervals nearly touch. At 10% all policies are near zero. Window beats hybrid at 20% (0.18 against 0), which this repo has not explained. This is one 0.5B model and not run on Mistral, so it does not show the size of the effect on other models. It agrees in direction with the question-visibility effect reported by Trust the Mass (arXiv:2608.25230) on Llama-3.1-8B, whose measurement is not the same as this one. Results: `reports/experiments/needle_*boundary*` and `needle_*prefill_q*`.
+Most of SnapKV's near-ceiling retrieval in the question-last format depends on the question being visible when keys are scored: at a 50% budget the published SnapKV falls from 0.99 to 0.58, and at 10% from 0.34 to 0. A smaller advantage remains at 30% and 50% budgets (0.38 against window 0.16 and hybrid 0 at 30%; 0.58 against window 0.34 and hybrid 0.19 at 50%), though at 50% the intervals nearly touch. At 10% all policies are near zero. Window beats hybrid at 20% (0.18 against 0), which this repo has not explained. The Mistral run below does not agree on whether any lead survives, so the 0.5B result does not generalise. It agrees in direction with the question-visibility effect reported by Trust the Mass (arXiv:2608.25230) on Llama-3.1-8B, whose measurement is not the same as this one. Results: `reports/experiments/needle_*boundary*` and `needle_*prefill_q*`.
+
+On Mistral-7B-Instruct-v0.2 (1280 tokens, 40 samples = 8 windows x 5 depths, no windows dropped; the full cache retrieves 33 of 40 in both modes; mean cache sizes matched, 126 at 10%) the question-visible ceiling disappears almost completely:
+
+| policy | mode | 10% | 20% | 30% | 50% |
+|---|---|---|---|---|---|
+| snapkv_real | question visible (`prefill_q`) | 0.45 | 0.78 | 0.80 | 0.83 |
+| snapkv_real | `boundary` | 0.00 | 0.00 | 0.03 | 0.25 [0.10, 0.43] |
+| snapkv (variance) | question visible | 0.75 | 0.83 | 0.83 | 0.83 |
+| snapkv (variance) | `boundary` | 0.00 | 0.00 | 0.00 | 0.03 |
+| window | question visible / `boundary` | 0.00 / 0.00 | 0.15 / 0.20 | 0.15 / 0.20 | 0.33 / 0.40 |
+| hybrid | both | 0.00 | 0.00 | 0.00 | 0.15 |
+| h2o | both | 0.00 | 0.00 | 0.00 | 0.00 |
+
+With the question out of the observation window, neither SnapKV variant beats a sliding window at any budget on this model: at 50% the published SnapKV retrieves 0.25 against 0.40 for window, and the variance scorer 0.03. The intervals over windows are wide, and window's are degenerate ([0.40, 0.40]) because it retrieves the same depths in every window, so the 0.25 against 0.40 gap is not tested. On the 0.5B a smaller SnapKV lead over window survives, on Mistral none does, so the repo supports only this: SnapKV's earlier retrieval ceiling depends on the question being visible when keys are scored, and what remains without it differs by model. Results: `reports/experiments/needle_mistral*_boundary_*` and `needle_mistral*_prefill_q_*`.
 
 ### Why the proxy question matters
 
