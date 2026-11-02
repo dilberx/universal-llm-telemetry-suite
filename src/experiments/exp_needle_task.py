@@ -43,16 +43,19 @@ QUESTION = "\n\nQuestion: What is the secret passphrase for the vault?\nAnswer: 
 # last queries (SnapKV's observation window) carry neither the question nor the needle's wording
 PREFIX_Q = "Question: What is the secret passphrase for the vault?\n\nDocument:\n"
 SUFFIX_Q = "\n\nAnswer:"
+# an instruction-tuned model (Mistral-7B-Instruct) never answers a bare "Answer:" with the code (full cache 0 of 12 in
+# a probe), so "value_only" adds an instruction that names neither the question nor the needle's wording (12 of 12)
+ENDINGS = {"bare": SUFFIX_Q, "value_only": "\n\nReply with the requested value only.\nAnswer:"}
 
 
-def build_sample(tokenizer, haystack: str, depth: float, rng: random.Random, agnostic: bool = False):
+def build_sample(tokenizer, haystack: str, depth: float, rng: random.Random, agnostic: bool = False, ending: str = "bare"):
     """Prompt text with the needle at `depth` and the teacher-forced answer tokens, or None if tokenisation splits."""
     code = f"{rng.choice(ADJECTIVES)}-{rng.choice(NOUNS)}-{rng.randrange(1000, 10000)}"
     ids = tokenizer(haystack)["input_ids"]
     cut = int(depth * len(ids))
     text = (tokenizer.decode(ids[:cut]) + "\n" + NEEDLE.format(code=code) + "\n"
             + tokenizer.decode(ids[cut:]))
-    text = PREFIX_Q + text + SUFFIX_Q if agnostic else text + QUESTION
+    text = PREFIX_Q + text + ENDINGS[ending] if agnostic else text + QUESTION
     prompt_ids = tokenizer(text)["input_ids"]
     full_ids = tokenizer(text + " " + code)["input_ids"]
     if full_ids[:len(prompt_ids)] != prompt_ids:          # answer merged into the prompt's last token
@@ -177,7 +180,7 @@ def summarise(records: list[dict], windows: list[int], seed: int = 0, B: int = 2
 
 
 def run(model_name="Qwen/Qwen2.5-0.5B", length=2048, n_windows=8, offload=False, headroom=3.5,
-        budgets=BUDGETS, policies=POLICIES, depths=DEPTHS, out_dir="reports/experiments", seed=0, agnostic=False, mode="replay"):
+        budgets=BUDGETS, policies=POLICIES, depths=DEPTHS, out_dir="reports/experiments", seed=0, agnostic=False, mode="replay", ending="bare"):
     if offload:
         from transformers import AutoTokenizer
         from src.kv_profiler.loading import limit_gpu_memory, load_for_profiling
@@ -192,11 +195,11 @@ def run(model_name="Qwen/Qwen2.5-0.5B", length=2048, n_windows=8, offload=False,
     haystacks = _select_prompts("long", tokenizer, (hay_tokens,), long_windows=n_windows)
     rng = random.Random(seed)
     records, t0 = [], time.time()
-    short = model_name.rstrip("/").split("/")[-1].lower() + ("_agnostic" if agnostic else "") + ("" if mode == "replay" else "_" + mode)
+    short = model_name.rstrip("/").split("/")[-1].lower() + (("_agnostic" + ("" if ending == "bare" else "_" + ending)) if agnostic else "") + ("" if mode == "replay" else "_" + mode)
     for name, text in haystacks.items():
         w = int(name.rsplit("_w", 1)[1])
         for depth in depths:
-            sample = build_sample(tokenizer, text, depth, rng, agnostic)
+            sample = build_sample(tokenizer, text, depth, rng, agnostic, ending)
             if sample is None:
                 print(f"  window {w} depth {depth}: tokenisation merged the answer, skipped", flush=True)
                 continue
@@ -240,9 +243,10 @@ if __name__ == "__main__":
     ap.add_argument("--windows", type=int, default=8)
     ap.add_argument("--offload", action="store_true")
     ap.add_argument("--headroom", type=float, default=3.5)
+    ap.add_argument("--ending", choices=tuple(ENDINGS), default="bare", help="with --agnostic: how the prompt ends")
     ap.add_argument("--agnostic", action="store_true", help="question first, prompt ends on a bare 'Answer:'")
     ap.add_argument("--mode", choices=("replay", "prefill_q", "boundary"), default="replay",
                     help="replay: original scoring; prefill_q: question prefilled, every policy pruned before the first "
                          "target; boundary: prune on the document alone, then append the question")
     a = ap.parse_args()
-    run(a.model, a.length, a.windows, a.offload, a.headroom, agnostic=a.agnostic, mode=a.mode)
+    run(a.model, a.length, a.windows, a.offload, a.headroom, agnostic=a.agnostic, mode=a.mode, ending=a.ending)
