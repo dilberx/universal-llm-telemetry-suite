@@ -180,7 +180,7 @@ def summarise(records: list[dict], windows: list[int], seed: int = 0, B: int = 2
 
 
 def run(model_name="Qwen/Qwen2.5-0.5B", length=2048, n_windows=8, offload=False, headroom=3.5,
-        budgets=BUDGETS, policies=POLICIES, depths=DEPTHS, out_dir="reports/experiments", seed=0, agnostic=False, mode="replay", ending="bare"):
+        budgets=BUDGETS, policies=POLICIES, depths=DEPTHS, out_dir="reports/experiments", seed=0, agnostic=False, mode="replay", ending="bare", stream=False):
     if offload:
         from transformers import AutoTokenizer
         from src.kv_profiler.loading import limit_gpu_memory, load_for_profiling
@@ -191,6 +191,9 @@ def run(model_name="Qwen/Qwen2.5-0.5B", length=2048, n_windows=8, offload=False,
         from src.experiments.exp_real_model import load_model
         model, tokenizer = load_model(model_name)
 
+    if stream:                                    # chunked attention: lifts the full-attention-tensor cap on context length
+        from src.experiments import streamed_attention
+        streamed_attention.enable(model)
     hay_tokens = length - 80                                  # room for the needle and the question
     haystacks = _select_prompts("long", tokenizer, (hay_tokens,), long_windows=n_windows)
     rng = random.Random(seed)
@@ -244,9 +247,10 @@ if __name__ == "__main__":
     ap.add_argument("--offload", action="store_true")
     ap.add_argument("--headroom", type=float, default=3.5)
     ap.add_argument("--ending", choices=tuple(ENDINGS), default="bare", help="with --agnostic: how the prompt ends")
+    ap.add_argument("--stream", action="store_true", help="chunked attention, so contexts beyond ~2K fit")
     ap.add_argument("--agnostic", action="store_true", help="question first, prompt ends on a bare 'Answer:'")
     ap.add_argument("--mode", choices=("replay", "prefill_q", "boundary"), default="replay",
                     help="replay: original scoring; prefill_q: question prefilled, every policy pruned before the first "
                          "target; boundary: prune on the document alone, then append the question")
     a = ap.parse_args()
-    run(a.model, a.length, a.windows, a.offload, a.headroom, agnostic=a.agnostic, mode=a.mode, ending=a.ending)
+    run(a.model, a.length, a.windows, a.offload, a.headroom, agnostic=a.agnostic, mode=a.mode, ending=a.ending, stream=a.stream)

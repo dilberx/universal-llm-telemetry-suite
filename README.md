@@ -272,6 +272,18 @@ On Mistral-7B-Instruct-v0.2 (1280 tokens, 40 samples = 8 windows x 5 depths, no 
 
 With the question out of the observation window, neither SnapKV variant beats a sliding window at any budget on this model: at 50% the published SnapKV retrieves 0.25 against 0.40 for window, and the variance scorer 0.03. The intervals over windows are wide, and window's are degenerate ([0.40, 0.40]) because it retrieves the same depths in every window, so the 0.25 against 0.40 gap is not tested. On the 0.5B a smaller SnapKV lead over window survives, on Mistral none does, so the repo supports only this: SnapKV's earlier retrieval ceiling depends on the question being visible when keys are scored, and what remains without it differs by model. Results: `reports/experiments/needle_mistral*_boundary_*` and `needle_mistral*_prefill_q_*`.
 
+**4K context.** The 2K ceiling came from the full attention tensor that prefill returns. `--stream` replaces it with chunked attention (`src/experiments/streamed_attention.py`) that accumulates the key importance over all queries and keeps only the last 32 query rows per layer, which is all the policies use. On a 1000-token prompt it reproduced eager logits exactly, the last-32-row weights exactly and the summed importance to a relative error of 2e-7. On a 1K needle comparison (110 records) exact retrieval and cache sizes matched in every record, and NLL differed by 0.011 to 0.020 in three `window` records whose NLL was 8 to 11; I did not check whether that is float noise. At 4096 tokens on Qwen2.5-0.5B (60 samples, 12 windows x 5 depths, none dropped; the full cache retrieves 60 of 60), the same pair of conditions gives exact retrieval at 10 / 20 / 30 / 50% budgets:
+
+| policy | question visible (`prefill_q`) | `boundary` |
+|---|---|---|
+| snapkv_real | 0.37 / 0.85 / 1.00 / 1.00 | 0.02 / 0.10 / 0.23 / 0.42 [0.22, 0.63] |
+| snapkv (variance) | 0.75 / 0.97 / 1.00 / 1.00 | 0.00 / 0.12 / 0.20 / 0.32 [0.17, 0.48] |
+| window | 0.00 / 0.20 / 0.20 / 0.40 | 0.00 / 0.17 / 0.17 / 0.32 [0.23, 0.38] |
+| hybrid | 0.00 / 0.00 / 0.00 / 0.20 | 0.00 / 0.00 / 0.00 / 0.20 |
+| h2o | 0 / 0 / 0 / 0.02 | 0 / 0 / 0 / 0 |
+
+The pattern at 2K holds at 4K: SnapKV reaches the ceiling at 30% and above only with the question visible, and without it falls to 0.42 at 50%. The boundary lead over window is smaller at 4K than at 2K (0.42 against 0.32, intervals overlapping, against 0.58 against 0.34 at 2K). One model, one needle, wikitext. Not run at 4K on Mistral. Results: `reports/experiments/needle_qwen2.5-0.5b_*_4096tok_*`.
+
 ### Why the proxy question matters
 
 Two 2026 results make the gap between the proxy and real quality concrete:

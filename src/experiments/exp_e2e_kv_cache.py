@@ -94,6 +94,10 @@ def _cache_seq_len(cache: DynamicCache) -> int:
 
 def _attention_importance(attentions: tuple[torch.Tensor, ...] | list[torch.Tensor]) -> torch.Tensor:
     """Return cumulative key importance for the cache positions in attentions."""
+    from src.experiments.streamed_attention import consume_colsum
+    streamed = consume_colsum()                 # set when the model runs chunked attention and keeps only the tail rows
+    if streamed is not None:
+        return streamed
     importance = None
     for attn in attentions:
         # [batch, heads, query, key] -> [key]
