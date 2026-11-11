@@ -290,7 +290,7 @@ The pattern at 2K holds at 4K: SnapKV reaches the ceiling at 30% and above only 
 |---|---|---|---|
 | Qwen2.5-0.5B, 2K (16 windows) | 0.99 / 0.58 / +0.41 [+0.24, +0.57] | 0.99 / 0.49 / +0.50 [+0.34, +0.65] | 0.39 / 0.34 / +0.05 [-0.01, +0.12] |
 | Qwen2.5-0.5B, 4K (12 windows) | 1.00 / 0.42 / +0.58 [+0.37, +0.78] | 1.00 / 0.32 / +0.68 [+0.52, +0.83] | 0.40 / 0.32 / +0.08 [+0.02, +0.17] |
-| Mistral-7B-Instruct, 1.3K (8 windows) | 0.82 / 0.25 / +0.57 [+0.45, +0.70] | 0.82 / 0.03 / +0.80 [+0.72, +0.88] | 0.33 / 0.40 / -0.07 [-0.15, -0.03] |
+| Mistral-7B-Instruct, 1.3K (8 windows) | 0.83 / 0.25 / +0.57 [+0.45, +0.70] | 0.83 / 0.03 / +0.80 [+0.72, +0.88] | 0.33 / 0.40 / -0.07 [-0.15, -0.03] |
 
 Hybrid and H2O do not change between the conditions. The two SnapKV variants lose 0.41 to 0.80 in exact retrieval when the question is hidden, with intervals that exclude zero in all three setups; the small `window` differences probably reflect which tokens sit in the recent window under the two layouts, which was not checked. Two models and a single needle.
 
