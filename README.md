@@ -256,7 +256,7 @@ Exact retrieval (SnapKV intervals are over windows):
 | hybrid (both modes) | 0.00 | 0.00 | 0.00 | 0.19 |
 | h2o (both modes) | 0.00 | 0.00 | 0.00 | 0.01 |
 
-Most of SnapKV's near-ceiling retrieval in the question-last format depends on the question being visible when keys are scored: at a 50% budget the published SnapKV falls from 0.99 to 0.58, and at 10% from 0.34 to 0. A smaller advantage remains at 30% and 50% budgets (0.38 against window 0.16 and hybrid 0 at 30%; 0.58 against window 0.34 and hybrid 0.19 at 50%), though at 50% the intervals nearly touch. At 10% all policies are near zero. Window beats hybrid at 20% (0.18 against 0), which this repo has not explained. The Mistral run below does not agree on whether any lead survives, so the 0.5B result does not generalise. It agrees in direction with the question-visibility effect reported by Trust the Mass (arXiv:2608.25230) on Llama-3.1-8B, whose measurement is not the same as this one. Results: `reports/experiments/needle_*boundary*` and `needle_*prefill_q*`.
+Most of SnapKV's near-ceiling retrieval in the question-last format depends on the question being visible when keys are scored: at a 50% budget the published SnapKV falls from 0.99 to 0.58, and at 10% from 0.34 to 0. A smaller advantage remains at 30% and 50% budgets (0.38 against window 0.16 and hybrid 0 at 30%; 0.58 against window 0.34 and hybrid 0.19 at 50%), though at 50% the intervals nearly touch. At 10% all policies are near zero. Window beats hybrid at 20% (0.18 against 0) because of where the needle sits: broken down by depth, window retrieves only the needle at depth 0.9 at 20% and 30% budgets and the needles at 0.7 and 0.9 at 50%, and hybrid, whose recent window is a third of its budget, retrieves nothing below 50% and only depth 0.9 at 50%. The same holds at 4K and on Mistral. So both retrieve only what lies inside their recent window, and the share of hybrid's budget chosen by attention mass retrieved no needle at depth 0.7 or earlier. The Mistral run below does not agree on whether any lead survives, so the 0.5B result does not generalise. This effect is not new. Luo, Liang and Xuan (arXiv:2607.11942) measure it for six methods on three 7B to 9B models with RULER and LongBench and find SnapKV has the largest drop when the question is hidden, and Trust the Mass (arXiv:2608.25230) reports it on Llama-3.1-8B. The result here is a replication with a different metric, on a 0.5B model and on Mistral, with every policy on the same attention implementation. Results: `reports/experiments/needle_*boundary*` and `needle_*prefill_q*`.
 
 On Mistral-7B-Instruct-v0.2 (1280 tokens, 40 samples = 8 windows x 5 depths, no windows dropped; the full cache retrieves 33 of 40 in both modes; mean cache sizes matched, 126 at 10%) the question-visible ceiling disappears almost completely:
 
@@ -283,6 +283,16 @@ With the question out of the observation window, neither SnapKV variant beats a 
 | h2o | 0 / 0 / 0 / 0.02 | 0 / 0 / 0 / 0 |
 
 The pattern at 2K holds at 4K: SnapKV reaches the ceiling at 30% and above only with the question visible, and without it falls to 0.42 at 50%. The boundary lead over window is smaller at 4K than at 2K (0.42 against 0.32, intervals overlapping, against 0.58 against 0.34 at 2K). One model, one needle, wikitext. Not run at 4K on Mistral. Results: `reports/experiments/needle_qwen2.5-0.5b_*_4096tok_*`.
+
+**Summary: with and without the question visible.** Same samples, `prefill_q` (question visible to the scorer) against `boundary` (question appended after pruning); each cell is with / without / paired difference, with a 95% interval over windows for the difference. Exact retrieval at a 50% budget:
+
+| setup | snapkv_real | snapkv (variance) | window |
+|---|---|---|---|
+| Qwen2.5-0.5B, 2K (16 windows) | 0.99 / 0.58 / +0.41 [+0.24, +0.57] | 0.99 / 0.49 / +0.50 [+0.34, +0.65] | 0.39 / 0.34 / +0.05 [-0.01, +0.12] |
+| Qwen2.5-0.5B, 4K (12 windows) | 1.00 / 0.42 / +0.58 [+0.37, +0.78] | 1.00 / 0.32 / +0.68 [+0.52, +0.83] | 0.40 / 0.32 / +0.08 [+0.02, +0.17] |
+| Mistral-7B-Instruct, 1.3K (8 windows) | 0.82 / 0.25 / +0.57 [+0.45, +0.70] | 0.82 / 0.03 / +0.80 [+0.72, +0.88] | 0.33 / 0.40 / -0.07 [-0.15, -0.03] |
+
+Hybrid and H2O do not change between the conditions. The two SnapKV variants lose 0.41 to 0.80 in exact retrieval when the question is hidden, with intervals that exclude zero in all three setups; the small `window` differences probably reflect which tokens sit in the recent window under the two layouts, which was not checked. Two models and a single needle.
 
 ### Why the proxy question matters
 
